@@ -40,6 +40,6 @@ public class OtaHotUpdate  implements ReactPackage {
         if (pathBundle.equals("")) {
             return Common.INSTANCE.getDEFAULT_BUNDLE();
         }
-        return sharedPrefs.getString(Common.INSTANCE.getPATH());
+        return pathBundle;
     }
 }

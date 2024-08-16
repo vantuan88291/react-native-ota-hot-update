@@ -25,7 +25,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {multiply} from 'react-native-ota-hot-update'
 import ReactNativeBlobUtil from "react-native-blob-util";
 import {deleteBundlePath, setupBundlePath} from "./react-native-ota-hot-update";
 
@@ -65,18 +64,20 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const [loaded, setLoaded] = React.useState(false)
 
   const getData = async () => {
     ReactNativeBlobUtil
       .config({
         fileCache: true,
       })
-      .fetch('GET', 'https://file-examples.com/storage/fe519944ff66ba53b99c446/2017/10/file-sample_150kB.pdf', {
+      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/android/output/index.android.bundle', {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
         setupBundlePath(res.path()).then(data => {
           console.log('data0------', data)
+          setLoaded(data)
         })
       })
   }
@@ -91,6 +92,7 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+      <Header />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
@@ -100,18 +102,8 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
+          <Section title={loaded ? "Updated" : "not update"}>
             <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
           </Section>
           <LearnMoreLinks />
         </View>
