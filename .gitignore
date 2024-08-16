@@ -72,3 +72,4 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+android/app/src/main/res/drawable-mdpi/
