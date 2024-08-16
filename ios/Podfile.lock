@@ -1237,6 +1237,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-blob-util (0.19.11):
+    - React-Core
   - react-native-ota-hot-update (1.0.0):
     - DoubleConversion
     - glog
@@ -1559,6 +1561,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-ota-hot-update (from `../node_modules/react-native-ota-hot-update`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1664,6 +1667,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-blob-util:
+    :path: "../node_modules/react-native-blob-util"
   react-native-ota-hot-update:
     :path: "../node_modules/react-native-ota-hot-update"
   React-nativeconfig:
@@ -1757,6 +1762,7 @@ SPEC CHECKSUMS:
   React-logger: 0a81d1a40650bbdafb255fe4616edb83feed0ee9
   React-Mapbuffer: b758bec0d9994c10a2841dfd5ec70673665fd3e2
   React-microtasksnativemodule: f25dba9c8c3f8be0b3368d52b99abd6e381dee1d
+  react-native-blob-util: 39a20f2ef11556d958dc4beb0aa07d1ef2690745
   react-native-ota-hot-update: d69736778b39e6cd2201fb0a9991729a7b685ee3
   React-nativeconfig: 7af2ccce165f86b233a9f9d63295f6207e62640e
   React-NativeModulesApple: db1c1ee9dda26c9e58d824b4100fed83add82ae9

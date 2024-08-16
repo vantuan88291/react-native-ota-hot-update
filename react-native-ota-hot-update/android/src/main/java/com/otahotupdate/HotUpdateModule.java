@@ -27,7 +27,7 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
             sharedPrefs.putString(Common.INSTANCE.getPATH(), path);
             promise.resolve(true);
         } else {
-            promise.reject("Path invalid", "Please use valid path of bundlejs");
+            promise.resolve(false);
         }
     }
 
