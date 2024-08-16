@@ -20,3 +20,10 @@ const OtaHotUpdate = NativeModules.OtaHotUpdate
 export function multiply(a: number, b: number): Promise<number> {
   return OtaHotUpdate.multiply(a, b);
 }
+
+export function setupBundlePath(path: string): Promise<boolean> {
+  return OtaHotUpdate.setupBundlePath(path);
+}
+export function deleteBundlePath(): Promise<boolean> {
+  return OtaHotUpdate.deleteBundle();
+}

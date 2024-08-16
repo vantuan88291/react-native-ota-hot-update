@@ -7,11 +7,14 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "android-build-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "android-export-bundle": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/app/src/main/res"
   },
   "dependencies": {
     "react": "18.3.1",
     "react-native": "0.75.1",
+    "react-native-blob-util": "^0.19.11",
     "react-native-ota-hot-update": "file:./react-native-ota-hot-update"
   },
   "devDependencies": {

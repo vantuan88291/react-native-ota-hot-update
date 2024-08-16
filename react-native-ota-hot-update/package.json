@@ -11,5 +11,9 @@
     "languages": "kotlin-swift",
     "version": "0.40.0"
   },
-  "packageManager": "yarn@4.4.0"
+  "rnpm": {
+    "android": {
+      "packageInstance": "new OtaHotUpdate(getApplicationContext())"
+    }
+  }
 }

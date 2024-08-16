@@ -8,6 +8,7 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -25,6 +26,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {multiply} from 'react-native-ota-hot-update'
+import ReactNativeBlobUtil from "react-native-blob-util";
+import {deleteBundlePath, setupBundlePath} from "./react-native-ota-hot-update";
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -64,12 +67,24 @@ function App(): React.JSX.Element {
   };
 
   const getData = async () => {
-    const ss = await multiply(2,3)
-    console.log('----', ss)
+    ReactNativeBlobUtil
+      .config({
+        fileCache: true,
+      })
+      .fetch('GET', 'https://file-examples.com/storage/fe519944ff66ba53b99c446/2017/10/file-sample_150kB.pdf', {
+      })
+      .then((res) => {
+        console.log('The file saved to ', res.path())
+        setupBundlePath(res.path()).then(data => {
+          console.log('data0------', data)
+        })
+      })
   }
-  React.useEffect(() => {
-    getData()
-  }, [])
+  const deleteUpdate = () => {
+    deleteBundlePath().then(data => {
+      console.log('deleted----', data)
+    })
+  }
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -79,7 +94,8 @@ function App(): React.JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
+        <Button title={'Click on update'} onPress={getData} />
+        <Button title={'Click on delete update'} onPress={deleteUpdate} />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
