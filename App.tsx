@@ -24,6 +24,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {multiply} from 'react-native-ota-hot-update'
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -62,6 +63,13 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const getData = async () => {
+    const ss = await multiply(2,3)
+    console.log('----', ss)
+  }
+  React.useEffect(() => {
+    getData()
+  }, [])
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
