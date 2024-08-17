@@ -1,4 +1,4 @@
-package com.otahotupdate
+package com.rnhotupdate
 
 import android.annotation.SuppressLint
 import android.content.Context

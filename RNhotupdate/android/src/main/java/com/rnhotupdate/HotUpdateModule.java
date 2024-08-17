@@ -1,4 +1,4 @@
-package com.otahotupdate;
+package com.rnhotupdate;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;

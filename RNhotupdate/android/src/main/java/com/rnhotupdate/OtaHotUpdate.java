@@ -1,4 +1,4 @@
-package com.otahotupdate;
+package com.rnhotupdate;
 
 import android.content.Context;
 

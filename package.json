@@ -14,7 +14,7 @@
     "react": "18.3.1",
     "react-native": "0.75.1",
     "react-native-blob-util": "^0.19.11",
-    "react-native-ota-hot-update": "file:./react-native-ota-hot-update"
+    "RNhotupdate": "file:./RNhotupdate"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

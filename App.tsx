@@ -25,7 +25,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import ReactNativeBlobUtil from "react-native-blob-util";
-import {deleteBundlePath, multiply, setupBundlePath} from "./react-native-ota-hot-update";
+import {deleteBundlePath, multiply, setupBundlePath} from "RNhotupdate";
 
 type SectionProps = PropsWithChildren<{
   title: string;

@@ -1,5 +1,5 @@
 {
-  "name": "react-native-ota-hot-update",
+  "name": "rn-hotupdate",
   "version": "1.0.0",
   "description": "Hot update for react native",
   "main": "src/index",
@@ -8,8 +8,8 @@
   "homepage": "#readme",
   "create-react-native-library": {
     "type": "module-legacy",
-    "languages": "kotlin-swift",
-    "version": "0.40.0"
+    "languages": "kotlin-objc",
+    "version": "0.41.0"
   },
   "rnpm": {
     "android": {

@@ -1,13 +1,13 @@
 import { NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
-  `The package 'react-native-ota-hot-update' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'rn-hotupdate' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const OtaHotUpdate = NativeModules.OtaHotUpdate
-  ? NativeModules.OtaHotUpdate
+const RNhotupdate = NativeModules.RNhotupdate
+  ? NativeModules.RNhotupdate
   : new Proxy(
       {},
       {
@@ -18,12 +18,12 @@ const OtaHotUpdate = NativeModules.OtaHotUpdate
     );
 
 export function multiply(a: number, b: number): Promise<number> {
-  return OtaHotUpdate.multiply(a, b);
+  return RNhotupdate.multiply(a, b);
 }
 
 export function setupBundlePath(path: string): Promise<boolean> {
-  return OtaHotUpdate.setupBundlePath(path);
+  return RNhotupdate.setupBundlePath(path);
 }
 export function deleteBundlePath(): Promise<boolean> {
-  return OtaHotUpdate.deleteBundle();
+  return RNhotupdate.deleteBundle();
 }
