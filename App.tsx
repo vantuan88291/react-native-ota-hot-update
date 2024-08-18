@@ -68,9 +68,9 @@ function App(): React.JSX.Element {
   const getData = async () => {
     ReactNativeBlobUtil
       .config({
-        fileCache: true,
+        fileCache: false,
       })
-      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle', {
+      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/android/output/index.android.bundle.zip', {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
