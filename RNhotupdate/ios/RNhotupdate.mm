@@ -41,9 +41,8 @@ RCT_EXPORT_METHOD(multiply:(double)a
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *retrievedString = [defaults stringForKey:@"PATH"];
     if (retrievedString && [self isFilePathExist:retrievedString]) {
-//        NSURL *fileURL = [NSURL fileURLWithPath:retrievedString];
-//        return fileURL;
-        return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+       NSURL *fileURL = [NSURL fileURLWithPath:retrievedString];
+       return fileURL;
     } else {
         return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     }

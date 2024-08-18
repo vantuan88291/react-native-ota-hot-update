@@ -70,7 +70,7 @@ function App(): React.JSX.Element {
       .config({
         fileCache: true,
       })
-      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/android/output/index.android.bundle', {
+      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle', {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
