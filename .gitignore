@@ -52,8 +52,6 @@ yarn-error.log
 **/fastlane/screenshots
 **/fastlane/test_output
 
-# Bundle artifact
-*.jsbundle
 
 # Ruby / CocoaPods
 **/Pods/
