@@ -32,7 +32,22 @@ RCT_EXPORT_METHOD(multiply:(double)a
     }
     return success;
 }
++ (BOOL)isFilePathExist:(NSString *)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    return [fileManager fileExistsAtPath:path];
+}
 
++ (NSURL *)getBundle {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *retrievedString = [defaults stringForKey:@"PATH"];
+    if (retrievedString && [self isFilePathExist:retrievedString]) {
+//        NSURL *fileURL = [NSURL fileURLWithPath:retrievedString];
+//        return fileURL;
+        return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    } else {
+        return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    }
+}
 
 // Expose setupBundlePath method to JavaScript
 RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
@@ -58,10 +73,6 @@ RCT_EXPORT_METHOD(deleteBundle:(RCTPromiseResolveBlock)resolve withRejecter:(RCT
     } else {
         resolve(@(NO));
     }
-}
-
-+ (NSString *)getBundle {
-    return @"Hello from StringGenerator!";
 }
 
 @end

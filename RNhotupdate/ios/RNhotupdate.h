@@ -8,5 +8,5 @@
 
 @interface RNhotupdate : NSObject <RCTBridgeModule>
 #endif
-+ (NSString *)getBundle;
++ (NSURL *)getBundle;
 @end
