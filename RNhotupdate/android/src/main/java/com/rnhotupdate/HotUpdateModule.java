@@ -1,18 +1,15 @@
 package com.rnhotupdate;
 
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-
+import android.os.Process;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,33 +17,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import androidx.annotation.NonNull;
-interface ReactInstanceHolder {
-    ReactInstanceManager getReactInstanceManager();
-}
 public class HotUpdateModule extends ReactContextBaseJavaModule {
     public HotUpdateModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
-    private LifecycleEventListener mLifecycleEventListener = null;
 
-    private ReactInstanceManager resolveInstanceManager() throws NoSuchFieldException {
-        ReactInstanceManager instanceManager = getReactInstanceManager();
-        if (instanceManager != null) {
-            return instanceManager;
-        }
-
-        final Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null) {
-            return null;
-        }
-
-        ReactApplication reactApplication = (ReactApplication) currentActivity.getApplication();
-        instanceManager = reactApplication.getReactNativeHost().getReactInstanceManager();
-
-        return instanceManager;
-    }
     private boolean deleteOldBundleIfneeded() {
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         String path = sharedPrefs.getString(Common.INSTANCE.getPATH());
@@ -125,54 +101,20 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         boolean isDeleted = deleteOldBundleIfneeded();
         promise.resolve(isDeleted);
     }
-    private void loadBundleLegacy() {
-        final Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null) {
-            return;
-        }
-
-        currentActivity.runOnUiThread(() -> currentActivity.recreate());
-    }
-    private static ReactInstanceHolder mReactInstanceHolder;
-
-    static ReactInstanceManager getReactInstanceManager() {
-        if (mReactInstanceHolder == null) {
-            return null;
-        }
-        return mReactInstanceHolder.getReactInstanceManager();
-    }
-
-
-    private void clearLifecycleEventListener() {
-        if (mLifecycleEventListener != null) {
-            getReactApplicationContext().removeLifecycleEventListener(mLifecycleEventListener);
-            mLifecycleEventListener = null;
-        }
-    }
-
-    private void loadBundle() {
-        clearLifecycleEventListener();
-        try {
-            final ReactInstanceManager instanceManager = resolveInstanceManager();
-            if (instanceManager == null) {
-                return;
-            }
-
-            new Handler(Looper.getMainLooper()).post(() -> {
-                try {
-                    instanceManager.recreateReactContextInBackground();
-                } catch (Throwable t) {
-                    loadBundleLegacy();
-                }
-            });
-
-        } catch (Throwable t) {
-            loadBundleLegacy();
-        }
-    }
     @ReactMethod
     public void restart() {
-        loadBundle();
+        Context context = getCurrentActivity();
+        Intent intent = context.getPackageManager()
+                .getLaunchIntentForPackage(context.getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            context.startActivity(intent);
+            Process.killProcess(Process.myPid());
+            System.exit(0);
+        }
     }
     @ReactMethod
     public void getCurrentVersion(Promise promise) {

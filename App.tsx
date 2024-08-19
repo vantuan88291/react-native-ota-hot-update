@@ -68,7 +68,7 @@ function App(): React.JSX.Element {
   const getData = async () => {
     const version = await hotUpdate.getCurrentVersion();
     console.log('v----', version);
-    hotUpdate.downloadBundleUri('https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle.zip', 1, {
+    hotUpdate.downloadBundleUri('https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/android/output/index.android.bundle.zip', 1, {
       updateSuccess: () => {
         setLoaded(true);
       },
@@ -87,6 +87,7 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+      <Header />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
