@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Hot update for react native",
   "main": "src/index",
-  "author": " <> ()",
-  "license": "UNLICENSED",
-  "homepage": "#readme",
+  "repository": "https://github.com/vantuan88291/react-native-ota-hot-update",
+  "author": "vantuan88291 <vantuan88291@gmail.com> (https://github.com/vantuan88291)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vantuan88291/react-native-ota-hot-update/issues"
+  },
+  "homepage": "https://github.com/vantuan88291/react-native-ota-hot-update",
   "peerDependencies": {
     "react-native-blob-util": ">=0.19.11",
     "react-native": ">=0.63.4"
