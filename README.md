@@ -2,6 +2,11 @@
 
 A React Native module that allows you to control hot update same as Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement in next year, that why i create that library for you can control bundle js from your backend side.
 
+
+iOS GIF             | Android GIF
+:-------------------------:|:-------------------------:
+<img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
+
 [![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
 [![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
 
