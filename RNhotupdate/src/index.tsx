@@ -36,7 +36,7 @@ async function getVersionAsNumber() {
   const rawVersion = await getCurrentVersion();
   return +rawVersion;
 }
-function setCurrentVersion(version: number): Promise<string> {
+function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
 }
 async function resetApp() {

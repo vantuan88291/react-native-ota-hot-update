@@ -1,5 +1,5 @@
 import React from 'react';
-import hotUpdate from 'RNhotupdate';
+import hotUpdate from 'react-native-ota-hot-update';
 import {Alert, Platform} from 'react-native';
 
 const apiVersion = 'https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/update.json?alt=media&token=8bea750d-d57e-4d70-9334-f846f25f344b';

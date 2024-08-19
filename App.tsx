@@ -19,7 +19,7 @@ import {
   Colors,
   Header,
 } from 'react-native/Libraries/NewAppScreen';
-import hotUpdate from 'RNhotupdate';
+import hotUpdate from 'react-native-ota-hot-update';
 import {useCheckVersion} from './useCheckVersion.ts';
 
 
