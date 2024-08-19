@@ -32,6 +32,10 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion();
 }
+async function getVersionAsNumber() {
+  const rawVersion = await getCurrentVersion();
+  return +rawVersion;
+}
 function setCurrentVersion(version: number): Promise<string> {
   return RNhotupdate.setCurrentVersion(version + '');
 }
@@ -63,8 +67,8 @@ async function downloadBundleUri(uri: string, version: number, option?: UpdateOp
     installFail(option, 'Please give a valid version!');
     return;
   }
-  const currentVersion = await getCurrentVersion();
-  if (version <= +currentVersion) {
+  const currentVersion = await getVersionAsNumber();
+  if (version <= currentVersion) {
     installFail(option, 'Please give a bigger version than the current version, the current version now has setted by: ' + currentVersion);
     return;
   }
@@ -97,6 +101,6 @@ export default {
   removeUpdate: removeBundle,
   downloadBundleUri,
   resetApp,
-  getCurrentVersion,
+  getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
 };
