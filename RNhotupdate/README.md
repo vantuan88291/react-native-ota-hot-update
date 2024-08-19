@@ -43,10 +43,12 @@ Then upload your bundlejs files to firebase storage, totally will look like that
 
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr1.png)
 
-After you have done everything related to version manager, you just handle the way to update new version and call this function:
+After you have done everything related to version manager, you just handle the way to update new version like fetch update.json as api to get download url and call this function:
 
 ```bash
-import hotUpdate from 'react-native-ota-hot-update';
+    import hotUpdate from 'react-native-ota-hot-update';
+    
+    
     hotUpdate.downloadBundleUri(url, version, {
       updateSuccess: () => {
         console.log('update success!');

@@ -1,4 +1,4 @@
-# react-native-ota-hot-update 
+# react-native-ota-hot-update
 
 A React Native module that allows you to control hot update same as Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement in next year, that why i create that library for you can control bundle js from your backend side.
 
@@ -43,10 +43,12 @@ Then upload your bundlejs files to firebase storage, totally will look like that
 
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr1.png)
 
-After you have done everything related to version manager, you just handle the way to update new version and call this function:
+After you have done everything related to version manager, you just handle the way to update new version like fetch update.json as api to get download url and call this function:
 
 ```bash
-import hotUpdate from 'react-native-ota-hot-update';
+    import hotUpdate from 'react-native-ota-hot-update';
+    
+    
     hotUpdate.downloadBundleUri(url, version, {
       updateSuccess: () => {
         console.log('update success!');

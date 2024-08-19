@@ -1590,7 +1590,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - rn-hotupdate (from `../node_modules/RNhotupdate`)
+  - rn-hotupdate (from `../node_modules/react-native-ota-hot-update`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1725,7 +1725,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   rn-hotupdate:
-    :path: "../node_modules/RNhotupdate"
+    :path: "../node_modules/react-native-ota-hot-update"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1792,11 +1792,11 @@ SPEC CHECKSUMS:
   React-utils: 0ae17a2fe87b43a939826410d2fcbb28d44f1bfc
   ReactCodegen: e9156d86a166f3e10dc8fb6160764048df3528bc
   ReactCommon: 3ae48fa4cfa7052a270c2150ececfc94e541fb8a
-  rn-hotupdate: c9774a6412db6489b95885d0010291c2513f7492
+  rn-hotupdate: ae515c4a6cb66ff7837051158d0c64bf1531b16f
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: 06fc4b2c3664ae0e278964b8fbcb0ee9d21f0a5a
 
 PODFILE CHECKSUM: c40b5828e846a57d6ae926164a33cf7c889b488a
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.13.0
