@@ -121,6 +121,27 @@ RCT_EXPORT_METHOD(deleteBundle:(RCTPromiseResolveBlock)resolve withRejecter:(RCT
     resolve(@(isDeleted));
 }
 
+RCT_EXPORT_METHOD(getCurrentVersion:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
+     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+     NSString *version = [defaults stringForKey:@"VERSION"];
+        if (version) {
+            resolve(version);
+        } else {
+            resolve(@("0"));
+        }
+}
+
+RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
+    if (version) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:version forKey:@"VERSION"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
 - (void)loadBundle
 {
     RCTTriggerReloadCommandListeners(@"rn-hotupdate: Restart");

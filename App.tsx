@@ -63,13 +63,19 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   const [loaded, setLoaded] = React.useState(false);
+  const [err, setErr] = React.useState('');
 
   const getData = async () => {
-    hotUpdate.downloadBundleUri('https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle.zip', {
+    const version = await hotUpdate.getCurrentVersion();
+    console.log('v----', version);
+    hotUpdate.downloadBundleUri('https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle.zip', 1, {
       updateSuccess: () => {
         setLoaded(true);
       },
-      restartAfterInstall: true
+      updateFail(message?: string) {
+        setErr(message + '');
+      },
+      restartAfterInstall: true,
     });
   };
   const deleteUpdate = () => {
@@ -94,6 +100,7 @@ function App(): React.JSX.Element {
           <Section title={loaded ? 'Updated' : 'not update'}>
             <ReloadInstructions />
           </Section>
+          <Section title={err} />
           <LearnMoreLinks />
         </View>
       </ScrollView>

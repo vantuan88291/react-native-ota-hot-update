@@ -174,6 +174,23 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     public void restart() {
         loadBundle();
     }
+    @ReactMethod
+    public void getCurrentVersion(Promise promise) {
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        String version = sharedPrefs.getString(Common.INSTANCE.getVERSION());
+        if (!version.equals("")) {
+            promise.resolve(version);
+        } else {
+            promise.resolve("0");
+        }
+
+    }
+    @ReactMethod
+    public void setCurrentVersion(String version, Promise promise) {
+         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+         sharedPrefs.putString(Common.INSTANCE.getVERSION(), version);
+         promise.resolve(true);
+    }
 
     @NonNull
     @Override

@@ -9,7 +9,7 @@ const LINKING_ERROR =
 export interface UpdateOption {
   headers?: object
   updateSuccess?(): void
-  updateFail?(): void
+  updateFail?(message?: string): void
   restartAfterInstall?: boolean
 }
 const RNhotupdate = NativeModules.RNhotupdate
@@ -29,31 +29,52 @@ function setupBundlePath(path: string): Promise<boolean> {
 function deleteBundlePath(): Promise<boolean> {
   return RNhotupdate.deleteBundle();
 }
-
+function getCurrentVersion(): Promise<string> {
+  return RNhotupdate.getCurrentVersion();
+}
+function setCurrentVersion(version: number): Promise<string> {
+  return RNhotupdate.setCurrentVersion(version + '');
+}
+async function resetApp() {
+  RNhotupdate.restart();
+}
 function removeBundle(restartAfterRemoved?: boolean) {
   deleteBundlePath().then(data => {
     if (data && restartAfterRemoved) {
       setTimeout(() => {
-        RNhotupdate.restart();
+        resetApp();
       }, 300);
     }
   });
 }
-
 const installFail = (option?: UpdateOption, e?: any) => {
-  option?.updateFail?.();
+  option?.updateFail?.(JSON.stringify(e));
   console.error('Download bundle fail', JSON.stringify(e));
 };
-async function downloadBundleUri(uri: string, option?: UpdateOption) {
+async function downloadBundleUri(uri: string, version: number, option?: UpdateOption) {
+  if (!uri) {
+    installFail(option, 'Please give a valid URL!');
+    return;
+  }
+  if (!version) {
+    installFail(option, 'Please give a valid version!');
+    return;
+  }
+  const currentVersion = await getCurrentVersion();
+  if (version <= +currentVersion) {
+    installFail(option, 'Please give a bigger version than the current version, the current version now has setted by: ' + currentVersion);
+    return;
+  }
   try {
     const path = await downloadBundleFile(uri, option?.headers);
     if (path) {
       setupBundlePath(path).then(success => {
         if (success) {
+          setCurrentVersion(version);
           option?.updateSuccess?.();
           if (option?.restartAfterInstall) {
             setTimeout(() => {
-              RNhotupdate.restart();
+              resetApp();
             }, 300);
           }
         } else {
@@ -72,4 +93,7 @@ export default {
   setupBundlePath,
   removeUpdate: removeBundle,
   downloadBundleUri,
+  resetApp,
+  getCurrentVersion,
+  setCurrentVersion,
 };

@@ -25,6 +25,7 @@ class SharedPrefs internal constructor(context: Context) {
 }
 object Common {
     val PATH = "PATH"
+    val VERSION = "VERSION"
     val SHARED_PREFERENCE_NAME = "HOT-UPDATE-REACT_NATIVE"
     val DEFAULT_BUNDLE = "assets://index.android.bundle"
 }
