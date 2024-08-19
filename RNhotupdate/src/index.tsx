@@ -44,6 +44,9 @@ function removeBundle(restartAfterRemoved?: boolean) {
       setTimeout(() => {
         resetApp();
       }, 300);
+      if (data) {
+        setCurrentVersion(0);
+      }
     }
   });
 }

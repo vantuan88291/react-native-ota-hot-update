@@ -87,7 +87,6 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <Header />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
@@ -101,7 +100,6 @@ function App(): React.JSX.Element {
             <ReloadInstructions />
           </Section>
           <Section title={err} />
-          <LearnMoreLinks />
         </View>
       </ScrollView>
     </SafeAreaView>
