@@ -6,6 +6,10 @@
   "author": " <> ()",
   "license": "UNLICENSED",
   "homepage": "#readme",
+  "peerDependencies": {
+    "react-native-blob-util": ">=0.19.11",
+    "react-native": ">=0.63.4"
+  },
   "create-react-native-library": {
     "type": "module-legacy",
     "languages": "kotlin-objc",

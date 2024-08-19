@@ -5,18 +5,6 @@
 @implementation RNhotupdate
 RCT_EXPORT_MODULE()
 
-// Example method
-// See // https://reactnative.dev/docs/native-modules-ios
-RCT_EXPORT_METHOD(multiply:(double)a
-                  b:(double)b
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-{
-    NSNumber *result = @(a * b);
-
-    resolve(result);
-}
-
 // Check if a file path is valid
 - (BOOL)isFilePathValid:(NSString *)path {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -131,6 +119,21 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path withResolver:(RCTPromiseResol
 RCT_EXPORT_METHOD(deleteBundle:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
     BOOL isDeleted = [self removeBundleIfNeeded];
     resolve(@(isDeleted));
+}
+
+- (void)loadBundle
+{
+    RCTTriggerReloadCommandListeners(@"rn-hotupdate: Restart");
+}
+RCT_EXPORT_METHOD(restart) {
+    if ([NSThread isMainThread]) {
+        [self loadBundle];
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self loadBundle];
+        });
+    }
+    return;
 }
 
 @end

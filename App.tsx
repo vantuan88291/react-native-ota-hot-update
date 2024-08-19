@@ -24,8 +24,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import ReactNativeBlobUtil from "react-native-blob-util";
-import {deleteBundlePath, multiply, setupBundlePath} from "RNhotupdate";
+import hotUpdate from 'RNhotupdate';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -63,28 +62,19 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const [loaded, setLoaded] = React.useState(false)
+  const [loaded, setLoaded] = React.useState(false);
 
   const getData = async () => {
-    ReactNativeBlobUtil
-      .config({
-        fileCache: false,
-      })
-      .fetch('GET', 'https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/android/output/index.android.bundle.zip', {
-      })
-      .then((res) => {
-        console.log('The file saved to ', res.path())
-        setupBundlePath(res.path()).then(data => {
-          console.log('data0------', data)
-          setLoaded(data)
-        })
-      })
-  }
+    hotUpdate.downloadBundleUri('https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/ios/output/main.jsbundle.zip', {
+      updateSuccess: () => {
+        setLoaded(true);
+      },
+      restartAfterInstall: true
+    });
+  };
   const deleteUpdate = () => {
-    deleteBundlePath().then(data => {
-      console.log('deleted----', data)
-    })
-  }
+    hotUpdate.removeUpdate();
+  };
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -101,7 +91,7 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title={loaded ? "Updated" : "not update"}>
+          <Section title={loaded ? 'Updated' : 'not update'}>
             <ReloadInstructions />
           </Section>
           <LearnMoreLinks />

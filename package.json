@@ -8,8 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/app/src/main/res",
-    "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle"
+    "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/app/src/main/res  && zip android/output/index.android.bundle.zip android/output/index.android.bundle && rm -rf android/output/index.android.bundle",
+    "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle && zip ios/output/main.jsbundle.zip ios/output/main.jsbundle && rm -rf ios/output/main.jsbundle"
   },
   "dependencies": {
     "react": "18.3.1",
