@@ -8,6 +8,7 @@ const LINKING_ERROR =
 
 export interface UpdateOption {
   headers?: object
+  progress?(received: string, total: string): void
   updateSuccess?(): void
   updateFail?(message?: string): void
   restartAfterInstall?: boolean
@@ -73,7 +74,7 @@ async function downloadBundleUri(uri: string, version: number, option?: UpdateOp
     return;
   }
   try {
-    const path = await downloadBundleFile(uri, option?.headers);
+    const path = await downloadBundleFile(uri, option?.headers, option?.progress);
     if (path) {
       setupBundlePath(path).then(success => {
         if (success) {
