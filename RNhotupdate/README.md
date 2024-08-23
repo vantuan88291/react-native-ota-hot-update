@@ -88,12 +88,13 @@ The important thing: this library will control `version` by it self, need always
 
 ## UpdateOption
 
-| Option                  | Required | Type     | Description                                                                                                                                                                     |
-|-------------------------|----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| headers                 | No       | Object   | The header to down load your uri bundle file if need token/authentication...                                                                                                    |
-| updateSuccess           | No       | Callback | Will trigger when install update success                                                                                                                                        |
-| updateFail(message: string)               | No       | Callback       | Will trigger when install update failed                                                                                                                                         |
-| restartAfterInstall            | No       | boolean       | default is `false`, if `true` will restart the app after install success to apply the new change                                                                                |
+| Option                  | Required | Type     | Description                                                                                      |
+|-------------------------|----------|----------|--------------------------------------------------------------------------------------------------|
+| headers                 | No       | Object   | The header to down load your uri bundle file if need token/authentication...                     |
+| updateSuccess           | No       | Callback | Will trigger when install update success                                                         |
+| updateFail(message: string)               | No       | Callback | Will trigger when install update failed                                                          |
+| restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
+| progress            | No       | void     | A callback to show progress when downloading bundle                                              |
 
 
 
