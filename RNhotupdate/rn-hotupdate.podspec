@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => min_ios_version_supported }
+  s.platforms    = { :ios => 11.0 }
   s.source       = { :git => "https://github.com/vantuan88291/react-native-ota-hot-update.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
