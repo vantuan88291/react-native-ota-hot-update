@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => min_ios_version_supported }
-  s.source       = { :git => ".git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/vantuan88291/react-native-ota-hot-update.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
   s.dependency 'SSZipArchive', '~> 2.4.3'
