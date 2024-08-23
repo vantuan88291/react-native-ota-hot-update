@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Hot update for react native",
   "main": "src/index",
   "repository": "https://github.com/vantuan88291/react-native-ota-hot-update",

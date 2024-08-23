@@ -1,6 +1,6 @@
 # react-native-ota-hot-update
 
-A React Native module that allows you to control hot update same as Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement in next year, that why i create that library for you can control bundle js from your backend side.
+A React Native module that allows you to control hot update same as Code Push, less config than Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement in next year, that why i create that library for you can control bundle js from your backend side.
 
 
 iOS GIF             | Android GIF
@@ -20,6 +20,32 @@ yarn add react-native-ota-hot-update && react-native-blob-util
 Auto linking already, need pod install for ios:
 ```bash
 cd ios && pod install
+```
+
+### IOS
+Open `AppDelegate.m` and add this:
+
+```bash
+#import "RNhotupdate.h"
+...
+{
+#if DEBUG
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+#else
+  return [RNhotupdate getBundle]; ## add this line
+#endif
+}
+```
+
+### Android
+Open `MainApplication.java/kt` and add these codes bellow:
+```bash
+import com.rnhotupdate.OtaHotUpdate
+...
+override fun getJSBundleFile(): String? {
+    return OtaHotUpdate.getBundleJS()
+}
+
 ```
 
 ## That's it, can check the example code
