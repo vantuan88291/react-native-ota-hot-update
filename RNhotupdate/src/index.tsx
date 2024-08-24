@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import {downloadBundleFile} from './Utils.ts';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 const LINKING_ERROR =
   'The package \'rn-hotupdate\' doesn\'t seem to be linked. Make sure: \n\n' +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -23,7 +23,21 @@ const RNhotupdate = NativeModules.RNhotupdate
         },
       }
     );
-
+const downloadBundleFile = async (uri: string, headers?: object, callback?: (received: string, total: string) => void) => {
+  const res = await  ReactNativeBlobUtil
+      .config({
+        fileCache: Platform.OS === 'android',
+      })
+      .fetch('GET', uri, {
+        ...headers,
+      })
+      .progress((received, total) => {
+        if (callback) {
+          callback(received, total)
+        }
+      });
+  return res.path();
+};
 function setupBundlePath(path: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path);
 }
