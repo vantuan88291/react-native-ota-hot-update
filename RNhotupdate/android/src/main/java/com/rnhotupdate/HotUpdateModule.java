@@ -75,13 +75,13 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setupBundlePath(String path, Promise promise) {
         if (path != null) {
+            deleteOldBundleIfneeded();
             File file = new File(path);
             if (file.exists() && file.isFile()) {
                 String fileUnzip = unzip(file);
                 Log.d("setupBundlePath: ", fileUnzip);
                 if (fileUnzip != null) {
                     file.delete();
-                    deleteOldBundleIfneeded();
                     SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
                     sharedPrefs.putString(Common.INSTANCE.getPATH(), fileUnzip);
                     promise.resolve(true);

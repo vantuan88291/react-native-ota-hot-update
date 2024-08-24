@@ -98,11 +98,11 @@ RCT_EXPORT_MODULE()
 // Expose setupBundlePath method to JavaScript
 RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
     if ([self isFilePathValid:path]) {
+        [self removeBundleIfNeeded];
         //Unzip file
         NSString *extractedFilePath = [self unzipFileAtPath:path];
         NSLog(@"file extraction----- %@", extractedFilePath);
         if (extractedFilePath) {
-            [self removeBundleIfNeeded];
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setObject:extractedFilePath forKey:@"PATH"];
             [defaults synchronize];
