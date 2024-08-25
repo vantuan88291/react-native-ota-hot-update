@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -23,12 +22,28 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         super(reactContext);
     }
 
+    private boolean deleteDirectory(File directory) {
+        if (directory.isDirectory()) {
+            // List all files and directories in the current directory
+            File[] files = directory.listFiles();
+            if (files != null) {
+                // Recursively delete all files and directories
+                for (File file : files) {
+                    if (!deleteDirectory(file)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        // Finally, delete the empty directory or file
+        return directory.delete();
+    }
     private boolean deleteOldBundleIfneeded() {
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         String path = sharedPrefs.getString(Common.INSTANCE.getPATH());
         File file = new File(path);
         if (file.exists() && file.isFile()) {
-            boolean isDeleted = file.delete();
+            boolean isDeleted = deleteDirectory(file.getParentFile());
             sharedPrefs.clear();
             return isDeleted;
         } else {
@@ -38,7 +53,7 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     private String unzip(File zipFile) {
         File destDir = zipFile.getParentFile(); // Directory of the zip file
 
-        String filePathExtracted = null;
+        String bundleFilePath = null;
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
@@ -63,13 +78,15 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
                         }
                     }
                 }
-                filePathExtracted = newFile.getAbsolutePath();
+                if (newFile.getAbsolutePath().contains(".bundle")) {
+                    bundleFilePath = newFile.getAbsolutePath();
+                }
                 zis.closeEntry();
             }
         } catch (Exception e) {
             return null;
         }
-        return filePathExtracted;
+        return bundleFilePath;
     }
 
     @ReactMethod
@@ -99,6 +116,8 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void deleteBundle(Promise promise) {
         boolean isDeleted = deleteOldBundleIfneeded();
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        sharedPrefs.putString(Common.INSTANCE.getVERSION(), "0");
         promise.resolve(isDeleted);
     }
     @ReactMethod

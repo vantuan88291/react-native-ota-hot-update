@@ -14,8 +14,9 @@ RCT_EXPORT_MODULE()
 - (BOOL)removeBundleIfNeeded {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *retrievedString = [defaults stringForKey:@"PATH"];
+    NSError *error = nil;
     if (retrievedString && [self isFilePathValid:retrievedString]) {
-        BOOL isDeleted = [self deleteFileAtPath:retrievedString];
+        BOOL isDeleted = [self deleteAllContentsOfParentDirectoryOfFile:retrievedString error:&error];
         [defaults removeObjectForKey:@"PATH"];
         [defaults synchronize];
         return isDeleted;
@@ -34,6 +35,53 @@ RCT_EXPORT_MODULE()
     }
     return success;
 }
+
+- (BOOL)deleteAllContentsOfParentDirectoryOfFile:(NSString *)filePath error:(NSError **)error {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    // Get the parent directory of the file
+    NSString *parentDirectory = [filePath stringByDeletingLastPathComponent];
+
+    // Ensure the parent directory exists
+    BOOL isDirectory;
+    if (![fileManager fileExistsAtPath:parentDirectory isDirectory:&isDirectory] || !isDirectory) {
+        if (error) {
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:@{NSLocalizedDescriptionKey: @"Parent directory does not exist or is not a directory."}];
+        }
+        return NO;
+    }
+
+    // Get the contents of the parent directory
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:parentDirectory error:error];
+    if (error && *error) {
+        return NO;
+    }
+
+    BOOL success = YES;
+    for (NSString *fileName in contents) {
+        NSString *filePathInDirectory = [parentDirectory stringByAppendingPathComponent:fileName];
+
+        BOOL isDirectory;
+        if ([fileManager fileExistsAtPath:filePathInDirectory isDirectory:&isDirectory]) {
+            NSError *removeError = nil;
+            if (isDirectory) {
+                // Recursively delete directory contents
+                if (![fileManager removeItemAtPath:filePathInDirectory error:&removeError]) {
+                    NSLog(@"Failed to delete directory at path: %@", filePathInDirectory);
+                    success = NO;
+                }
+            } else {
+                // Delete file
+                if (![fileManager removeItemAtPath:filePathInDirectory error:&removeError]) {
+                    NSLog(@"Failed to delete file at path: %@", filePathInDirectory);
+                    success = NO;
+                }
+            }
+        }
+    }
+
+    return success;
+}
 + (BOOL)isFilePathExist:(NSString *)path {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     return [fileManager fileExistsAtPath:path];
@@ -49,7 +97,36 @@ RCT_EXPORT_MODULE()
         return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     }
 }
+- (NSString *)searchForJsBundleInDirectory:(NSString *)directoryPath {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
 
+    // Get contents of the directory
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
+    if (error) {
+        NSLog(@"Error reading directory contents: %@", error.localizedDescription);
+        return nil;
+    }
+
+    for (NSString *file in contents) {
+        NSString *filePath = [directoryPath stringByAppendingPathComponent:file];
+        BOOL isDirectory;
+        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory]) {
+            if (isDirectory) {
+                // Recursively search in subdirectories
+                NSString *foundPath = [self searchForJsBundleInDirectory:filePath];
+                if (foundPath) {
+                    return foundPath;
+                }
+            } else if ([filePath hasSuffix:@".jsbundle"]) {
+                // Return the path if it's a .jsbundle file
+                return filePath;
+            }
+        }
+    }
+
+    return nil;
+}
 - (NSString *)unzipFileAtPath:(NSString *)zipFilePath {
     // Define the directory where the files will be extracted
     NSString *extractedFolderPath = [[zipFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"unzip"];
@@ -73,11 +150,8 @@ RCT_EXPORT_MODULE()
         NSLog(@"Failed to unzip file");
         return nil;
     }
-
-    // Find the extracted file (assuming only one file in the zip)
-    NSArray *contents = [fileManager contentsOfDirectoryAtPath:extractedFolderPath error:nil];
-    if (contents.count == 1) {
-        NSString *filePath = [extractedFolderPath stringByAppendingPathComponent:contents.firstObject];
+    // Find .jsbundle files in the extracted directory
+        NSString *jsbundleFilePath = [self searchForJsBundleInDirectory:extractedFolderPath];
 
         // Delete the zip file after extraction
         NSError *removeError = nil;
@@ -85,14 +159,9 @@ RCT_EXPORT_MODULE()
         if (removeError) {
             NSLog(@"Failed to delete zip file: %@", removeError.localizedDescription);
         }
-
-        // Return the exact file path
-        return filePath;
-    } else {
-        [self deleteFileAtPath:zipFilePath];
-        NSLog(@"Expected one file in the zip but found %lu", (unsigned long)contents.count);
-        return nil;
-    }
+        NSLog(@"File path----: %@", jsbundleFilePath);
+        // Return the .jsbundle file path or nil if not found
+        return jsbundleFilePath;
 }
 
 // Expose setupBundlePath method to JavaScript
