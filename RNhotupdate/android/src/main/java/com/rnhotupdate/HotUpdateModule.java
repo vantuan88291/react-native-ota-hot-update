@@ -81,8 +81,8 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
                 if (newFile.getAbsolutePath().contains(".bundle")) {
                     bundleFilePath = newFile.getAbsolutePath();
                 }
-                zis.closeEntry();
             }
+            zis.closeEntry();
         } catch (Exception e) {
             return null;
         }
