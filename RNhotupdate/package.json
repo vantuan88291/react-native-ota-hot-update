@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Hot update for react native",
   "main": "src/index",
   "repository": "https://github.com/vantuan88291/react-native-ota-hot-update",
@@ -11,7 +11,6 @@
   },
   "homepage": "https://github.com/vantuan88291/react-native-ota-hot-update",
   "peerDependencies": {
-    "react-native-blob-util": ">=0.19.11",
     "react-native": ">=0.63.4"
   },
   "create-react-native-library": {
