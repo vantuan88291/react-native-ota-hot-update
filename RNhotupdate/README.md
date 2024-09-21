@@ -78,9 +78,10 @@ After you have done everything related to version manager, you just handle the w
 
 ```bash
     import hotUpdate from 'react-native-ota-hot-update';
+    import ReactNativeBlobUtil from 'react-native-blob-util';
     
     
-    hotUpdate.downloadBundleUri(url, version, {
+    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
       updateSuccess: () => {
         console.log('update success!');
       },
@@ -102,14 +103,14 @@ The important thing: this library will control `version` by it self, need always
 
 ## Functions
 
-| key          | Return | Action                                                                                                           | Parameters                                                         |
-| ------------ |--------|------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| downloadBundleUri    | void   | Download bundle and install it                                                                                   | (uri: string, version: number, option?: **UpdateOption**)          |
-| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of bundlejs file that you downloaded before |
-| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing      |
-| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                              |
-| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                              |
-| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                              |
+| key          | Return | Action                                                                                                           | Parameters                                                                                  |
+| ------------ |--------|------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| downloadBundleUri    | void   | Download bundle and install it                                                                                   | (downloadManager: **DownloadManager**, uri: string, version: number, option?: **UpdateOption**) |
+| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of bundlejs file that you downloaded before                          |
+| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing                               |
+| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                       |
+| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                       |
+| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                             |
 
 
 ## UpdateOption
@@ -122,7 +123,9 @@ The important thing: this library will control `version` by it self, need always
 | restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
 | progress            | No       | void     | A callback to show progress when downloading bundle                                              |
 
+## DownloadManager
 
+The same method as `react-native-blob-util` or `rn-fetch-blob`
 
 ## License
 

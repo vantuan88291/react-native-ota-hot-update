@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {DownloadManager} from './download';
 const LINKING_ERROR =
   'The package \'rn-hotupdate\' doesn\'t seem to be linked. Make sure: \n\n' +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -23,8 +23,8 @@ const RNhotupdate = NativeModules.RNhotupdate
         },
       }
     );
-const downloadBundleFile = async (uri: string, headers?: object, callback?: (received: string, total: string) => void) => {
-  const res = await  ReactNativeBlobUtil
+const downloadBundleFile = async (downloadManager: DownloadManager, uri: string, headers?: object, callback?: (received: string, total: string) => void) => {
+  const res = await downloadManager
       .config({
         fileCache: Platform.OS === 'android',
       })
@@ -73,7 +73,7 @@ const installFail = (option?: UpdateOption, e?: any) => {
   option?.updateFail?.(JSON.stringify(e));
   console.error('Download bundle fail', JSON.stringify(e));
 };
-async function downloadBundleUri(uri: string, version: number, option?: UpdateOption) {
+async function downloadBundleUri(downloadManager: DownloadManager, uri: string, version: number, option?: UpdateOption) {
   if (!uri) {
     installFail(option, 'Please give a valid URL!');
     return;
@@ -88,7 +88,7 @@ async function downloadBundleUri(uri: string, version: number, option?: UpdateOp
     return;
   }
   try {
-    const path = await downloadBundleFile(uri, option?.headers, option?.progress);
+    const path = await downloadBundleFile(downloadManager, uri, option?.headers, option?.progress);
     if (path) {
       setupBundlePath(path).then(success => {
         if (success) {

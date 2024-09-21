@@ -1,12 +1,13 @@
 import React from 'react';
 import hotUpdate from 'react-native-ota-hot-update';
 import {Alert, Platform} from 'react-native';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const apiVersion = 'https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/update.json?alt=media';
 export const useCheckVersion = () => {
 
   const startUpdate = async (url: string, version: number) => {
-    hotUpdate.downloadBundleUri(url, version, {
+    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
       updateSuccess: () => {
         console.log('update success!');
       },
