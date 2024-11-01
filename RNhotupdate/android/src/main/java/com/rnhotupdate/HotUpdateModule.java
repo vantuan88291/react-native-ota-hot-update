@@ -50,7 +50,7 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
             return false;
         }
     }
-    private String unzip(File zipFile) {
+    private String unzip(File zipFile, String extension) {
         File destDir = zipFile.getParentFile(); // Directory of the zip file
 
         String bundleFilePath = null;
@@ -78,7 +78,7 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
                         }
                     }
                 }
-                if (newFile.getAbsolutePath().contains(".bundle")) {
+                if (newFile.getAbsolutePath().contains(extension)) {
                     bundleFilePath = newFile.getAbsolutePath();
                 }
             }
@@ -90,12 +90,12 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setupBundlePath(String path, Promise promise) {
+    public void setupBundlePath(String path, String extension, Promise promise) {
         if (path != null) {
             deleteOldBundleIfneeded();
             File file = new File(path);
             if (file.exists() && file.isFile()) {
-                String fileUnzip = unzip(file);
+                String fileUnzip = unzip(file, extension != null ? extension : ".bundle");
                 Log.d("setupBundlePath: ", fileUnzip);
                 if (fileUnzip != null) {
                     file.delete();

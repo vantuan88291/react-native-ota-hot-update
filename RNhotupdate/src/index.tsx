@@ -1,10 +1,10 @@
 import { NativeModules, Platform } from 'react-native';
 import {DownloadManager} from './download';
 const LINKING_ERROR =
-  'The package \'rn-hotupdate\' doesn\'t seem to be linked. Make sure: \n\n' +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+    'The package \'rn-hotupdate\' doesn\'t seem to be linked. Make sure: \n\n' +
+    Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+    '- You rebuilt the app after installing the package\n' +
+    '- You are not using Expo Go\n';
 
 export interface UpdateOption {
   headers?: object
@@ -12,16 +12,17 @@ export interface UpdateOption {
   updateSuccess?(): void
   updateFail?(message?: string): void
   restartAfterInstall?: boolean
+  extensionBundle?: string,
 }
 const RNhotupdate = NativeModules.RNhotupdate
-  ? NativeModules.RNhotupdate
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
+    ? NativeModules.RNhotupdate
+    : new Proxy(
+        {},
+        {
+          get() {
+            throw new Error(LINKING_ERROR);
+          },
+        }
     );
 const downloadBundleFile = async (downloadManager: DownloadManager, uri: string, headers?: object, callback?: (received: string, total: string) => void) => {
   const res = await downloadManager
@@ -38,8 +39,8 @@ const downloadBundleFile = async (downloadManager: DownloadManager, uri: string,
       });
   return res.path();
 };
-function setupBundlePath(path: string): Promise<boolean> {
-  return RNhotupdate.setupBundlePath(path);
+function setupBundlePath(path: string, extension?: string): Promise<boolean> {
+  return RNhotupdate.setupBundlePath(path, extension);
 }
 function deleteBundlePath(): Promise<boolean> {
   return RNhotupdate.deleteBundle();
@@ -90,7 +91,7 @@ async function downloadBundleUri(downloadManager: DownloadManager, uri: string, 
   try {
     const path = await downloadBundleFile(downloadManager, uri, option?.headers, option?.progress);
     if (path) {
-      setupBundlePath(path).then(success => {
+      setupBundlePath(path, option?.extensionBundle).then(success => {
         if (success) {
           setCurrentVersion(version);
           option?.updateSuccess?.();

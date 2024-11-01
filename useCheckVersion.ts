@@ -21,6 +21,7 @@ export const useCheckVersion = () => {
         ]);
       },
       restartAfterInstall: true,
+      extensionBundle: '.bundle',
     });
   };
   const onCheckVersion = () => {
@@ -41,5 +42,6 @@ export const useCheckVersion = () => {
   };
   React.useEffect(() => {
     onCheckVersion();
+    // hotUpdate.getCurrentVersion()
   }, []);
 };
