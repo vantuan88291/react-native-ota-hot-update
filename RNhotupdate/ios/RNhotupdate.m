@@ -97,7 +97,7 @@ RCT_EXPORT_MODULE()
         return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     }
 }
-- (NSString *)searchForJsBundleInDirectory:(NSString *)directoryPath {
+- (NSString *)searchForJsBundleInDirectory:(NSString *)directoryPath extension:(NSString *)extension {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error;
 
@@ -114,11 +114,11 @@ RCT_EXPORT_MODULE()
         if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory]) {
             if (isDirectory) {
                 // Recursively search in subdirectories
-                NSString *foundPath = [self searchForJsBundleInDirectory:filePath];
+                NSString *foundPath = [self searchForJsBundleInDirectory:filePath extension:extension];
                 if (foundPath) {
                     return foundPath;
                 }
-            } else if ([filePath hasSuffix:@".jsbundle"]) {
+            } else if ([filePath hasSuffix:extension]) {
                 // Return the path if it's a .jsbundle file
                 return filePath;
             }
@@ -127,7 +127,7 @@ RCT_EXPORT_MODULE()
 
     return nil;
 }
-- (NSString *)unzipFileAtPath:(NSString *)zipFilePath {
+- (NSString *)unzipFileAtPath:(NSString *)zipFilePath extension:(NSString *)extension  {
     // Define the directory where the files will be extracted
     NSString *extractedFolderPath = [[zipFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"unzip"];
 
@@ -151,7 +151,7 @@ RCT_EXPORT_MODULE()
         return nil;
     }
     // Find .jsbundle files in the extracted directory
-        NSString *jsbundleFilePath = [self searchForJsBundleInDirectory:extractedFolderPath];
+    NSString *jsbundleFilePath = [self searchForJsBundleInDirectory:extractedFolderPath extension:extension];
 
         // Delete the zip file after extraction
         NSError *removeError = nil;
@@ -165,11 +165,11 @@ RCT_EXPORT_MODULE()
 }
 
 // Expose setupBundlePath method to JavaScript
-RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extension withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject) {
     if ([self isFilePathValid:path]) {
         [self removeBundleIfNeeded];
         //Unzip file
-        NSString *extractedFilePath = [self unzipFileAtPath:path];
+        NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
         NSLog(@"file extraction----- %@", extractedFilePath);
         if (extractedFilePath) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
