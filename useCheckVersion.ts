@@ -21,7 +21,6 @@ export const useCheckVersion = () => {
         ]);
       },
       restartAfterInstall: true,
-      extensionBundle: '.bundle',
     });
   };
   const onCheckVersion = () => {

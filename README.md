@@ -53,12 +53,24 @@ override fun getJSBundleFile(): String? {
 Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
 
 #### 1.Add these script into your package.json to export bundlejs file:
+
+- For react native CLI:
 ```bash
 "scripts": {
   "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output  && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
   "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
 }
 ```
+- For expo / expo bare project:
+
+```bash
+"scripts": {
+  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
+  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
+}
+```
+For expo you might need check path of `--entry-file node_modules/expo/AppEntry.js`, get it from package.json / main
+
 These commands are export bundle file and compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server.
 
 Then create an json file: `update.json` like that:
@@ -122,7 +134,7 @@ The important thing: this library will control `version` by it self, need always
 | updateFail(message: string)               | No       | Callback | Will trigger when install update failed                                                          |
 | restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
 | progress            | No       | void     | A callback to show progress when downloading bundle                                              |
-| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle, for expo project you might set .hbc             |
+| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle for android, ios is .jsbundle                    |
 
 ## DownloadManager
 
