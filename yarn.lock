@@ -5681,10 +5681,8 @@ react-native-blob-util@^0.19.11:
     base-64 "0.1.0"
     glob "^10.3.10"
 
-react-native-ota-hot-update@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/react-native-ota-hot-update/-/react-native-ota-hot-update-1.0.7.tgz#26f9fcaec1b28bc3c15abcd67e23089251f9b073"
-  integrity sha512-rusNufDFohw5I363qOCPftHHYc3s6YhBICepHMW/4bHSa3SdYZj+SiAvhNKRa/z1LROjM5kU+GUEFGR4q8YnlA==
+"react-native-ota-hot-update@file:./RNhotupdate":
+  version "1.1.0"
 
 react-native@0.75.1:
   version "0.75.1"

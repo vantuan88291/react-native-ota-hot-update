@@ -53,12 +53,24 @@ override fun getJSBundleFile(): String? {
 Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
 
 #### 1.Add these script into your package.json to export bundlejs file:
+
+- For react native CLI:
 ```bash
 "scripts": {
   "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output  && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
   "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
 }
 ```
+- For expo / expo bare project:
+
+```bash
+"scripts": {
+  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
+  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
+}
+```
+For expo you might need check path of `--entry-file node_modules/expo/AppEntry.js`, get it from package.json / main
+
 These commands are export bundle file and compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server.
 
 Then create an json file: `update.json` like that:
@@ -100,6 +112,16 @@ After you have done everything related to version manager, you just handle the w
 
 The important thing: this library will control `version` by it self, need always pass version as parameter in `downloadBundleUri`, it will storage as a cache and use this to check whether need update version in the next time. Default of `version` is **0**
 
+## Tips for manage bundles
+
+In this demo project i have used firebase storage to control the bundles and version, but that is not useful. I would like to suggest you to use some CMS to control the bundles.
+For CMS, it has a lot open sources, now i am using strapi CMS to control the version, i also create auto release script like code push and can integrate with CI/CD. Here is some screenshot of strapi CMS:
+
+![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr2.png)
+
+![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
+
+Beside strapi you can also try craftcms, payloadcms...
 
 ## Functions
 
@@ -122,7 +144,7 @@ The important thing: this library will control `version` by it self, need always
 | updateFail(message: string)               | No       | Callback | Will trigger when install update failed                                                          |
 | restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
 | progress            | No       | void     | A callback to show progress when downloading bundle                                              |
-| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle, for expo project you might set .hbc             |
+| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle for android, ios is .jsbundle                    |
 
 ## DownloadManager
 

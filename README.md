@@ -112,6 +112,16 @@ After you have done everything related to version manager, you just handle the w
 
 The important thing: this library will control `version` by it self, need always pass version as parameter in `downloadBundleUri`, it will storage as a cache and use this to check whether need update version in the next time. Default of `version` is **0**
 
+## Tips for manage bundles
+
+In this demo project i have used firebase storage to control the bundles and version, but that is not useful. I would like to suggest you to use some CMS to control the bundles.
+For CMS, it has a lot open sources, now i am using strapi CMS to control the version, i also create auto release script like code push and can integrate with CI/CD. Here is some screenshot of strapi CMS:
+
+![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr2.png)
+
+![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
+
+Beside strapi you can also try craftcms, payloadcms...
 
 ## Functions
 
