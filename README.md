@@ -122,6 +122,7 @@ For CMS, it has a lot open sources, now i am using strapi CMS to control the ver
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
 
 Beside strapi you can also try craftcms, payloadcms...
+You can refer folder sampleComponent, it has the logic of update with CMS and also include script auto upload the bundle to CMS
 
 ## Functions
 
