@@ -28,6 +28,7 @@ const downloadBundleFile = async (downloadManager: DownloadManager, uri: string,
   const res = await downloadManager
       .config({
         fileCache: Platform.OS === 'android',
+        IOSBackgroundTask: true,
       })
       .fetch('GET', uri, {
         ...headers,
