@@ -36,6 +36,31 @@ Open `AppDelegate.m` and add this:
 #endif
 }
 ```
+#### For downloading in background mode on IOS, following this (optional):
+
+AppDelegate.h:
+```bash
+@property (nonatomic, assign) UIBackgroundTaskIdentifier taskIdentifier;
+```
+AppDelegate.mm:
+
+```bash
+- (void)applicationWillResignActive:(UIApplication *)application {
+   if (self.taskIdentifier != UIBackgroundTaskInvalid) {
+      [application endBackgroundTask:self.taskIdentifier];
+      self.taskIdentifier = UIBackgroundTaskInvalid;
+   }
+ 
+   __weak AppDelegate *weakSelf = self;
+   self.taskIdentifier = [application beginBackgroundTaskWithName:nil expirationHandler:^{
+      if (weakSelf) {
+          [application endBackgroundTask:weakSelf.taskIdentifier];
+          weakSelf.taskIdentifier = UIBackgroundTaskInvalid;
+      }
+   }];
+}
+```
+
 
 ### Android
 Open `MainApplication.java/kt` and add these codes bellow:
