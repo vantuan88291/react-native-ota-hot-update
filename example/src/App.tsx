@@ -1,17 +1,14 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-ota-hot-update';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { useCheckVersion } from './useCheckVersion';
+import hotUpdate from 'react-native-ota-hot-update';
 
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
-
-  useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  useCheckVersion();
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>Result: 123</Text>
+      <Button title={'Restart'} onPress={hotUpdate.resetApp} />
     </View>
   );
 }

@@ -7,5 +7,9 @@ import com.facebook.react.bridge.Promise
 abstract class OtaHotUpdateSpec internal constructor(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
-  abstract fun multiply(a: Double, b: Double, promise: Promise)
+  abstract fun setupBundlePath(path: String, extension: String?, promise: Promise)
+  abstract fun deleteBundle(promise: Promise)
+  abstract fun restart()
+  abstract fun getCurrentVersion(promise: Promise)
+  abstract fun setCurrentVersion(version: String, promise: Promise)
 }
