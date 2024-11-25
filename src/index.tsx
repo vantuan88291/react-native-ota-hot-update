@@ -57,10 +57,10 @@ function setupBundlePath(path: string, extension?: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path, extension);
 }
 function deleteBundlePath(): Promise<boolean> {
-  return RNhotupdate.deleteBundle();
+  return RNhotupdate.deleteBundle(1);
 }
 function getCurrentVersion(): Promise<string> {
-  return RNhotupdate.getCurrentVersion();
+  return RNhotupdate.getCurrentVersion(0);
 }
 async function getVersionAsNumber() {
   const rawVersion = await getCurrentVersion();

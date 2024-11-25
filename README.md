@@ -10,12 +10,16 @@ iOS GIF             | Android GIF
 [![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
 [![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
 
+## New architecture supported
+
+New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of old architecture please refer to branch `oldArch`
+
 ## Installation
 
 if you don't want to manage the download progress, need to install blob util together:
 
 ```bash
-yarn add react-native-ota-hot-update && react-native-blob-util
+yarn add react-native-ota-hot-update && yarn add react-native-blob-util
 ```
 Auto linking already, need pod install for ios:
 ```bash
@@ -26,13 +30,13 @@ cd ios && pod install
 Open `AppDelegate.m` and add this:
 
 ```bash
-#import "RNhotupdate.h"
+#import "OtaHotUpdate.h"
 ...
 {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [RNhotupdate getBundle]; ## add this line
+  return [OtaHotUpdate getBundle]; ## add this line
 #endif
 }
 ```

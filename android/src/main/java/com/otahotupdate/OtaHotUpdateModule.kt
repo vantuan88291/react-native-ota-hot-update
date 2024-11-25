@@ -107,7 +107,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun deleteBundle(promise: Promise) {
+  override fun deleteBundle(i: Number, promise: Promise) {
     val isDeleted = deleteOldBundleIfneeded()
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(VERSION, "0")
@@ -121,7 +121,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun getCurrentVersion(promise: Promise) {
+  override fun getCurrentVersion(a: Number, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val version = sharedPrefs.getString(VERSION)
     if (version != "") {

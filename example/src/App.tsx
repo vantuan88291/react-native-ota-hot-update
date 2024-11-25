@@ -8,7 +8,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Result: 123</Text>
-      <Button title={'Restart'} onPress={hotUpdate.resetApp} />
+      <Button title={'Restart'} onPress={() => hotUpdate.removeUpdate(true)} />
     </View>
   );
 }
