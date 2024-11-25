@@ -65,10 +65,10 @@ AppDelegate.mm:
 ### Android
 Open `MainApplication.java/kt` and add these codes bellow:
 ```bash
-import com.rnhotupdate.OtaHotUpdate
+import com.otahotupdate.OtaHotUpdate
 ...
 override fun getJSBundleFile(): String? {
-    return OtaHotUpdate.getBundleJS()
+    return OtaHotUpdate.bundleJS
 }
 
 ```

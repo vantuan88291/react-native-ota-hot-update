@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
@@ -194,11 +194,5 @@
     "type": "module-mixed",
     "languages": "kotlin-objc",
     "version": "0.44.2"
-  },
-  "rnpm": {
-    "android": {
-      "packageImportPath": "import com.otahotupdate.OtaHotUpdate;",
-      "packageInstance": "new OtaHotUpdate(getApplicationContext())"
-    }
   }
 }
