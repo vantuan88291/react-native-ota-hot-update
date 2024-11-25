@@ -14,7 +14,6 @@ import java.util.zip.ZipFile
 
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
-  val BUFFER_SIZE = 4096
 
   override fun getName(): String {
     return NAME
@@ -107,7 +106,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun deleteBundle(i: Number, promise: Promise) {
+  override fun deleteBundle(i: Double, promise: Promise) {
     val isDeleted = deleteOldBundleIfneeded()
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(VERSION, "0")
@@ -121,7 +120,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun getCurrentVersion(a: Number, promise: Promise) {
+  override fun getCurrentVersion(a: Double, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val version = sharedPrefs.getString(VERSION)
     if (version != "") {

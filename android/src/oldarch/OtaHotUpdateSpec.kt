@@ -8,8 +8,8 @@ abstract class OtaHotUpdateSpec internal constructor(context: ReactApplicationCo
   ReactContextBaseJavaModule(context) {
 
   abstract fun setupBundlePath(path: String, extension: String?, promise: Promise)
-  abstract fun deleteBundle(promise: Promise)
+  abstract fun deleteBundle(i: Number, promise: Promise)
   abstract fun restart()
-  abstract fun getCurrentVersion(promise: Promise)
+  abstract fun getCurrentVersion(a: Number, promise: Promise)
   abstract fun setCurrentVersion(version: String, promise: Promise)
 }
