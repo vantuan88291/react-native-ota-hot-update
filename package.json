@@ -194,5 +194,11 @@
     "type": "module-mixed",
     "languages": "kotlin-objc",
     "version": "0.44.2"
+  },
+  "rnpm": {
+    "android": {
+      "packageImportPath": "import com.otahotupdate.OtaHotUpdate;",
+      "packageInstance": "new OtaHotUpdate(getApplicationContext())"
+    }
   }
 }
