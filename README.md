@@ -12,7 +12,7 @@ iOS GIF             | Android GIF
 
 ## New architecture supported
 
-New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of old architecture please refer to branch `oldArch`
+New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of version 1.x.x please refer to branch `oldArch`
 
 ## Installation
 
