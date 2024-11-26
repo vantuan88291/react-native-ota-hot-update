@@ -191,4 +191,4 @@ The same method as `react-native-blob-util` or `rn-fetch-blob`
 
 ## License
 
-[MIT](LICENSE.md)
+[MIT](LICENSE)
