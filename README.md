@@ -86,6 +86,8 @@ android:requestLegacyExternalStorage="true"
 `
 
 ## That's it, can check the example code
+`Remember hot update just work at release mode, debug mode won't working`
+
 
 Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
 
