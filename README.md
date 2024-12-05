@@ -1,6 +1,6 @@
 # react-native-ota-hot-update
 
-A React Native module that allows you to control hot update same as Code Push, less config than Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement in next year, that why i create that library for you can control bundle js from your backend side.
+A React Native module that allows you to control hot update same as Code Push, less config than Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement soon, that why i create that library for you can control bundle js from your backend side.
 
 
 iOS GIF             | Android GIF
@@ -12,7 +12,7 @@ iOS GIF             | Android GIF
 
 ## New architecture supported
 
-New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of version 1.x.x please refer to branch `oldArch`
+New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of version 1.x.x please refer to branch `oldArch`, you might need install version 1.x.x if you are using react native < 0.70
 
 ## Installation
 
