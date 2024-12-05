@@ -34,6 +34,8 @@ yarn android
 
 ### For iOS
 
+Edit node path at `ios/.xcode.env.local`
+
 ```bash
 # using npm
 npm run ios
