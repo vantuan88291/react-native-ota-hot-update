@@ -91,26 +91,26 @@ android:requestLegacyExternalStorage="true"
 
 Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
 
-#### 1.Add these script into your package.json to export bundlejs file:
+#### 1.Add these script into your package.json to export bundlejs file and source map file:
 
 - For react native CLI:
 ```bash
 "scripts": {
-  "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output  && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
-  "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
+  "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
+  "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
 }
 ```
 - For expo / expo bare project:
 
 ```bash
 "scripts": {
-  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output && cd android && find output -type f | zip index.android.bundle.zip -@ && cd .. && rm -rf android/output",
-  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output && cd ios && find output -type f | zip main.jsbundle.zip -@ && cd .. && rm -rf ios/output"
+  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
+  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
 }
 ```
 For expo you might need check path of `--entry-file node_modules/expo/AppEntry.js`, get it from package.json / main
 
-These commands are export bundle file and compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server.
+These commands are export bundle file and source map file then compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server. For source map file you can ignore or use that with your purpose to debug in release mode.
 
 Then create an json file: `update.json` like that:
 ```bash
