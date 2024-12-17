@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
@@ -46,9 +46,15 @@
     "release": "release-it"
   },
   "keywords": [
-    "react-native",
-    "ios",
-    "android"
+    "hot-update",
+    "ota",
+    "code-push",
+    "update",
+    "react-native-hotupdate",
+    "react-native-codepush",
+    "ota-hot-update",
+    "custom-ota",
+    "rn-hotupdate"
   ],
   "repository": {
     "type": "git",
