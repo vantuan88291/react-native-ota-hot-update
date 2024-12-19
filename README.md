@@ -194,3 +194,7 @@ The same method as `react-native-blob-util` or `rn-fetch-blob`
 ## License
 
 [MIT](LICENSE)
+
+
+### Sponsor this project
+https://paypal.me/vantuan88291
