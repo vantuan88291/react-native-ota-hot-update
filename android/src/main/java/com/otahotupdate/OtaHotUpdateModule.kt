@@ -88,13 +88,17 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
       val file = File(path)
       if (file.exists() && file.isFile) {
         val fileUnzip = extractZipFile(file, extension ?: ".bundle")
-        Log.d("setupBundlePath----: ", fileUnzip!!)
         if (fileUnzip != null) {
+          Log.d("setupBundlePath----: ", fileUnzip)
           file.delete()
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           sharedPrefs.putString(PATH, fileUnzip)
           promise.resolve(true)
         } else {
+          file.delete()
+          deleteDirectory(file.parentFile)
+          val sharedPrefs = SharedPrefs(reactApplicationContext)
+          sharedPrefs.putString(PATH, "")
           promise.resolve(false)
         }
       } else {
