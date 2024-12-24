@@ -96,13 +96,17 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
             File file = new File(path);
             if (file.exists() && file.isFile()) {
                 String fileUnzip = unzip(file, extension != null ? extension : ".bundle");
-                Log.d("setupBundlePath: ", fileUnzip);
                 if (fileUnzip != null) {
+                    Log.d("setupBundlePath: ", fileUnzip);
                     file.delete();
                     SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
                     sharedPrefs.putString(Common.INSTANCE.getPATH(), fileUnzip);
                     promise.resolve(true);
                 } else {
+                    file.delete();
+                    deleteDirectory(file.getParentFile());
+                    SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+                    sharedPrefs.putString(Common.INSTANCE.getPATH(), "");
                     promise.resolve(false);
                 }
             } else {
