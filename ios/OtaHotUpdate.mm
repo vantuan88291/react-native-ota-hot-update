@@ -171,8 +171,8 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
         [self removeBundleIfNeeded];
         //Unzip file
         NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
-        NSLog(@"file extraction----- %@", extractedFilePath);
         if (extractedFilePath) {
+            NSLog(@"file extraction----- %@", extractedFilePath);
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setObject:extractedFilePath forKey:@"PATH"];
             [defaults synchronize];
