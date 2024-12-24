@@ -92,9 +92,9 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setupBundlePath(String path, String extension, Promise promise) {
         if (path != null) {
-            deleteOldBundleIfneeded();
             File file = new File(path);
             if (file.exists() && file.isFile()) {
+                deleteOldBundleIfneeded();
                 String fileUnzip = unzip(file, extension != null ? extension : ".bundle");
                 if (fileUnzip != null) {
                     Log.d("setupBundlePath: ", fileUnzip);
