@@ -84,9 +84,9 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   @ReactMethod
   override fun setupBundlePath(path: String?, extension: String?, promise: Promise) {
     if (path != null) {
-      deleteOldBundleIfneeded()
       val file = File(path)
       if (file.exists() && file.isFile) {
+        deleteOldBundleIfneeded()
         val fileUnzip = extractZipFile(file, extension ?: ".bundle")
         if (fileUnzip != null) {
           Log.d("setupBundlePath----: ", fileUnzip)
