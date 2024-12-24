@@ -1263,7 +1263,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-ota-hot-update (2.0.0):
+  - react-native-ota-hot-update (2.0.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1552,6 +1552,8 @@ PODS:
     - React-logger (= 0.76.3)
     - React-perflogger (= 0.76.3)
     - React-utils (= 0.76.3)
+  - RNFS (2.16.6):
+    - React
   - SocketRocket (0.7.1)
   - SSZipArchive (2.4.3)
   - Yoga (0.0.0)
@@ -1623,6 +1625,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1760,6 +1763,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1800,7 +1805,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: bd6a2ffbf401f11cfc8b5e8f38acab9fe117620c
   React-microtasksnativemodule: 2fa3b8c7a876b84bd8166f11e07f101929a87f97
   react-native-blob-util: 41e79841711a98f88b9fdda381395219a57eaa3c
-  react-native-ota-hot-update: 3de66a6c043677ca9c84677d960d66bb0e968a6b
+  react-native-ota-hot-update: 0c8b0e124de1c8c6cef8c163470b8960967ebb01
   React-nativeconfig: aeed6e2a8ac02b2df54476afcc7c663416c12bf7
   React-NativeModulesApple: c0783e5e21c71aa2764ac33120abc96208466fa6
   React-perflogger: 2991d4258277af250eb7a2705980ebb3ef9ba85e
@@ -1828,6 +1833,7 @@ SPEC CHECKSUMS:
   React-utils: ee370a52b08a000963af1a60c31e6c87a70620a5
   ReactCodegen: 5148a0102fc8f0a1f9b05d955da886b44447679d
   ReactCommon: b8485556b596ef2f44f59bc586113bda138fb804
+  RNFS: 3557d4b8e51925b011e787094600d6e05dca414e
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: 3deb2471faa9916c8a82dda2a22d3fba2620ad37
