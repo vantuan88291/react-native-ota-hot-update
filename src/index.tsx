@@ -1,5 +1,7 @@
 import { NativeModules, Platform } from 'react-native';
 import type { DownloadManager } from './download';
+import type { UpdateGitOption, UpdateOption } from './type';
+import git from './gits';
 
 const LINKING_ERROR =
   `The package 'react-native-ota-hot-update' doesn't seem to be linked. Make sure: \n\n` +
@@ -10,14 +12,6 @@ const LINKING_ERROR =
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
-export interface UpdateOption {
-  headers?: object;
-  progress?(received: string, total: string): void;
-  updateSuccess?(): void;
-  updateFail?(message?: string): void;
-  restartAfterInstall?: boolean;
-  extensionBundle?: string;
-}
 const OtaHotUpdateModule = isTurboModuleEnabled
   ? require('./NativeOtaHotUpdate').default
   : NativeModules.OtaHotUpdate;
@@ -139,7 +133,24 @@ async function downloadBundleUri(
     installFail(option, e);
   }
 }
-
+const checkForGitUpdate = async (options: UpdateGitOption) => {
+  try {
+    const branch = await git.checkBranchName();
+    console.log('exist---', options);
+    if (branch) {
+      const pull = await git.pullUpdate(branch);
+      console.log('pull---', pull);
+    } else {
+      const clone = await git.cloneRepo(options.url);
+      if (clone) {
+        git.setConfig();
+      }
+      console.log('clone---', clone);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
 export default {
   setupBundlePath,
   removeUpdate: removeBundle,
@@ -147,4 +158,5 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  checkForGitUpdate,
 };

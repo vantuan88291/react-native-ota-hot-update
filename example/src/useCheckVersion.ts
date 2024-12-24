@@ -1,4 +1,3 @@
-import React from 'react';
 import hotUpdate from 'react-native-ota-hot-update';
 import { Alert, Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
@@ -52,8 +51,16 @@ export const useCheckVersion = () => {
       }
     });
   };
-  React.useEffect(() => {
-    onCheckVersion();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+  const onCheckGitVersion = () => {
+    hotUpdate.checkForGitUpdate({
+      url: 'https://github.com/vantuan88291/OTA-demo-bundle.git',
+    });
+  };
+  return {
+    version: {
+      onCheckVersion,
+      onCheckGitVersion,
+    },
+  };
 };

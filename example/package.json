@@ -12,11 +12,9 @@
     "build:ios": "react-native build-ios --scheme OtaHotUpdateExample --mode Debug --extra-params \"-sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO\""
   },
   "dependencies": {
-    "buffer": "^6.0.3",
-    "isomorphic-git": "^1.27.2",
     "react": "18.3.1",
     "react-native": "0.76.3",
-    "react-native-fs": "2.16.6"
+    "react-native-fs": "2.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
