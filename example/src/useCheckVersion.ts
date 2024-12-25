@@ -69,6 +69,7 @@ export const useCheckVersion = () => {
     setLoading(true);
     hotUpdate.git.checkForGitUpdate({
       restartAfterInstall: false,
+      branch: Platform.OS === 'ios' ? 'iOS' : 'android',
       bundlePath:
         Platform.OS === 'ios'
           ? 'output/main.jsbundle'
