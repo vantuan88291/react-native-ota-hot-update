@@ -163,16 +163,13 @@ const checkForGitUpdate = async (options: UpdateGitOption) => {
         branch: options?.branch,
         bundlePath: options.bundlePath,
       });
-      if (clone.success) {
-        await git.setConfig();
-        if (clone.bundle) {
-          await RNhotupdate.setExactBundlePath(clone.bundle);
-          options?.onCloneSuccess?.();
-          if (options?.restartAfterInstall) {
-            setTimeout(() => {
-              resetApp();
-            }, 300);
-          }
+      if (clone.success && clone.bundle) {
+        await RNhotupdate.setExactBundlePath(clone.bundle);
+        options?.onCloneSuccess?.();
+        if (options?.restartAfterInstall) {
+          setTimeout(() => {
+            resetApp();
+          }, 300);
         }
       } else {
         options?.onCloneFailed?.(clone.msg);

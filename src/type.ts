@@ -71,6 +71,8 @@ export interface CloneOption {
   onProgress?(received: number, total: number): void;
   branch?: string;
   bundlePath: string;
+  userName?: string;
+  email?: string;
 }
 
 export interface PullOption {

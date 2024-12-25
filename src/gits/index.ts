@@ -14,6 +14,23 @@ const getFolder = (folderName?: string) => {
   } catch (e) {}
   return '';
 };
+/**
+ * Should set config after clone success, otherwise cannot pull
+ */
+const setConfig = async (
+  folderName?: string,
+  options?: {
+    userName?: string;
+    email?: string;
+  }
+) => {
+  await git.setConfig({
+    fs,
+    dir: getFolder(folderName),
+    path: options?.userName || 'user.name',
+    value: options?.email || 'hotupdate',
+  });
+};
 const cloneRepo = async (options: CloneOption) => {
   try {
     await git.clone({
@@ -29,6 +46,10 @@ const cloneRepo = async (options: CloneOption) => {
           options?.onProgress(loaded, total);
         }
       },
+    });
+    await setConfig(options?.folderName, {
+      email: options?.email,
+      userName: options?.userName,
     });
     return {
       success: true,
@@ -84,23 +105,6 @@ const getBranchName = async (folderName?: string) => {
     console.log(e.toString());
     return null;
   }
-};
-/**
- * Should set config after clone success, otherwise cannot pull
- */
-const setConfig = async (
-  folderName?: string,
-  options?: {
-    userName?: string;
-    email?: string;
-  }
-) => {
-  await git.setConfig({
-    fs,
-    dir: getFolder(folderName),
-    path: options?.userName || 'user.name',
-    value: options?.email || 'hotupdate',
-  });
 };
 const removeGitUpdate = (folderName?: string) => {
   fs.promises.unlink(getFolder(folderName));
