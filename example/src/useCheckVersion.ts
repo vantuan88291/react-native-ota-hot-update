@@ -70,7 +70,9 @@ export const useCheckVersion = () => {
     hotUpdate.git.checkForGitUpdate({
       restartAfterInstall: false,
       bundlePath:
-        Platform.OS === 'ios' ? 'main.jsbundle' : 'android.index.bundle',
+        Platform.OS === 'ios'
+          ? 'output/main.jsbundle'
+          : 'output/index.android.bundle',
       url: 'https://github.com/vantuan88291/OTA-demo-bundle.git',
       onCloneFailed(msg: string) {
         setLoading(false);
