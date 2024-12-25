@@ -7,7 +7,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Image source={require('./video-editing.png')} style={styles.img} />
-      <Text>Result: 123</Text>
+      <Text>Result: 456</Text>
       <Button title={'check update OTA'} onPress={version.onCheckVersion} />
       <Button title={'check update Git'} onPress={version.onCheckGitVersion} />
       <Button title={'remove update Git'} onPress={version.removeGitUpdate} />
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
   },
   img: {
-    width: 80,
-    height: 80,
+    width: 180,
+    height: 180,
     resizeMode: 'center',
     marginBottom: 20,
   },
