@@ -5,55 +5,72 @@ import { DocumentDirectoryPath } from 'react-native-fs';
 import git, { PromiseFsClient } from 'isomorphic-git/index.umd.min.js';
 import http from 'isomorphic-git/http/web/index.js';
 import * as promises from './helper/fs';
+import type { CloneOption, PullOption } from '../type';
 
 const fs: PromiseFsClient = { promises };
 const getFolder = (folderName?: string) => {
   return DocumentDirectoryPath + (folderName || '/git_hot_update');
 };
-const cloneRepo = async (url: string, folderName?: string) => {
+const cloneRepo = async (options: CloneOption) => {
   try {
     await git.clone({
       fs,
       http,
-      dir: getFolder(folderName),
-      url,
+      dir: getFolder(options?.folderName),
+      url: options?.url,
       singleBranch: true,
       depth: 1,
+      ref: options?.branch,
       onProgress({ loaded, total }: { loaded: number; total: number }) {
-        console.log('----progress clone', total, loaded);
+        if (options?.onProgress && total > 0) {
+          options?.onProgress(loaded, total);
+        }
       },
     });
-    return true;
-  } catch (e) {
-    return false;
+    return {
+      success: true,
+      msg: null,
+      bundle: `${getFolder(options?.folderName)}/${options.bundlePath}`,
+    };
+  } catch (e: any) {
+    return {
+      success: false,
+      msg: e.toString(),
+      bundle: null,
+    };
   }
 };
-const pullUpdate = async (branch: string, folderName?: string) => {
+const pullUpdate = async (options: PullOption) => {
   try {
     let count = 0;
     await git.pull({
       fs,
       http,
-      dir: getFolder(folderName),
-      ref: branch,
+      dir: getFolder(options?.folderName),
+      ref: options?.branch,
       singleBranch: true,
       onProgress({ loaded, total }: { loaded: number; total: number }) {
-        console.log('----progress pull', total, loaded);
         if (total > 0) {
           count = total;
+          if (options?.onProgress) {
+            options?.onProgress(loaded, total);
+          }
         }
       },
-      onMessage(msg: string) {
-        console.log('----msg', msg);
-      },
     });
-    return count > 0;
+    return {
+      success: count > 0,
+      msg: count > 0 ? 'Pull success' : 'No updated',
+    };
   } catch (e: any) {
     console.log(e.toString());
-    return false;
+    return {
+      success: false,
+      msg: e.toString(),
+    };
   }
 };
-const checkBranchName = async (folderName?: string) => {
+const getBranchName = async (folderName?: string) => {
   try {
     return await git.currentBranch({
       fs,
@@ -65,17 +82,30 @@ const checkBranchName = async (folderName?: string) => {
     return null;
   }
 };
-const setConfig = async (folderName?: string) => {
+/**
+ * Should set config after clone success, otherwise cannot pull
+ */
+const setConfig = async (
+  folderName?: string,
+  options?: {
+    userName?: string;
+    email?: string;
+  }
+) => {
   await git.setConfig({
     fs,
     dir: getFolder(folderName),
-    path: 'user.name',
-    value: 'hotupdate',
+    path: options?.userName || 'user.name',
+    value: options?.email || 'hotupdate',
   });
+};
+const removeGitUpdate = (folderName?: string) => {
+  fs.promises.unlink(getFolder(folderName));
 };
 export default {
   cloneRepo,
   pullUpdate,
-  checkBranchName,
+  getBranchName,
   setConfig,
+  removeGitUpdate,
 };

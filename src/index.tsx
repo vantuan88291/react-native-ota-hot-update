@@ -135,20 +135,53 @@ async function downloadBundleUri(
 }
 const checkForGitUpdate = async (options: UpdateGitOption) => {
   try {
-    const branch = await git.checkBranchName();
-    console.log('exist---', options);
-    if (branch) {
-      const pull = await git.pullUpdate(branch);
-      console.log('pull---', pull);
-    } else {
-      const clone = await git.cloneRepo(options.url);
-      if (clone) {
-        git.setConfig();
-      }
-      console.log('clone---', clone);
+    if (!options.url || !options.bundlePath) {
+      throw new Error(`url or bundlePath should not be null`);
     }
-  } catch (e) {
-    console.log(e);
+    const branch = await git.getBranchName();
+    if (branch) {
+      const pull = await git.pullUpdate({
+        branch,
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+      });
+      if (pull.success) {
+        options?.onPullSuccess?.();
+        if (options?.restartAfterInstall) {
+          setTimeout(() => {
+            resetApp();
+          }, 300);
+        }
+      } else {
+        options?.onPullFailed?.(pull.msg);
+      }
+    } else {
+      const clone = await git.cloneRepo({
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+        url: options.url,
+        branch: options?.branch,
+        bundlePath: options.bundlePath,
+      });
+      if (clone.success) {
+        await git.setConfig();
+        if (clone.bundle) {
+          await RNhotupdate.setExactBundlePath(clone.bundle);
+          options?.onCloneSuccess?.();
+          if (options?.restartAfterInstall) {
+            setTimeout(() => {
+              resetApp();
+            }, 300);
+          }
+        }
+      } else {
+        options?.onCloneFailed?.(clone.msg);
+      }
+    }
+  } catch (e: any) {
+    options?.onCloneFailed?.(e.toString());
+  } finally {
+    options?.onFinishProgress?.();
   }
 };
 export default {
@@ -158,5 +191,12 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
-  checkForGitUpdate,
+  git: {
+    checkForGitUpdate,
+    ...git,
+    removeGitUpdate: (folder?: string) => {
+      RNhotupdate.setExactBundlePath('');
+      git.removeGitUpdate(folder);
+    },
+  },
 };

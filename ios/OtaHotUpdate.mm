@@ -218,6 +218,19 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
     }
 }
 
+RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (path) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:path forKey:@"PATH"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
 - (void)loadBundle
 {
     RCTTriggerReloadCommandListeners(@"react-native-ota-hot-update: Restart");
