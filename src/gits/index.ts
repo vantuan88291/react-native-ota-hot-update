@@ -1,5 +1,4 @@
 import './helper/fileReader.js';
-import { DocumentDirectoryPath } from 'react-native-fs';
 
 // @ts-ignore
 import git, { PromiseFsClient } from 'isomorphic-git/index.umd.min.js';
@@ -9,7 +8,11 @@ import type { CloneOption, PullOption } from '../type';
 
 const fs: PromiseFsClient = { promises };
 const getFolder = (folderName?: string) => {
-  return DocumentDirectoryPath + (folderName || '/git_hot_update');
+  try {
+    const { DocumentDirectoryPath } = require('react-native-fs');
+    return DocumentDirectoryPath + (folderName || '/git_hot_update');
+  } catch (e) {}
+  return '';
 };
 const cloneRepo = async (options: CloneOption) => {
   try {

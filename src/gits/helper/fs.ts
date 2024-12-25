@@ -1,5 +1,16 @@
-import * as RNFS from 'react-native-fs';
 import { Buffer } from 'buffer';
+
+let RNFS = {
+  unlink: console.log,
+  readdir: console.log,
+  mkdir: console.log,
+  readFile: console.log,
+  writeFile: console.log,
+  stat: console.log,
+};
+try {
+  RNFS = require('react-native-fs');
+} catch {}
 
 function Err(name: string) {
   return class extends Error {
@@ -53,6 +64,7 @@ export const readFile = async (
     encoding = opts.encoding;
   }
 
+  // @ts-ignore
   let result: string | Uint8Array = await RNFS.readFile(
     path,
     encoding || 'base64'
