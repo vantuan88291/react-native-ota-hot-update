@@ -157,6 +157,13 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
          promise.resolve(true);
     }
 
+    @ReactMethod
+     public void setExactBundlePath(String path, Promise promise) {
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        sharedPrefs.putString(Common.INSTANCE.getPATH(), path);
+        promise.resolve(true);
+     }
+
     @NonNull
     @Override
     public String getName() {

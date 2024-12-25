@@ -1,19 +1,14 @@
 import { NativeModules, Platform } from 'react-native';
 import {DownloadManager} from './download';
+import { UpdateGitOption, UpdateOption } from './type';
+import git from './gits';
+
 const LINKING_ERROR =
     'The package \'rn-hotupdate\' doesn\'t seem to be linked. Make sure: \n\n' +
     Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
     '- You rebuilt the app after installing the package\n' +
     '- You are not using Expo Go\n';
 
-export interface UpdateOption {
-  headers?: object
-  progress?(received: string, total: string): void
-  updateSuccess?(): void
-  updateFail?(message?: string): void
-  restartAfterInstall?: boolean
-  extensionBundle?: string,
-}
 const RNhotupdate = NativeModules.RNhotupdate
     ? NativeModules.RNhotupdate
     : new Proxy(
@@ -111,7 +106,57 @@ async function downloadBundleUri(downloadManager: DownloadManager, uri: string, 
     installFail(option, e);
   }
 }
-
+const checkForGitUpdate = async (options: UpdateGitOption) => {
+  try {
+    if (!options.url || !options.bundlePath) {
+      throw new Error(`url or bundlePath should not be null`);
+    }
+    const branch = await git.getBranchName();
+    if (branch) {
+      const pull = await git.pullUpdate({
+        branch,
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+      });
+      if (pull.success) {
+        options?.onPullSuccess?.();
+        if (options?.restartAfterInstall) {
+          setTimeout(() => {
+            resetApp();
+          }, 300);
+        }
+      } else {
+        options?.onPullFailed?.(pull.msg);
+      }
+    } else {
+      const clone = await git.cloneRepo({
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+        url: options.url,
+        branch: options?.branch,
+        bundlePath: options.bundlePath,
+      });
+      if (clone.success) {
+        await git.setConfig();
+        if (clone.bundle) {
+          await RNhotupdate.setExactBundlePath(clone.bundle);
+          options?.onCloneSuccess?.();
+          if (options?.restartAfterInstall) {
+            setTimeout(() => {
+              resetApp();
+            }, 300);
+          }
+        }
+      } else {
+        options?.onCloneFailed?.(clone.msg);
+      }
+    }
+  } catch (e: any) {
+    options?.onCloneFailed?.(e.toString());
+  } finally {
+    options?.onFinishProgress?.();
+  }
+};
 export default {
   setupBundlePath,
   removeUpdate: removeBundle,
@@ -119,4 +164,12 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  git: {
+    checkForGitUpdate,
+    ...git,
+    removeGitUpdate: (folder?: string) => {
+      RNhotupdate.setExactBundlePath('');
+      git.removeGitUpdate(folder);
+    },
+  },
 };

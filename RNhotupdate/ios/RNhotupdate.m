@@ -211,6 +211,19 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version withResolver:(RCTPromise
     }
 }
 
+RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (path) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:path forKey:@"PATH"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
 - (void)loadBundle
 {
     RCTTriggerReloadCommandListeners(@"rn-hotupdate: Restart");
