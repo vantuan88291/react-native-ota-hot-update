@@ -12,7 +12,7 @@
   "homepage": "https://github.com/vantuan88291/react-native-ota-hot-update",
   "dependencies": {
     "buffer": "^6.0.3",
-    "isomorphic-git": "^1.27.2"
+    "isomorphic-git": "git+https://github.com/vantuan88291/isomorphic-git.git"
   },
   "peerDependencies": {
     "react-native": ">=0.63.4",
