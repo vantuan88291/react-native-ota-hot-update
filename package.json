@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "buffer": "^6.0.3",
-    "isomorphic-git": "^1.27.2"
+    "isomorphic-git": "git+https://github.com/vantuan88291/isomorphic-git.git"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",

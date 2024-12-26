@@ -7632,9 +7632,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isomorphic-git@npm:^1.27.2":
-  version: 1.27.2
-  resolution: "isomorphic-git@npm:1.27.2"
+"isomorphic-git@git+https://github.com/vantuan88291/isomorphic-git.git":
+  version: 0.0.0-development
+  resolution: "isomorphic-git@https://github.com/vantuan88291/isomorphic-git.git#commit=87eebaa0479c3f2073fef5e718a6c9c2a34854fd"
   dependencies:
     async-lock: ^1.4.1
     clean-git-ref: ^2.0.1
@@ -7649,8 +7649,8 @@ __metadata:
     sha.js: ^2.4.9
     simple-get: ^4.0.1
   bin:
-    isogit: cli.cjs
-  checksum: 93077ba9192a67a9c2ebc3d4d00d7647cc6a20c546bd2c4fce6716cc5c2ce7772eb16b5493ab77fe3331eddb8b43d6f58855293a1dd5536130e7c6a60d9d4125
+    isogit: ./cli.cjs
+  checksum: 899b131925460dff673204fa229a5629df867974228892f83798ffe6b8c69f602e774d87c1e748e2de2cf1d45b304853bc663830a57902bcfe54d9e17f41e763
   languageName: node
   linkType: hard
 
@@ -10728,7 +10728,7 @@ __metadata:
     eslint: ^8.51.0
     eslint-config-prettier: ^9.0.0
     eslint-plugin-prettier: ^5.0.1
-    isomorphic-git: ^1.27.2
+    isomorphic-git: "git+https://github.com/vantuan88291/isomorphic-git.git"
     jest: ^29.7.0
     prettier: ^3.0.3
     react: 18.3.1
