@@ -88,7 +88,10 @@ RCT_EXPORT_MODULE()
 + (NSURL *)getBundle {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *retrievedString = [defaults stringForKey:@"PATH"];
-    if (retrievedString && [self isFilePathExist:retrievedString]) {
+    NSString *currentVersionName = [defaults stringForKey:@"VERSION_NAME"];
+    NSString *versionName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+
+  if (retrievedString && [self isFilePathExist:retrievedString] && [currentVersionName isEqualToString:versionName]) {
        NSURL *fileURL = [NSURL fileURLWithPath:retrievedString];
        return fileURL;
     } else {
@@ -175,6 +178,7 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
             NSLog(@"file extraction----- %@", extractedFilePath);
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setObject:extractedFilePath forKey:@"PATH"];
+            [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
             [defaults synchronize];
             resolve(@(YES));
         } else {
@@ -224,6 +228,7 @@ RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
     if (path) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:path forKey:@"PATH"];
+        [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
         [defaults synchronize];
         resolve(@(YES));
     } else {
