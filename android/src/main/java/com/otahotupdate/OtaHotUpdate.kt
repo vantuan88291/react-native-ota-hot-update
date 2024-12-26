@@ -1,11 +1,15 @@
 package com.otahotupdate
 
 import android.content.Context
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
+import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.DEFAULT_BUNDLE
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.SharedPrefs
@@ -40,6 +44,14 @@ class OtaHotUpdate(context: Context?) : TurboReactPackage() {
     }
   }
   companion object {
+    @Suppress("DEPRECATION")
+    fun Context.getPackageInfo(): PackageInfo {
+      return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+      } else {
+        packageManager.getPackageInfo(packageName, 0)
+      }
+    }
     private var mContext: Context? = null
     val bundleJS: String
       get() {
@@ -48,7 +60,8 @@ class OtaHotUpdate(context: Context?) : TurboReactPackage() {
         }
         val sharedPrefs = SharedPrefs(mContext!!)
         val pathBundle = sharedPrefs.getString(PATH)
-        if (pathBundle == "") {
+        val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_NAME)
+        if (pathBundle == "" || (!currentVersionName.isNullOrEmpty() && currentVersionName != mContext?.getPackageInfo()?.versionName)) {
           return DEFAULT_BUNDLE
         }
         return pathBundle!!
