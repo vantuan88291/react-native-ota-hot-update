@@ -2,13 +2,10 @@
 
 A React Native module that enables you to manage hot updates similar to CodePush but with less configuration. With this library, you can take full control of version management and host the JavaScript bundle yourself. This library focuses on installing the hot update after the bundle is downloaded from your server. Since CodePush is retiring soon, this library provides an alternative for managing bundle updates on your backend.
 
----
-
-### iOS GIF             | Android GIF
+iOS GIF             | Android GIF
 :-------------------------:|:-------------------------:
 <img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
 
----
 
 ## Guidelines for Managing the Bundle
 
