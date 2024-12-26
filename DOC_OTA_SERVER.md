@@ -1,37 +1,44 @@
-# Hot update via server
+# Hot Update via Server
 
-A React Native module that allows you to control hot update same as Code Push, less config than Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement soon, that why i create that library for you can control bundle js from your backend side.
+A React Native module that enables you to manage hot updates similar to CodePush but with less configuration. With this library, you can take full control of version management and host the JavaScript bundle yourself. This library focuses on installing the hot update after the bundle is downloaded from your server. Since CodePush is retiring soon, this library provides an alternative for managing bundle updates on your backend.
 
+---
 
-iOS GIF             | Android GIF
+### iOS GIF             | Android GIF
 :-------------------------:|:-------------------------:
 <img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
 
-Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
+---
 
-#### 1.Add these script into your package.json to export bundlejs file and source map file:
+## Guidelines for Managing the Bundle
 
-- For react native CLI:
-```bash
+This guide demonstrates how to manage the JavaScript bundle yourself. In this example, Firebase Storage is used to host the bundle and a JSON file to announce new versions:
+
+### 1. Add Scripts to Your `package.json` to Export the JavaScript Bundle and Source Map Files
+
+#### For React Native CLI:
+```json
 "scripts": {
-  "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
-  "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
+"export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
+"export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
 }
 ```
-- For expo / expo bare project:
 
-```bash
+#### For Expo/Expo Bare Projects:
+```json
 "scripts": {
-  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
-  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
+"export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
+"export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
 }
 ```
-For expo you might need check path of `--entry-file node_modules/expo/AppEntry.js`, get it from package.json / main
+> **Note:** For Expo projects, verify the path of `--entry-file node_modules/expo/AppEntry.js` in your `package.json`.
 
-These commands are export bundle file and source map file then compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server. For source map file you can ignore or use that with your purpose to debug in release mode.
+These scripts export the bundle and source map files, then compress them into a zip file (one for Android and one for iOS). You can customize these scripts to automate uploading to your server. Source map files can be ignored or used for debugging in release mode.
 
-Then create an json file: `update.json` like that:
-```bash
+### 2. Create an `update.json` File
+
+The `update.json` file should look like this:
+```json
 {
   "version": 1,
   "downloadAndroidUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/index.android.bundle.zip?alt=media",
@@ -39,74 +46,89 @@ Then create an json file: `update.json` like that:
 }
 ```
 
-Then upload your bundlejs files to firebase storage, totally will look like that:
+Upload your bundle files and `update.json` to Firebase Storage. The structure will look like this:
 
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr1.png)
 
-After you have done everything related to version manager, you just handle the way to update new version like fetch update.json as api to get download url and call this function:
+### 3. Fetch the Update and Apply It
 
-```bash
-    import hotUpdate from 'react-native-ota-hot-update';
-    import ReactNativeBlobUtil from 'react-native-blob-util';
+After setting up your version management, fetch the `update.json` file to get the download URL and call the following function:
 
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
-    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
-      updateSuccess: () => {
-        console.log('update success!');
+hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
+  updateSuccess: () => {
+    console.log('Update successful!');
+  },
+  updateFail: (message) => {
+    Alert.alert('Update failed!', message, [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
       },
-      updateFail(message?: string) {
-        Alert.alert('Update failed!', message, [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-        ]);
-      },
-      restartAfterInstall: true,
-    });
+    ]);
+  },
+  restartAfterInstall: true,
+});
 ```
 
-The important thing: this library will control `version` by it self, need always pass version as parameter in `downloadBundleUri`, it will storage as a cache and use this to check whether need update version in the next time. Default of `version` is **0**
+> **Important:** Always pass the `version` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` is **0**.
 
-## Tips for manage bundles
+> **Note:** You can use either `react-native-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
 
-In this demo project i have used firebase storage to control the bundles and version, but that is not useful. I would like to suggest you to use some CMS to control the bundles.
-For CMS, it has a lot open sources, now i am using strapi CMS to control the version, i also create auto release script like code push and can integrate with CI/CD. Here is some screenshot of strapi CMS:
+---
+
+## Tips for Managing Bundles
+
+In this demo, Firebase Storage is used to manage bundles and versions. While effective, a CMS might be more efficient.
+
+For example, using Strapi CMS allows you to:
+- Control versions easily.
+- Automate releases with CI/CD pipelines.
+
+Here are some screenshots of Strapi CMS:
 
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr2.png)
 
 ![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
 
-Beside strapi you can also try craftcms, payloadcms...
-You can refer folder sampleComponent, it has the logic of update with CMS and also include script auto upload the bundle to CMS.
-Contact me via email if you want to implement hot update via CMS (need service fee)
+Other CMS options include CraftCMS and PayloadCMS.
 
-## Functions
+> Check the `sampleComponent` folder for logic related to CMS updates and scripts for auto-uploading bundles. For implementation support (service fee required), feel free to contact me via email.
 
-| key          | Return | Action                                                                                                           | Parameters                                                                                      |
-| ------------ |--------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| downloadBundleUri    | void   | Download bundle and install it                                                                                   | (downloadManager: **DownloadManager**, uri: string, version: number, option?: **UpdateOption**) |
-| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of zip bundlejs file that you downloaded before                          |
-| setupExactBundlePath    | boolean | Install your bundle path if you extract the zip file by yourself   | path: string, the path of bundlejs file that you downloaded before |
-| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing                                   |
-| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                           |
-| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                           |
-| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                                 |
+---
 
+## Library Functions
 
-## UpdateOption
+| Function                 | Return Type | Description                                                                                   | Parameters                                                                                     |
+|--------------------------|-------------|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `downloadBundleUri`      | `void`      | Downloads and installs the bundle.                                                           | `(downloadManager: DownloadManager, uri: string, version: number, option?: UpdateOption)`     |
+| `setupBundlePath`        | `boolean`   | Installs the bundle from a custom path. Ignore if using `downloadBundleUri`.                  | `path: string` - Path of the zip file containing the bundle.                                  |
+| `setupExactBundlePath`   | `boolean`   | Installs the bundle from an extracted file path.                                              | `path: string` - Path of the extracted bundle file.                                           |
+| `removeUpdate`           | `void`      | Removes the update and reverts to the previous version.                                       | `restartAfterRemoved?: boolean` - Restarts the app to apply changes.                         |
+| `resetApp`               | `void`      | Restarts the app to apply changes.                                                           | None                                                                                          |
+| `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                         | None                                                                                          |
+| `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                              | `version: number`                                                                             |
 
-| Option                  | Required | Type     | Description                                                                                      |
-|-------------------------|----------|----------|--------------------------------------------------------------------------------------------------|
-| headers                 | No       | Object   | The header to down load your uri bundle file if need token/authentication...                     |
-| updateSuccess           | No       | Callback | Will trigger when install update success                                                         |
-| updateFail(message: string)               | No       | Callback | Will trigger when install update failed                                                          |
-| restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
-| progress            | No       | void     | A callback to show progress when downloading bundle                                              |
-| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle for android, ios is .jsbundle                    |
+---
 
-## DownloadManager
+## `UpdateOption`
 
-The same method as `react-native-blob-util` or `rn-fetch-blob`
+| Option                  | Required | Type       | Description                                                                                      |
+|-------------------------|----------|------------|--------------------------------------------------------------------------------------------------|
+| `headers`               | No       | `Object`   | Headers for downloading the bundle file (e.g., for authentication tokens).                      |
+| `updateSuccess`         | No       | `Callback` | Triggered when the update is installed successfully.                                             |
+| `updateFail`            | No       | `Callback` | Triggered when the update fails. Passes a `message` parameter.                                   |
+| `restartAfterInstall`   | No       | `boolean`  | Defaults to `false`. If `true`, restarts the app after a successful installation.                |
+| `progress`              | No       | `Callback` | Reports download progress.                                                                      |
+| `extensionBundle`       | No       | `string`   | Extension of the bundle file. Defaults: `.bundle` (Android), `.jsbundle` (iOS).                 |
+
+---
+
+## `DownloadManager`
+
+Supports methods provided by `react-native-blob-util` or `rn-fetch-blob`.
 
