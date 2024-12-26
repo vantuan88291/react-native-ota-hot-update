@@ -84,14 +84,15 @@ Contact me via email if you want to implement hot update via CMS (need service f
 
 ## Functions
 
-| key          | Return | Action                                                                                                           | Parameters                                                                                  |
-| ------------ |--------|------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| key          | Return | Action                                                                                                           | Parameters                                                                                      |
+| ------------ |--------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | downloadBundleUri    | void   | Download bundle and install it                                                                                   | (downloadManager: **DownloadManager**, uri: string, version: number, option?: **UpdateOption**) |
-| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of bundlejs file that you downloaded before                          |
-| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing                               |
-| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                       |
-| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                       |
-| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                             |
+| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of zip bundlejs file that you downloaded before                          |
+| setupExactBundlePath    | boolean | Install your bundle path if you extract the zip file by yourself   | path: string, the path of bundlejs file that you downloaded before |
+| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing                                   |
+| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                           |
+| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                           |
+| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                                 |
 
 
 ## UpdateOption

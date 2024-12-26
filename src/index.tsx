@@ -50,6 +50,9 @@ const downloadBundleFile = async (
 function setupBundlePath(path: string, extension?: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path, extension);
 }
+function setupExactBundlePath(path: string): Promise<boolean> {
+  return RNhotupdate.setExactBundlePath(path);
+}
 function deleteBundlePath(): Promise<boolean> {
   return RNhotupdate.deleteBundle(1);
 }
@@ -164,7 +167,7 @@ const checkForGitUpdate = async (options: UpdateGitOption) => {
         bundlePath: options.bundlePath,
       });
       if (clone.success && clone.bundle) {
-        await RNhotupdate.setExactBundlePath(clone.bundle);
+        await setupExactBundlePath(clone.bundle);
         options?.onCloneSuccess?.();
         if (options?.restartAfterInstall) {
           setTimeout(() => {
@@ -183,6 +186,7 @@ const checkForGitUpdate = async (options: UpdateGitOption) => {
 };
 export default {
   setupBundlePath,
+  setupExactBundlePath,
   removeUpdate: removeBundle,
   downloadBundleUri,
   resetApp,
