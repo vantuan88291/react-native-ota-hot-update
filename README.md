@@ -1,11 +1,20 @@
 # react-native-ota-hot-update
 
-A React Native module that allows you to control hot update same as Code Push, less config than Code Push, you can control version manager, hosting bundle js by your self, this library just control install the hot update after bundle js downloaded from your side. As we know, Code push is going to retirement soon, that why i create that library for you can control bundle js from your backend side.
 
+This React Native module allows you to manage hot updates with minimal configuration, similar to Code Push. You can control versioning and host the JS bundle yourself. The library handles the installation of updates after the bundle is downloaded from your server or Git repository. With Code Push retiring soon, this library gives you full control over your update process, whether hosting the bundle on your own server or in a Git repository.
+
+
+1. **Demo via server**
 
 iOS GIF             | Android GIF
 :-------------------------:|:-------------------------:
 <img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
+
+2. **Demo via git repository**
+
+iOS GIF             | Android GIF
+:-------------------------:|:-------------------------:
+<img src="./iosgit.gif" title="iOS GIF" width="250"> | <img src="./androidgithotupdate.gif" title="Android GIF" width="250">
 
 [![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
 [![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
@@ -89,107 +98,17 @@ android:requestLegacyExternalStorage="true"
 `Remember hot update just work at release mode, debug mode won't working`
 
 
-Here is the guideline to control bundle js by yourself, in here i am using Firebase storage to store bundlejs file and a json file that announce new version is comming:
+### Control Hot Update via Server
+With this method, you can host the bundle JS on your own server. The app fetches the updates directly from the server, allowing for dynamic updates.
 
-#### 1.Add these script into your package.json to export bundlejs file and source map file:
+For detailed instructions on how to implement this, refer to [**DOC_OTA_SERVER.md**](DOC_OTA_SERVER.md).
 
-- For react native CLI:
-```bash
-"scripts": {
-  "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
-  "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
-}
-```
-- For expo / expo bare project:
+---
 
-```bash
-"scripts": {
-  "export-android": "mkdir -p android/output && npx expo export:embed --platform android --entry-file node_modules/expo/AppEntry.js --bundle-output android/output/index.android.bundle --dev false  --assets-dest android/output --sourcemap-output android/sourcemap.js && cd android && find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js",
-  "export-ios": "mkdir -p ios/output && npx expo export:embed --platform ios --entry-file node_modules/expo/AppEntry.js --bundle-output ios/output/main.jsbundle --dev false  --assets-dest ios/output --sourcemap-output ios/sourcemap.js && cd ios && find output -type f | zip main.jsbundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf ios/output && rm -rf ios/sourcemap.js"
-}
-```
-For expo you might need check path of `--entry-file node_modules/expo/AppEntry.js`, get it from package.json / main
+### Control Hot Update via Git Repository
+This method allows you to use a Git repository to host the bundle JS. The app pulls updates directly from the repository, providing an easy and version-controlled way to manage updates.
 
-These commands are export bundle file and source map file then compress it as a zip file, one for android and one for ios. You can create your own script that export and auto upload to your server. For source map file you can ignore or use that with your purpose to debug in release mode.
-
-Then create an json file: `update.json` like that:
-```bash
-{
-  "version": 1,
-  "downloadAndroidUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/index.android.bundle.zip?alt=media",
-  "downloadIosUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/main.jsbundle.zip?alt=media"
-}
-```
-
-Then upload your bundlejs files to firebase storage, totally will look like that:
-
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr1.png)
-
-After you have done everything related to version manager, you just handle the way to update new version like fetch update.json as api to get download url and call this function:
-
-```bash
-    import hotUpdate from 'react-native-ota-hot-update';
-    import ReactNativeBlobUtil from 'react-native-blob-util';
-
-
-    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
-      updateSuccess: () => {
-        console.log('update success!');
-      },
-      updateFail(message?: string) {
-        Alert.alert('Update failed!', message, [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-        ]);
-      },
-      restartAfterInstall: true,
-    });
-```
-
-The important thing: this library will control `version` by it self, need always pass version as parameter in `downloadBundleUri`, it will storage as a cache and use this to check whether need update version in the next time. Default of `version` is **0**
-
-## Tips for manage bundles
-
-In this demo project i have used firebase storage to control the bundles and version, but that is not useful. I would like to suggest you to use some CMS to control the bundles.
-For CMS, it has a lot open sources, now i am using strapi CMS to control the version, i also create auto release script like code push and can integrate with CI/CD. Here is some screenshot of strapi CMS:
-
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr2.png)
-
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
-
-Beside strapi you can also try craftcms, payloadcms...
-You can refer folder sampleComponent, it has the logic of update with CMS and also include script auto upload the bundle to CMS.
-Contact me via email if you want to implement hot update via CMS (need service fee)
-
-## Functions
-
-| key          | Return | Action                                                                                                           | Parameters                                                                                  |
-| ------------ |--------|------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
-| downloadBundleUri    | void   | Download bundle and install it                                                                                   | (downloadManager: **DownloadManager**, uri: string, version: number, option?: **UpdateOption**) |
-| setupBundlePath    | boolean | Install your bundle path if you control the downloading by your self, ignore that if you use `downloadBundleUri` | path: string, the path of bundlejs file that you downloaded before                          |
-| removeUpdate | void   | Remove you update and use the previos version                                                                    | restartAfterRemoved?: boolean, restart to apply your changing                               |
-| resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                       |
-| getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                       |
-| setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                             |
-
-
-## UpdateOption
-
-| Option                  | Required | Type     | Description                                                                                      |
-|-------------------------|----------|----------|--------------------------------------------------------------------------------------------------|
-| headers                 | No       | Object   | The header to down load your uri bundle file if need token/authentication...                     |
-| updateSuccess           | No       | Callback | Will trigger when install update success                                                         |
-| updateFail(message: string)               | No       | Callback | Will trigger when install update failed                                                          |
-| restartAfterInstall            | No       | boolean  | default is `false`, if `true` will restart the app after install success to apply the new change |
-| progress            | No       | void     | A callback to show progress when downloading bundle                                              |
-| extensionBundle            | No       | string   | extension of bundle js file, default is .bundle for android, ios is .jsbundle                    |
-
-## DownloadManager
-
-The same method as `react-native-blob-util` or `rn-fetch-blob`
+For detailed instructions on how to implement this, refer to [**DOC_OTA_GIT.md**](DOC_OTA_GIT.md).
 
 ## License
 

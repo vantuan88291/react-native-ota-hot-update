@@ -140,6 +140,13 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     sharedPrefs.putString(VERSION, version)
     promise.resolve(true)
   }
+
+  @ReactMethod
+  override fun setExactBundlePath(path: String?, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    sharedPrefs.putString(PATH, path)
+    promise.resolve(true)
+  }
   companion object {
     const val NAME = "OtaHotUpdate"
   }

@@ -1,5 +1,7 @@
 import { NativeModules, Platform } from 'react-native';
 import type { DownloadManager } from './download';
+import type { UpdateGitOption, UpdateOption } from './type';
+import git from './gits';
 
 const LINKING_ERROR =
   `The package 'react-native-ota-hot-update' doesn't seem to be linked. Make sure: \n\n` +
@@ -10,14 +12,6 @@ const LINKING_ERROR =
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
-export interface UpdateOption {
-  headers?: object;
-  progress?(received: string, total: string): void;
-  updateSuccess?(): void;
-  updateFail?(message?: string): void;
-  restartAfterInstall?: boolean;
-  extensionBundle?: string;
-}
 const OtaHotUpdateModule = isTurboModuleEnabled
   ? require('./NativeOtaHotUpdate').default
   : NativeModules.OtaHotUpdate;
@@ -55,6 +49,9 @@ const downloadBundleFile = async (
 };
 function setupBundlePath(path: string, extension?: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path, extension);
+}
+function setupExactBundlePath(path: string): Promise<boolean> {
+  return RNhotupdate.setExactBundlePath(path);
 }
 function deleteBundlePath(): Promise<boolean> {
   return RNhotupdate.deleteBundle(1);
@@ -139,12 +136,68 @@ async function downloadBundleUri(
     installFail(option, e);
   }
 }
-
+const checkForGitUpdate = async (options: UpdateGitOption) => {
+  try {
+    if (!options.url || !options.bundlePath) {
+      throw new Error(`url or bundlePath should not be null`);
+    }
+    const branch = await git.getBranchName();
+    if (branch) {
+      const pull = await git.pullUpdate({
+        branch,
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+      });
+      if (pull.success) {
+        options?.onPullSuccess?.();
+        if (options?.restartAfterInstall) {
+          setTimeout(() => {
+            resetApp();
+          }, 300);
+        }
+      } else {
+        options?.onPullFailed?.(pull.msg);
+      }
+    } else {
+      const clone = await git.cloneRepo({
+        onProgress: options?.onProgress,
+        folderName: options?.folderName,
+        url: options.url,
+        branch: options?.branch,
+        bundlePath: options.bundlePath,
+      });
+      if (clone.success && clone.bundle) {
+        await setupExactBundlePath(clone.bundle);
+        options?.onCloneSuccess?.();
+        if (options?.restartAfterInstall) {
+          setTimeout(() => {
+            resetApp();
+          }, 300);
+        }
+      } else {
+        options?.onCloneFailed?.(clone.msg);
+      }
+    }
+  } catch (e: any) {
+    options?.onCloneFailed?.(e.toString());
+  } finally {
+    options?.onFinishProgress?.();
+  }
+};
 export default {
   setupBundlePath,
+  setupExactBundlePath,
   removeUpdate: removeBundle,
   downloadBundleUri,
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  git: {
+    checkForGitUpdate,
+    ...git,
+    removeGitUpdate: (folder?: string) => {
+      RNhotupdate.setExactBundlePath('');
+      git.removeGitUpdate(folder);
+    },
+  },
 };
