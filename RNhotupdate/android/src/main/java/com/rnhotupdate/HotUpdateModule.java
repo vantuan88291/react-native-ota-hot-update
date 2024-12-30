@@ -2,6 +2,7 @@ package com.rnhotupdate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
@@ -101,6 +102,12 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
                     file.delete();
                     SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
                     sharedPrefs.putString(Common.INSTANCE.getPATH(), fileUnzip);
+                    PackageInfo info = OtaHotUpdate.packageInfo(getReactApplicationContext());
+                    String latestVer = null;
+                    if (info != null) {
+                        latestVer = info.versionName;
+                    }
+                    sharedPrefs.putString(Common.INSTANCE.getCURRENT_VERSION_NAME(), latestVer);
                     promise.resolve(true);
                 } else {
                     file.delete();
@@ -161,6 +168,12 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
      public void setExactBundlePath(String path, Promise promise) {
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         sharedPrefs.putString(Common.INSTANCE.getPATH(), path);
+        PackageInfo info = OtaHotUpdate.packageInfo(getReactApplicationContext());
+        String latestVer = null;
+        if (info != null) {
+            latestVer = info.versionName;
+        }
+        sharedPrefs.putString(Common.INSTANCE.getCURRENT_VERSION_NAME(), latestVer);
         promise.resolve(true);
      }
 
