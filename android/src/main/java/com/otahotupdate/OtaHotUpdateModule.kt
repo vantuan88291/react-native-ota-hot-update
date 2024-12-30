@@ -6,6 +6,8 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.otahotupdate.OtaHotUpdate.Companion.getPackageInfo
+import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
@@ -93,6 +95,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           file.delete()
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           sharedPrefs.putString(PATH, fileUnzip)
+          sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
           promise.resolve(true)
         } else {
           file.delete()
@@ -145,6 +148,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   override fun setExactBundlePath(path: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(PATH, path)
+    sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
     promise.resolve(true)
   }
   companion object {
