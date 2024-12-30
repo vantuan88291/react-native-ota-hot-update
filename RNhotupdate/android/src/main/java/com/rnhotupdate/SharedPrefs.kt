@@ -27,5 +27,6 @@ object Common {
     val PATH = "PATH"
     val VERSION = "VERSION"
     val SHARED_PREFERENCE_NAME = "HOT-UPDATE-REACT_NATIVE"
+    val CURRENT_VERSION_NAME = "CURRENT_VERSION_NAME"
     val DEFAULT_BUNDLE = "assets://index.android.bundle"
 }
