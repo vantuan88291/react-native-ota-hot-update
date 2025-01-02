@@ -1,7 +1,7 @@
 # react-native-ota-hot-update
 
 
-This React Native module allows you to manage hot updates with minimal configuration, similar to Code Push. You can control versioning and host the JS bundle yourself. The library handles the installation of updates after the bundle is downloaded from your server or Git repository. With Code Push retiring soon, this library gives you full control over your update process, whether hosting the bundle on your own server or in a Git repository.
+This React Native module allows you to manage hot updates (in-app update) with minimal configuration, similar to Code Push. You can control versioning and host the JS bundle yourself. The library handles the installation of updates after the bundle is downloaded from your server or Git repository. With Code Push retiring soon, this library gives you full control over your update process, whether hosting the bundle on your own server or in a Git repository.
 
 
 1. **Demo via server**
