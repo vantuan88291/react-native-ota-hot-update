@@ -169,4 +169,5 @@ const onCheckGitVersion = () => {
 - The `bundlePath` should match the location of the bundle file within your Git repository.
 - This feature is designed to work seamlessly with both iOS and Android platforms.
 - There are noway to check whether have new updating, need pull first and notify user or restart the app to apply the changes, if you want check new version before pull the changes, you should design an api for that.
-- Git for client we are using `isomorphic-git`, a lightweight git engine for js
+- Git for client we are using `isomorphic-git`, a lightweight git engine for js.
+- Finally, i am not recommend to use this way to control your hot update if your application is really big and has a lot of users, i would like to recommend you to use custom server.
