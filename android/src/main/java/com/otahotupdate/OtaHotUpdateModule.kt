@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.otahotupdate.OtaHotUpdate.Companion.getPackageInfo
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
+import com.rnhotupdate.Common.CURRENT_VERSION_CODE
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
