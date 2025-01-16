@@ -38,7 +38,7 @@ export const useCheckVersion = () => {
     fetch(apiVersion).then(async (data) => {
       const result = await data.json();
       const currentVersion = await hotUpdate.getCurrentVersion();
-      if (result?.version > currentVersion || result?.buildNumber) {
+      if (result?.version > currentVersion) {
         Alert.alert(
           'New version is comming!',
           'New version has release, please update',
