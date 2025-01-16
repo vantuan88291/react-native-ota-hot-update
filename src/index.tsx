@@ -100,11 +100,10 @@ async function downloadBundleUri(
     return;
   }
   const currentVersion = await getVersionAsNumber();
-
   if (version <= currentVersion) {
     installFail(
       option,
-      'Please give a bigger version number than the current version number, the current version now has setted by: ' +
+      'Please give a bigger version than the current version, the current version now has setted by: ' +
         currentVersion
     );
     return;
