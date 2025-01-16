@@ -91,7 +91,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         deleteOldBundleIfneeded()
         val fileUnzip = extractZipFile(file, extension ?: ".bundle")
         if (fileUnzip != null) {
-          Log.d("setupBundlePath----: ", fileUnzip)
+           Log.d("setupBundlePath----: ", fileUnzip)
           file.delete()
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           sharedPrefs.putString(PATH, fileUnzip)
@@ -142,6 +142,24 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(VERSION, version)
     promise.resolve(true)
+  }
+
+  @ReactMethod
+  override fun setCurrentBuildNumber(buildNumber: String?, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    sharedPrefs.putString(BUILD_NUMBER, buildNumber)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  override fun getCurrentBuildNumber(a: Double, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    val buildNumber = sharedPrefs.getString(BUILD_NUMBER)
+    if (buildNumber != "") {
+      promise.resolve(buildNumber)
+    } else {
+      promise.resolve("0")
+    }
   }
 
   @ReactMethod

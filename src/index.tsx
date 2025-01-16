@@ -66,6 +66,16 @@ async function getVersionAsNumber() {
 function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
 }
+function getCurrentBuildNumber(): Promise<string> {
+  return RNhotupdate.getCurrentBuildNumber(0);
+}
+async function getBuildNumberAsNumber() {
+  const rawBuildNumber = await getCurrentBuildNumber();
+  return +rawBuildNumber;
+}
+function setCurrentBuildNumber(buildNumber: number): Promise<boolean> {
+  return RNhotupdate.setCurrentBuildNumber(buildNumber + '');
+}
 async function resetApp() {
   RNhotupdate.restart();
 }
@@ -77,6 +87,7 @@ function removeBundle(restartAfterRemoved?: boolean) {
       }, 300);
       if (data) {
         setCurrentVersion(0);
+        setCurrentBuildNumber(0);
       }
     }
   });
@@ -89,6 +100,7 @@ async function downloadBundleUri(
   downloadManager: DownloadManager,
   uri: string,
   version: number,
+  buildNumber: number,
   option?: UpdateOption
 ) {
   if (!uri) {
@@ -100,11 +112,15 @@ async function downloadBundleUri(
     return;
   }
   const currentVersion = await getVersionAsNumber();
-  if (version <= currentVersion) {
+  const currentBuildNumber = await getBuildNumberAsNumber();
+
+  if (version <= currentVersion && buildNumber <= currentBuildNumber) {
     installFail(
       option,
-      'Please give a bigger version than the current version, the current version now has setted by: ' +
-        currentVersion
+      'Please give a bigger version/build number than the current version/build number, the current version and build number now has setted by: ' +
+        currentVersion +
+        ' and ' +
+        currentBuildNumber
     );
     return;
   }
@@ -119,6 +135,7 @@ async function downloadBundleUri(
       setupBundlePath(path, option?.extensionBundle).then((success) => {
         if (success) {
           setCurrentVersion(version);
+          setCurrentBuildNumber(buildNumber);
           option?.updateSuccess?.();
           if (option?.restartAfterInstall) {
             setTimeout(() => {
@@ -192,6 +209,8 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  getCurrentBuildNumber: getBuildNumberAsNumber,
+  setCurrentBuildNumber,
   git: {
     checkForGitUpdate,
     ...git,

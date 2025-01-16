@@ -50,6 +50,7 @@ export interface OtaHotUpdate {
     downloadManager: DownloadManager,
     uri: string,
     version: number,
+    buildNumber: number,
     option?: UpdateOption
   ): Promise<void>;
 

@@ -222,6 +222,32 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
     }
 }
 
+RCT_EXPORT_METHOD(getCurrentBuildNumber:(double)a
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *buildNumber = [defaults stringForKey:@"BUILD_NUMBER"];
+     if (buildNumber) {
+         resolve(buildNumber);
+     } else {
+         resolve(@"0");
+     }
+}
+
+RCT_EXPORT_METHOD(setCurrentBuildNumber:(NSString *)buildNumber
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (buildNumber) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:buildNumber forKey:@"BUILD_NUMBER"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
 RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
