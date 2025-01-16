@@ -19,16 +19,6 @@ class SharedPrefs internal constructor(context: Context) {
         editor.apply()
     }
 
-    fun putInt(key: String?, value: Int) {
-        val editor = mSharedPreferences.edit()
-        editor.putInt(key, value)
-        editor.apply()
-    }
-
-    fun getInt(key: String?): Int {
-        return mSharedPreferences.getInt(key, 0)
-    }
-
     fun clear() {
         mSharedPreferences.edit().clear().apply()
     }

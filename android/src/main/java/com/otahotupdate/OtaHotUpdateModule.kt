@@ -97,7 +97,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           sharedPrefs.putString(PATH, fileUnzip)
           sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
-          sharedPrefs.putInt(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode)
+          sharedPrefs.putString(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode?.toString())
           promise.resolve(true)
         } else {
           file.delete()
@@ -151,7 +151,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(PATH, path)
     sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
-    sharedPrefs.putInt(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode)
+    sharedPrefs.putString(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode?.toString())
     promise.resolve(true)
   }
   companion object {
