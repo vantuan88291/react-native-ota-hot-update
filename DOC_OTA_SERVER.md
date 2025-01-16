@@ -38,7 +38,6 @@ The `update.json` file should look like this:
 ```json
 {
   "version": 1,
-  "buildNumber": 1,
   "downloadAndroidUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/index.android.bundle.zip?alt=media",
   "downloadIosUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/main.jsbundle.zip?alt=media"
 }
@@ -56,7 +55,7 @@ After setting up your version management, fetch the `update.json` file to get th
 import hotUpdate from 'react-native-ota-hot-update';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
-hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, buildNumber, {
+hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
   updateSuccess: () => {
     console.log('Update successful!');
   },
@@ -73,7 +72,7 @@ hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, buildNumber, {
 });
 ```
 
-> **Important:** Always pass the `version` and `buildNumber` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` and `buildNumber` is **0**.
+> **Important:** Always pass the `version` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` is **0**.
 
 > **Note:** You can use either `react-native-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
 
@@ -103,7 +102,7 @@ Other CMS options include CraftCMS and PayloadCMS.
 
 | Function                 | Return Type | Description                                                                                   | Parameters                                                                                     |
 |--------------------------|-------------|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| `downloadBundleUri`      | `void`      | Downloads and installs the bundle.                                                           | `(downloadManager: DownloadManager, uri: string, version: number, buildNumber: number, option?: UpdateOption)`     |
+| `downloadBundleUri`      | `void`      | Downloads and installs the bundle.                                                           | `(downloadManager: DownloadManager, uri: string, version: number, option?: UpdateOption)`     |
 | `setupBundlePath`        | `boolean`   | Installs the bundle from a custom path. Ignore if using `downloadBundleUri`.                  | `path: string` - Path of the zip file containing the bundle.                                  |
 | `setupExactBundlePath`   | `boolean`   | Installs the bundle from an extracted file path.                                              | `path: string` - Path of the extracted bundle file.                                           |
 | `removeUpdate`           | `void`      | Removes the update and reverts to the previous version.                                       | `restartAfterRemoved?: boolean` - Restarts the app to apply changes.                         |

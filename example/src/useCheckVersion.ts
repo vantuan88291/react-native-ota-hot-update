@@ -12,8 +12,8 @@ const apiVersion =
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const startUpdate = async (url: string, version: number, buildNumber: number) => {
-    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, buildNumber, {
+  const startUpdate = async (url: string, version: number) => {
+    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
       updateSuccess: () => {
         console.log('update success!');
       },
@@ -38,11 +38,10 @@ export const useCheckVersion = () => {
     fetch(apiVersion).then(async (data) => {
       const result = await data.json();
       const currentVersion = await hotUpdate.getCurrentVersion();
-      const currentBuildNumber = await hotUpdate.getCurrentBuildNumber();
       if (result?.version > currentVersion || result?.buildNumber > currentBuildNumber) {
         Alert.alert(
-          'New version or buildNumber is comming!',
-          'New version or buildNumber has release, please update',
+          'New version is comming!',
+          'New version has release, please update',
           [
             {
               text: 'Cancel',
@@ -56,8 +55,7 @@ export const useCheckVersion = () => {
                   Platform.OS === 'ios'
                     ? result?.downloadIosUrl
                     : result?.downloadAndroidUrl,
-                  result.version,
-                  result.buildNumber
+                  result.version
                 ),
             },
           ]
