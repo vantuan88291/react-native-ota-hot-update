@@ -28,7 +28,7 @@ New architecture backward compatibility supported from version 2, it also suppor
 if you don't want to manage the download progress, need to install blob util together:
 
 ```bash
-yarn add react-native-ota-hot-update && yarn add react-native-blob-util
+yarn add react-native-ota-hot-update react-native-blob-util react-native-fs
 ```
 Auto linking already, need pod install for ios:
 ```bash
