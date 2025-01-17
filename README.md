@@ -76,7 +76,7 @@ AppDelegate.mm:
 
 
 ### Android
-Open `MainApplication.java/kt` and add these codes bellow:
+Open `MainApplication.kt` and add these codes bellow:
 ```bash
 import com.otahotupdate.OtaHotUpdate
 ...
@@ -84,6 +84,15 @@ override fun getJSBundleFile(): String? {
     return OtaHotUpdate.bundleJS
 }
 
+```
+
+MainApplication.java:
+```bash
+		@Nullable
+		@Override
+		protected String getJSBundleFile() {
+			return OtaHotUpdate.getBundleJS();
+		}
 ```
 Open `AndroidManifest.xml` :
 
