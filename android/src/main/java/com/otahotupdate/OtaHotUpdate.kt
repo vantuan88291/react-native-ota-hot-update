@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
+import com.rnhotupdate.Common.CURRENT_VERSION_CODE
 import com.rnhotupdate.Common.DEFAULT_BUNDLE
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.SharedPrefs
