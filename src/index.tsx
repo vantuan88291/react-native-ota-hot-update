@@ -141,8 +141,11 @@ const checkForGitUpdate = async (options: UpdateGitOption) => {
     if (!options.url || !options.bundlePath) {
       throw new Error(`url or bundlePath should not be null`);
     }
-    const branch = await git.getBranchName();
-    if (branch) {
+    const [config, branch] = await Promise.all([
+      git.getConfig(),
+      git.getBranchName(),
+    ]);
+    if (branch && config) {
       const pull = await git.pullUpdate({
         branch,
         onProgress: options?.onProgress,

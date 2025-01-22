@@ -47,10 +47,6 @@ const cloneRepo = async (options: CloneOption) => {
         }
       },
     });
-    await setConfig(options?.folderName, {
-      email: options?.email,
-      userName: options?.userName,
-    });
     return {
       success: true,
       msg: null,
@@ -62,6 +58,11 @@ const cloneRepo = async (options: CloneOption) => {
       msg: e.toString(),
       bundle: null,
     };
+  } finally {
+    setConfig(options?.folderName, {
+      email: options?.email,
+      userName: options?.userName,
+    });
   }
 };
 const pullUpdate = async (options: PullOption) => {
@@ -106,6 +107,18 @@ const getBranchName = async (folderName?: string) => {
     return null;
   }
 };
+const getConfig = async (folderName?: string) => {
+  try {
+    return await git.getConfig({
+      fs,
+      dir: getFolder(folderName),
+      path: 'remote.origin.url',
+    });
+  } catch (e: any) {
+    console.log(e.toString());
+    return null;
+  }
+};
 const removeGitUpdate = (folderName?: string) => {
   fs.promises.unlink(getFolder(folderName));
 };
@@ -115,4 +128,5 @@ export default {
   getBranchName,
   setConfig,
   removeGitUpdate,
+  getConfig,
 };
