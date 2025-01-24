@@ -49,6 +49,31 @@ Open `AppDelegate.m` and add this:
 #endif
 }
 ```
+### IOS React native 0.77 or above
+
+From react native 0.77, AppDelegate changed to swift file, so the configuration will be change a bit.
+
+1. Create a Bridging Header
+   - Right-click on your project in the Xcode navigator and select New File from template.
+   - Select Header File under the iOS section and click Next.
+   - Name it something like `YourProjectName-Bridging-Header.h` and save it in your project directory.
+   - In your project's Build Settings: Search for `Objective-C Bridging Header`.
+   Set its value to the relative path of your bridging header file, e.g., YourProjectName/YourProjectName-Bridging-Header.h.
+2. Open `YourProjectName-Bridging-Header.h` and add this line:
+
+   `#import "OtaHotUpdate.h"`
+3. Open AppDelegate.swift:
+
+```bash
+override func bundleURL() -> URL? {
+        #if DEBUG
+            RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+        #else
+            OtaHotUpdate.getBundle()  // -> Add this line
+        #endif
+}
+```
+
 #### For downloading in background mode on IOS, following this (optional):
 
 AppDelegate.h:
@@ -72,6 +97,32 @@ AppDelegate.mm:
       }
    }];
 }
+```
+
+AppDelegate.swift(RN >= 0.77):
+
+```bash
+class AppDelegate: RCTAppDelegate {
+var taskIdentifier: UIBackgroundTaskIdentifier = .invalid
+...
+```
+```bash
+override func applicationWillResignActive(_ application: UIApplication) {
+          // End any existing background task
+          if taskIdentifier != .invalid {
+              application.endBackgroundTask(taskIdentifier)
+              taskIdentifier = .invalid
+          }
+
+          // Start a new background task
+          taskIdentifier = application.beginBackgroundTask(withName: nil) { [weak self] in
+              if let strongSelf = self {
+                  application.endBackgroundTask(strongSelf.taskIdentifier)
+                  strongSelf.taskIdentifier = .invalid
+              }
+          }
+      }
+
 ```
 
 
