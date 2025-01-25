@@ -17,27 +17,31 @@ To enable OTA updates, design an API in the CMS to filter bundles based on the a
 2. Create a new collection type for managing bundles:
 
 - Click **Create new collection type** under the **Collection types** section.
-  ![Screenshot 2025-01-25 at 18.59.09.png](cms/Screenshot%202025-01-25%20at%2018.59.09.png)
+
+![Screenshot 2025-01-25 at 18.59.09.png](cms/Screenshot%202025-01-25%20at%2018.59.09.png)
 
 
 
 - Name the collection (e.g., `android` for Android updates):
-  ![Screenshot 2025-01-25 at 19.00.13.png](cms/Screenshot%202025-01-25%20at%2019.00.13.png)
+
+![Screenshot 2025-01-25 at 19.00.13.png](cms/Screenshot%202025-01-25%20at%2019.00.13.png)
 
 
 - Add the following fields to the collection, as shown below:
-  ![Screenshot 2025-01-25 at 19.03.02.png](cms/Screenshot%202025-01-25%20at%2019.03.02.png)
 
-
+![Screenshot 2025-01-25 at 19.03.02.png](cms/Screenshot%202025-01-25%20at%2019.03.02.png)
 
 3. Repeat the process to create a collection for iOS.
 
 4. Once the collections are created, update their permissions:
 
 - Go to **Settings** > **Users & Permissions plugin** > **Roles** > **Public**.
-  ![Screenshot 2025-01-25 at 19.04.37.png](cms/Screenshot%202025-01-25%20at%2019.04.37.png)
+
+![Screenshot 2025-01-25 at 19.04.37.png](cms/Screenshot%202025-01-25%20at%2019.04.37.png)
+
 - Grant access to the `android` and `ios` collections:
-  ![Screenshot 2025-01-25 at 19.05.59.png](cms/Screenshot%202025-01-25%20at%2019.05.59.png)
+
+![Screenshot 2025-01-25 at 19.05.59.png](cms/Screenshot%202025-01-25%20at%2019.05.59.png)
 
 
 - Click **Save**.
@@ -47,11 +51,13 @@ To enable OTA updates, design an API in the CMS to filter bundles based on the a
 1. In the sidebar, select **Content Manager** and choose `android` or `ios`.
 
 2. Create a new entry and fill in the required fields, including version and bundle file:
-   ![Screenshot 2025-01-25 at 19.08.35.png](cms/Screenshot%202025-01-25%20at%2019.08.35.png)
+
+![Screenshot 2025-01-25 at 19.08.35.png](cms/Screenshot%202025-01-25%20at%2019.08.35.png)
 
 
 3. Mark the entry as **Published**:
-   ![Screenshot 2025-01-25 at 19.09.26.png](cms/Screenshot%202025-01-25%20at%2019.09.26.png)
+
+![Screenshot 2025-01-25 at 19.09.26.png](cms/Screenshot%202025-01-25%20at%2019.09.26.png)
 
 
 
@@ -63,6 +69,7 @@ Now that the collections are ready, use the following API endpoints to retrieve 
 - **iOS**: `http://localhost:1337/api/ios?populate=*&filters[targetVersion][$eq]=1.0.0&sort=id:desc`
 
 To find the endpoint's **API ID (Plural)**, refer to this section:
+
 ![Screenshot 2025-01-25 at 19.14.23.png](cms/Screenshot%202025-01-25%20at%2019.14.23.png)
 
 
