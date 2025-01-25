@@ -170,6 +170,11 @@ This method allows you to use a Git repository to host the bundle JS. The app pu
 
 For detailed instructions on how to implement this, refer to [**DOC_OTA_GIT.md**](DOC_OTA_GIT.md).
 
+
+### Build a Custom Admin Panel with CMS
+Using Strapi, you can build a tailored admin panel to manage React Native hot updates effectively. This approach allows you to centralize the control of versioning and OTA updates while providing a user-friendly interface for managing content. To get started, refer to the detailed steps and code examples in this guide. For additional details, see [**OTA_CMS.md**](OTA_CMS.md).
+
+
 ## License
 
 [MIT](LICENSE)
