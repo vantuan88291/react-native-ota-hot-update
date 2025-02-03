@@ -1,6 +1,7 @@
 package com.otahotupdate
 
 import android.content.Context
+import android.icu.text.SimpleDateFormat
 import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -9,9 +10,12 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.otahotupdate.OtaHotUpdate.Companion.getPackageInfo
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
+import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
 import java.io.File
+import java.util.Date
+import java.util.Locale
 import java.util.zip.ZipFile
 
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
@@ -39,11 +43,11 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
   private fun deleteOldBundleIfneeded(): Boolean {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    val path = sharedPrefs.getString(PATH)
+    val path = sharedPrefs.getString(PREVIOUS_PATH)
     val file = File(path)
     if (file.exists() && file.isFile) {
       val isDeleted = deleteDirectory(file.parentFile)
-      sharedPrefs.clear()
+      sharedPrefs.putString(PREVIOUS_PATH, "")
       return isDeleted
     } else {
       return false
@@ -54,25 +58,42 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   ): String? {
     return try {
       val outputDir = zipFile.parentFile
+      val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+      var topLevelFolder: String? = null
       var bundlePath: String? = null
       ZipFile(zipFile).use { zip ->
         zip.entries().asSequence().forEach { entry ->
           zip.getInputStream(entry).use { input ->
+            if (topLevelFolder == null) {
+              val parts = entry.name.split("/")
+              if (parts.size > 1) {
+                topLevelFolder = parts.first()
+              }
+            }
+            val outputFile = File(outputDir, entry.name)
             if (entry.isDirectory) {
-              val d = File(outputDir, entry.name)
-              if (!d.exists()) d.mkdirs()
+              if (!outputFile.exists()) outputFile.mkdirs()
             } else {
-              val f = File(outputDir, entry.name)
-              if (f.parentFile?.exists() != true)  f.parentFile?.mkdirs()
-
-              f.outputStream().use { output ->
+              if (outputFile.parentFile?.exists() != true)  outputFile.parentFile?.mkdirs()
+              outputFile.outputStream().use { output ->
                 input.copyTo(output)
               }
-              if (f.absolutePath.contains(extension)) {
-                bundlePath = f.absolutePath
+              if (outputFile.absolutePath.endsWith(extension)) {
+                bundlePath = outputFile.absolutePath
+                return@use // Exit early if found
               }
             }
           }
+        }
+      }
+      // Rename the detected top-level folder
+      if (topLevelFolder != null) {
+        val extractedFolder = File(outputDir, topLevelFolder)
+        val renamedFolder = File(outputDir, "output_$timestamp")
+        if (extractedFolder.exists()) {
+          extractedFolder.renameTo(renamedFolder)
+          // Update bundlePath if the file was inside the renamed folder
+          bundlePath = bundlePath?.replace(extractedFolder.absolutePath, renamedFolder.absolutePath)
         }
       }
       bundlePath
@@ -94,6 +115,10 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           Log.d("setupBundlePath----: ", fileUnzip)
           file.delete()
           val sharedPrefs = SharedPrefs(reactApplicationContext)
+          val oldPath = sharedPrefs.getString(PATH)
+          if (!oldPath.equals("")) {
+            sharedPrefs.putString(PREVIOUS_PATH, oldPath)
+          }
           sharedPrefs.putString(PATH, fileUnzip)
           sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
           promise.resolve(true)
@@ -150,6 +175,11 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     sharedPrefs.putString(PATH, path)
     sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
     promise.resolve(true)
+  }
+
+  @ReactMethod
+  override fun rollbackToPreviousBundle() {
+
   }
   companion object {
     const val NAME = "OtaHotUpdate"
