@@ -41,13 +41,14 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     // Finally, delete the empty directory or file
     return directory.delete()
   }
-  private fun deleteOldBundleIfneeded(): Boolean {
+  private fun deleteOldBundleIfneeded(pathKey: String?): Boolean {
+    val pathName = if (pathKey != null) pathKey else PREVIOUS_PATH
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    val path = sharedPrefs.getString(PREVIOUS_PATH)
+    val path = sharedPrefs.getString(pathName)
     val file = File(path)
     if (file.exists() && file.isFile) {
       val isDeleted = deleteDirectory(file.parentFile)
-      sharedPrefs.putString(PREVIOUS_PATH, "")
+      sharedPrefs.putString(pathName, "")
       return isDeleted
     } else {
       return false
@@ -109,7 +110,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     if (path != null) {
       val file = File(path)
       if (file.exists() && file.isFile) {
-        deleteOldBundleIfneeded()
+        deleteOldBundleIfneeded(null)
         val fileUnzip = extractZipFile(file, extension ?: ".bundle")
         if (fileUnzip != null) {
           Log.d("setupBundlePath----: ", fileUnzip)
@@ -139,10 +140,11 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
 
   @ReactMethod
   override fun deleteBundle(i: Double, promise: Promise) {
-    val isDeleted = deleteOldBundleIfneeded()
+    val isDeleted = deleteOldBundleIfneeded(PATH)
+    val isDeletedOldPath = deleteOldBundleIfneeded(PREVIOUS_PATH)
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(VERSION, "0")
-    promise.resolve(isDeleted)
+    promise.resolve(isDeleted && isDeletedOldPath)
   }
 
   @ReactMethod
@@ -178,8 +180,21 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun rollbackToPreviousBundle() {
-
+  override fun rollbackToPreviousBundle(a: Double, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    val oldPath = sharedPrefs.getString(PREVIOUS_PATH)
+    if (oldPath != "") {
+      val isDeleted = deleteOldBundleIfneeded(PATH)
+      if (isDeleted) {
+        sharedPrefs.putString(PATH, oldPath)
+        sharedPrefs.putString(PREVIOUS_PATH, "")
+        promise.resolve(true)
+      } else {
+        promise.resolve(false)
+      }
+    } else {
+      promise.resolve(false)
+    }
   }
   companion object {
     const val NAME = "OtaHotUpdate"
