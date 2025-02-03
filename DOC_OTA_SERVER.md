@@ -100,15 +100,16 @@ Other CMS options include CraftCMS and PayloadCMS.
 
 ## Library Functions
 
-| Function                 | Return Type | Description                                                                                   | Parameters                                                                                     |
-|--------------------------|-------------|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| `downloadBundleUri`      | `void`      | Downloads and installs the bundle.                                                           | `(downloadManager: DownloadManager, uri: string, version: number, option?: UpdateOption)`     |
-| `setupBundlePath`        | `boolean`   | Installs the bundle from a custom path. Ignore if using `downloadBundleUri`.                  | `path: string` - Path of the zip file containing the bundle.                                  |
-| `setupExactBundlePath`   | `boolean`   | Installs the bundle from an extracted file path.                                              | `path: string` - Path of the extracted bundle file.                                           |
-| `removeUpdate`           | `void`      | Removes the update and reverts to the previous version.                                       | `restartAfterRemoved?: boolean` - Restarts the app to apply changes.                         |
-| `resetApp`               | `void`      | Restarts the app to apply changes.                                                           | None                                                                                          |
-| `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                         | None                                                                                          |
-| `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                              | `version: number`                                                                             |
+| Function                 | Return Type | Description                                                                                           | Parameters                                                                                     |
+|--------------------------|-------------|-------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `downloadBundleUri`      | `void`      | Downloads and installs the bundle.                                                                    | `(downloadManager: DownloadManager, uri: string, version: number, option?: UpdateOption)`     |
+| `setupBundlePath`        | `boolean`   | Installs the bundle from a custom path. Ignore if using `downloadBundleUri`.                          | `path: string` - Path of the zip file containing the bundle.                                  |
+| `setupExactBundlePath`   | `boolean`   | Installs the bundle from an extracted file path.                                                      | `path: string` - Path of the extracted bundle file.                                           |
+| `removeUpdate`           | `void`      | Removes the update and reverts to the previous version.                                               | `restartAfterRemoved?: boolean` - Restarts the app to apply changes.                         |
+| `resetApp`               | `void`      | Restarts the app to apply changes.                                                                    | None                                                                                          |
+| `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                                  | None                                                                                          |
+| `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                                       | `version: number`                                                                             |
+| `rollbackToPreviousBundle`      | `boolean`   | Rollback to previous bundle, by default app will store 2 versions of bundle from the second updating. | None                                                                             |
 
 ---
 
