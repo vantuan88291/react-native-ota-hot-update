@@ -15,6 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import androidx.annotation.NonNull;
@@ -39,13 +42,14 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         // Finally, delete the empty directory or file
         return directory.delete();
     }
-    private boolean deleteOldBundleIfneeded() {
+    private boolean deleteOldBundleIfneeded(String pathKey) {
+        String pathName = pathKey != null ? pathKey : Common.INSTANCE.getPREVIOUS_PATH();
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
-        String path = sharedPrefs.getString(Common.INSTANCE.getPATH());
+        String path = sharedPrefs.getString(pathName);
         File file = new File(path);
         if (file.exists() && file.isFile()) {
             boolean isDeleted = deleteDirectory(file.getParentFile());
-            sharedPrefs.clear();
+            sharedPrefs.putString(pathName, "");
             return isDeleted;
         } else {
             return false;
@@ -53,7 +57,8 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     }
     private String unzip(File zipFile, String extension) {
         File destDir = zipFile.getParentFile(); // Directory of the zip file
-
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String topLevelFolder = null;
         String bundleFilePath = null;
         if (!destDir.exists()) {
             destDir.mkdirs();
@@ -65,6 +70,12 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 File newFile = new File(destDir, zipEntry.getName());
+                if (topLevelFolder == null) {
+                    String[] parts = zipEntry.getName().split("/");
+                    if (parts.length > 1) {
+                        topLevelFolder = parts[0];
+                    }
+                }
                 if (zipEntry.isDirectory()) {
                     newFile.mkdirs();
                 } else {
@@ -87,6 +98,14 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             return null;
         }
+        if (topLevelFolder != null) {
+            File extractedFolder = new File(destDir, topLevelFolder);
+            File renameFolder = new File(destDir, "output_" + timestamp);
+            if (extractedFolder.exists()) {
+                extractedFolder.renameTo(renameFolder);
+                bundleFilePath = bundleFilePath.replace(extractedFolder.getAbsolutePath(), renameFolder.getAbsolutePath());
+            }
+        }
         return bundleFilePath;
     }
 
@@ -95,12 +114,16 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         if (path != null) {
             File file = new File(path);
             if (file.exists() && file.isFile()) {
-                deleteOldBundleIfneeded();
+                deleteOldBundleIfneeded(null);
                 String fileUnzip = unzip(file, extension != null ? extension : ".bundle");
                 if (fileUnzip != null) {
                     Log.d("setupBundlePath: ", fileUnzip);
                     file.delete();
                     SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+                    String oldPath = sharedPrefs.getString(Common.INSTANCE.getPATH());
+                    if (!oldPath.equals("")) {
+                        sharedPrefs.putString(Common.INSTANCE.getPREVIOUS_PATH(), oldPath);
+                    }
                     sharedPrefs.putString(Common.INSTANCE.getPATH(), fileUnzip);
                     PackageInfo info = OtaHotUpdate.packageInfo(getReactApplicationContext());
                     String latestVer = null;
@@ -126,10 +149,11 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void deleteBundle(Promise promise) {
-        boolean isDeleted = deleteOldBundleIfneeded();
+        boolean isDeleted = deleteOldBundleIfneeded(null);
+        boolean isDeletedOld = deleteOldBundleIfneeded(Common.INSTANCE.getPATH());
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         sharedPrefs.putString(Common.INSTANCE.getVERSION(), "0");
-        promise.resolve(isDeleted);
+        promise.resolve(isDeleted && isDeletedOld);
     }
     @ReactMethod
     public void restart() {
@@ -147,6 +171,24 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
+    public void rollbackToPreviousBundle(Promise promise) {
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        String oldPath = sharedPrefs.getString(Common.INSTANCE.getPREVIOUS_PATH());
+        if (!oldPath.equals("")) {
+            boolean isDeleted = deleteOldBundleIfneeded(Common.INSTANCE.getPATH());
+            if (isDeleted) {
+                sharedPrefs.putString(Common.INSTANCE.getPATH(), oldPath);
+                sharedPrefs.putString(Common.INSTANCE.getPREVIOUS_PATH(), "");
+                promise.resolve(true);
+            } else {
+                promise.resolve(false);
+            }
+        } else {
+            promise.resolve(false);
+        }
+
+    }
+    @ReactMethod
     public void getCurrentVersion(Promise promise) {
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         String version = sharedPrefs.getString(Common.INSTANCE.getVERSION());
@@ -159,13 +201,13 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
     }
     @ReactMethod
     public void setCurrentVersion(String version, Promise promise) {
-         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
-         sharedPrefs.putString(Common.INSTANCE.getVERSION(), version);
-         promise.resolve(true);
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        sharedPrefs.putString(Common.INSTANCE.getVERSION(), version);
+        promise.resolve(true);
     }
 
     @ReactMethod
-     public void setExactBundlePath(String path, Promise promise) {
+    public void setExactBundlePath(String path, Promise promise) {
         SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
         sharedPrefs.putString(Common.INSTANCE.getPATH(), path);
         PackageInfo info = OtaHotUpdate.packageInfo(getReactApplicationContext());
@@ -175,7 +217,7 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         }
         sharedPrefs.putString(Common.INSTANCE.getCURRENT_VERSION_NAME(), latestVer);
         promise.resolve(true);
-     }
+    }
 
     @NonNull
     @Override

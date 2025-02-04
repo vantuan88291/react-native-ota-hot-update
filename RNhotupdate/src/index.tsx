@@ -46,6 +46,9 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion();
 }
+function rollbackToPreviousBundle(): Promise<boolean> {
+  return RNhotupdate.rollbackToPreviousBundle();
+}
 async function getVersionAsNumber() {
   const rawVersion = await getCurrentVersion();
   return +rawVersion;
@@ -168,6 +171,7 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  rollbackToPreviousBundle,
   git: {
     checkForGitUpdate,
     ...git,
