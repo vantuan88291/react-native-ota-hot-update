@@ -8,6 +8,7 @@ export interface Spec extends TurboModule {
   restart(): void;
   getCurrentVersion(a: number): Promise<string>;
   setCurrentVersion(version: string): Promise<boolean>;
+  rollbackToPreviousBundle(a: number): Promise<boolean>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('OtaHotUpdate');

@@ -12,6 +12,7 @@ const apiVersion =
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const [version, setVersion] = React.useState('0');
   const startUpdate = async (url: string, version: number) => {
     hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
       updateSuccess: () => {
@@ -62,6 +63,27 @@ export const useCheckVersion = () => {
         );
       }
     });
+  };
+
+  const rollBack = async () => {
+    const rs = await hotUpdate.rollbackToPreviousBundle();
+    if (rs) {
+      Alert.alert('Rollback success', 'Restart to apply', [
+        {
+          text: 'Ok',
+          onPress: () => hotUpdate.resetApp(),
+          style: 'cancel',
+        },
+      ]);
+    } else {
+      Alert.alert('Oops', 'No bundle to rollback', [
+        {
+          text: 'cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+      ]);
+    }
   };
 
   const onCheckGitVersion = () => {
@@ -131,14 +153,21 @@ export const useCheckVersion = () => {
   const removeGitUpdate = () => {
     hotUpdate.git.removeGitUpdate();
   };
+  React.useEffect(() => {
+    hotUpdate.getCurrentVersion().then((data) => {
+      setVersion(`${data}`);
+    });
+  }, []);
   return {
     version: {
       onCheckVersion,
       onCheckGitVersion,
       removeGitUpdate,
+      rollBack,
       state: {
         progress,
         loading,
+        version,
       },
     },
   };
