@@ -238,7 +238,7 @@ RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
 
 - (void)loadBundle
 {
-    RCTTriggerReloadCommandListeners(@"react-native-ota-hot-update: Restart");
+    RCTTriggerReloadCommandListeners(@"react-native-update-ota: Restart");
 }
 RCT_EXPORT_METHOD(restart) {
     if ([NSThread isMainThread]) {

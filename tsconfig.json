@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-ota-hot-update": ["./src/index"]
+      "react-native-update-ota": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

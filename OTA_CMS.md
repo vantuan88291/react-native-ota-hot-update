@@ -1,6 +1,6 @@
 # Control React Native Hot Update with CMS
 
-In a previous post, I introduced the [React Native OTA Hot Update library](https://github.com/vantuan88291/react-native-ota-hot-update), which allows you to self-host a backend for managing hot updates. In this guide, I will walk you through creating a custom CMS using Strapi to control versions and manage hot updates for React Native apps.
+In a previous post, I introduced the [React Native OTA Hot Update library](https://github.com/tuanduc2904/react-native-update-ota), which allows you to self-host a backend for managing hot updates. In this guide, I will walk you through creating a custom CMS using Strapi to control versions and manage hot updates for React Native apps.
 
 ## Step 1: Install Strapi
 
@@ -151,10 +151,10 @@ export const useUpdateVersion = () => {
 
    ```typescript
    import React from "react";
-   import HotUpdate from "react-native-ota-hot-update";
+   import HotUpdate from "react-native-update-ota";
    import { requestUpdateBundle } from "./api";
    import { Alert } from "react-native";
-   import ReactNativeBlobUtil from "react-native-blob-util";
+   import ReactNativeBlobUtil from "rn-blob-util";
 
    // Custom hook to check for and apply OTA updates
    export const useUpdateVersion = () => {

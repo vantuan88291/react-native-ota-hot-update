@@ -1,10 +1,13 @@
 import { NativeModules, Platform } from 'react-native';
-import type { DownloadManager } from './download';
-import type { UpdateGitOption, UpdateOption } from './type';
-import git from './gits';
+import ReactNativeBlobUtil from 'rn-blob-util';
+import type {
+  DownloadBundleFileOption,
+  DownloadBundleUriOption,
+  UpdateOption,
+} from './type';
 
 const LINKING_ERROR =
-  `The package 'react-native-ota-hot-update' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'react-native-update-ota' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
@@ -27,12 +30,12 @@ const RNhotupdate = OtaHotUpdateModule
       }
     );
 
-const downloadBundleFile = async (
-  downloadManager: DownloadManager,
-  uri: string,
-  headers?: object,
-  callback?: (received: string, total: string) => void
-) => {
+const downloadBundleFile = async ({
+  downloadManager,
+  uri,
+  headers,
+  progress,
+}: DownloadBundleFileOption) => {
   const res = await downloadManager
     .config({
       fileCache: Platform.OS === 'android',
@@ -41,12 +44,13 @@ const downloadBundleFile = async (
       ...headers,
     })
     .progress((received, total) => {
-      if (callback) {
-        callback(received, total);
+      if (progress) {
+        progress(received, total);
       }
     });
   return res.path();
 };
+
 function setupBundlePath(path: string, extension?: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path, extension);
 }
@@ -85,12 +89,12 @@ const installFail = (option?: UpdateOption, e?: any) => {
   option?.updateFail?.(JSON.stringify(e));
   console.error('Download bundle fail', JSON.stringify(e));
 };
-async function downloadBundleUri(
-  downloadManager: DownloadManager,
-  uri: string,
-  version: number,
-  option?: UpdateOption
-) {
+async function downloadBundleUri({
+  downloadManager = ReactNativeBlobUtil,
+  uri,
+  version,
+  option,
+}: DownloadBundleUriOption) {
   if (!uri) {
     installFail(option, 'Please give a valid URL!');
     return;
@@ -109,12 +113,12 @@ async function downloadBundleUri(
     return;
   }
   try {
-    const path = await downloadBundleFile(
+    const path = await downloadBundleFile({
       downloadManager,
       uri,
-      option?.headers,
-      option?.progress
-    );
+      headers: option?.headers,
+      progress: option?.progress,
+    });
     if (path) {
       setupBundlePath(path, option?.extensionBundle).then((success) => {
         if (success) {
@@ -136,57 +140,7 @@ async function downloadBundleUri(
     installFail(option, e);
   }
 }
-const checkForGitUpdate = async (options: UpdateGitOption) => {
-  try {
-    if (!options.url || !options.bundlePath) {
-      throw new Error(`url or bundlePath should not be null`);
-    }
-    const [config, branch] = await Promise.all([
-      git.getConfig(),
-      git.getBranchName(),
-    ]);
-    if (branch && config) {
-      const pull = await git.pullUpdate({
-        branch,
-        onProgress: options?.onProgress,
-        folderName: options?.folderName,
-      });
-      if (pull.success) {
-        options?.onPullSuccess?.();
-        if (options?.restartAfterInstall) {
-          setTimeout(() => {
-            resetApp();
-          }, 300);
-        }
-      } else {
-        options?.onPullFailed?.(pull.msg);
-      }
-    } else {
-      const clone = await git.cloneRepo({
-        onProgress: options?.onProgress,
-        folderName: options?.folderName,
-        url: options.url,
-        branch: options?.branch,
-        bundlePath: options.bundlePath,
-      });
-      if (clone.success && clone.bundle) {
-        await setupExactBundlePath(clone.bundle);
-        options?.onCloneSuccess?.();
-        if (options?.restartAfterInstall) {
-          setTimeout(() => {
-            resetApp();
-          }, 300);
-        }
-      } else {
-        options?.onCloneFailed?.(clone.msg);
-      }
-    }
-  } catch (e: any) {
-    options?.onCloneFailed?.(e.toString());
-  } finally {
-    options?.onFinishProgress?.();
-  }
-};
+
 export default {
   setupBundlePath,
   setupExactBundlePath,
@@ -195,12 +149,4 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
-  git: {
-    checkForGitUpdate,
-    ...git,
-    removeGitUpdate: (folder?: string) => {
-      RNhotupdate.setExactBundlePath('');
-      git.removeGitUpdate(folder);
-    },
-  },
 };

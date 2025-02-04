@@ -1,3 +1,5 @@
+import type { DownloadManager } from './download';
+
 export interface UpdateOption {
   /**
    * Optional headers to include with the update request.
@@ -160,4 +162,18 @@ export interface PullOption {
    * This branch must exist in the remote repository.
    */
   branch: string;
+}
+
+export interface DownloadBundleFileOption {
+  downloadManager: DownloadManager;
+  uri: string;
+  headers?: UpdateOption['headers'];
+  progress?: UpdateOption['progress'];
+}
+
+export interface DownloadBundleUriOption {
+  downloadManager: DownloadManager;
+  uri: string;
+  option: UpdateOption;
+  version: number;
 }

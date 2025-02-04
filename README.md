@@ -1,4 +1,4 @@
-# react-native-ota-hot-update
+# react-native-update-ota
 
 
 This React Native module allows you to manage hot updates (in-app update) with minimal configuration, similar to Code Push. You can control versioning and host the JS bundle yourself. The library handles the installation of updates after the bundle is downloaded from your server or Git repository. With Code Push retiring soon, this library gives you full control over your update process, whether hosting the bundle on your own server or in a Git repository.
@@ -16,8 +16,8 @@ iOS GIF             | Android GIF
 :-------------------------:|:-------------------------:
 <img src="./iosgit.gif" title="iOS GIF" width="250"> | <img src="./androidgithotupdate.gif" title="Android GIF" width="250">
 
-[![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
-[![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
+[![npm downloads](https://img.shields.io/npm/dw/react-native-update-ota)](https://img.shields.io/npm/dw/react-native-update-ota)
+[![npm package](https://img.shields.io/npm/v/react-native-update-ota?color=red)](https://img.shields.io/npm/v/react-native-update-ota?color=red)
 
 ## New architecture supported
 
@@ -28,7 +28,7 @@ New architecture backward compatibility supported from version 2, it also suppor
 if you don't want to manage the download progress, need to install blob util together:
 
 ```bash
-yarn add react-native-ota-hot-update && yarn add react-native-blob-util
+yarn add react-native-update-ota && yarn add rn-blob-util
 ```
 Auto linking already, need pod install for ios:
 ```bash

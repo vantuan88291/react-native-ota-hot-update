@@ -45,15 +45,15 @@ The `update.json` file should look like this:
 
 Upload your bundle files and `update.json` to Firebase Storage. The structure will look like this:
 
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr1.png)
+![](https://github.com/tuanduc2904/react-native-update-ota/raw/main/scr1.png)
 
 ### 3. Fetch the Update and Apply It
 
 After setting up your version management, fetch the `update.json` file to get the download URL and call the following function:
 
 ```javascript
-import hotUpdate from 'react-native-ota-hot-update';
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import hotUpdate from 'react-native-update-ota';
+import ReactNativeBlobUtil from 'rn-blob-util';
 
 hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
   updateSuccess: () => {
@@ -74,7 +74,7 @@ hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
 
 > **Important:** Always pass the `version` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` is **0**.
 
-> **Note:** You can use either `react-native-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
+> **Note:** You can use either `rn-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
 
 ---
 
@@ -88,9 +88,9 @@ For example, using Strapi CMS allows you to:
 
 Here are some screenshots of Strapi CMS:
 
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr2.png)
+![](https://github.com/tuanduc2904/react-native-update-ota/raw/main/scr2.png)
 
-![](https://github.com/vantuan88291/react-native-ota-hot-update/raw/main/scr3.png)
+![](https://github.com/tuanduc2904/react-native-update-ota/raw/main/scr3.png)
 
 Other CMS options include CraftCMS and PayloadCMS.
 
@@ -127,5 +127,5 @@ Other CMS options include CraftCMS and PayloadCMS.
 
 ## `DownloadManager`
 
-Supports methods provided by `react-native-blob-util` or `rn-fetch-blob`.
+Supports methods provided by `rn-blob-util` or `rn-fetch-blob`.
 

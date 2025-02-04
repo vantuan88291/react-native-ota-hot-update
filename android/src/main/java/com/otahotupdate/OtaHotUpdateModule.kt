@@ -49,6 +49,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
       return false
     }
   }
+  
   private fun extractZipFile(
     zipFile: File,extension: String
   ): String? {

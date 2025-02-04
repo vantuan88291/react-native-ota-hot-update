@@ -1,6 +1,6 @@
 {
-  "name": "react-native-ota-hot-update",
-  "version": "2.0.7",
+  "name": "react-native-update-ota",
+  "version": "3.0.0",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
@@ -37,7 +37,7 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-ota-hot-update-example",
+    "example": "yarn workspace react-native-update-ota-example",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -58,14 +58,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vantuan88291/react-native-ota-hot-update.git"
+    "url": "git+https://github.com/tuanduc2904/react-native-ota.git"
   },
-  "author": "vantuan88291 <vantuan88291@gmail.com> (https://github.com/vantuan88291)",
+  "author": "tuanduc2904 <tuanduc2904@gmail.com> (https://github.com/tuanduc2904)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vantuan88291/react-native-ota-hot-update/issues"
+    "url": "https://github.com/tuanduc2904/react-native-ota/issues"
   },
-  "homepage": "https://github.com/vantuan88291/react-native-ota-hot-update#readme",
+  "homepage": "https://github.com/tuanduc2904/react-native-ota",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -102,7 +102,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-fs": "*"
+    "react-native-fs": "*",
+    "rn-blob-util": "*"
   },
   "workspaces": [
     "example"
@@ -206,5 +207,8 @@
     "type": "module-mixed",
     "languages": "kotlin-objc",
     "version": "0.44.2"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }
