@@ -58,7 +58,7 @@ From react native 0.77, AppDelegate changed to swift file, so the configuration 
    - Select Header File under the iOS section and click Next.
    - Name it something like `YourProjectName-Bridging-Header.h` and save it in your project directory.
    - In your project's Build Settings: Search for `Objective-C Bridging Header`.
-   Set its value to the relative path of your bridging header file, e.g., YourProjectName/YourProjectName-Bridging-Header.h.
+   Set its value to the relative path of your bridging header file, e.g., YourProjectName/YourProjectName-Bridging-Header.h, remember need to create header file inside folder `YourProjectName`
 2. Open `YourProjectName-Bridging-Header.h` and add this line:
 
    `#import "OtaHotUpdate.h"`
