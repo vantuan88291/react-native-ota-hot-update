@@ -196,8 +196,6 @@ RCT_EXPORT_MODULE()
         if (removeError) {
             NSLog(@"Failed to delete zip file: %@", removeError.localizedDescription);
         }
-        NSLog(@"File path----: %@", jsbundleFilePath);
-        // Return the .jsbundle file path or nil if not found
         return jsbundleFilePath;
 }
 
@@ -210,7 +208,6 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
         //Unzip file
         NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
         if (extractedFilePath) {
-            NSLog(@"file extraction----- %@", extractedFilePath);
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             NSString *oldPath = [defaults stringForKey:@"PATH"];
             if (oldPath) {

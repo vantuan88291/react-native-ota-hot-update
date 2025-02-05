@@ -66,6 +66,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         zip.entries().asSequence().forEach { entry ->
           zip.getInputStream(entry).use { input ->
             if (topLevelFolder == null) {
+            // Get root folder of zip file after unzip
               val parts = entry.name.split("/")
               if (parts.size > 1) {
                 topLevelFolder = parts.first()
@@ -113,7 +114,6 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         deleteOldBundleIfneeded(null)
         val fileUnzip = extractZipFile(file, extension ?: ".bundle")
         if (fileUnzip != null) {
-          Log.d("setupBundlePath----: ", fileUnzip)
           file.delete()
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           val oldPath = sharedPrefs.getString(PATH)
