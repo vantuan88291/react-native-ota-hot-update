@@ -57,7 +57,8 @@ public class OtaHotUpdate  implements ReactPackage {
         }
         String pathBundle = sharedPrefs.getString(Common.INSTANCE.getPATH());
         String currentVer = sharedPrefs.getString(Common.INSTANCE.getCURRENT_VERSION_NAME());
-        if (pathBundle.equals("") || (info != null && !currentVer.equals("") && !latestVer.equals(currentVer))) {
+        if (pathBundle.equals("") || (!latestVer.equals(currentVer))) {
+            sharedPrefs.putString(Common.INSTANCE.getVERSION(), "");
             return Common.INSTANCE.getDEFAULT_BUNDLE();
         }
         return pathBundle;
