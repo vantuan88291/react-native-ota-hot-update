@@ -145,6 +145,9 @@ MainApplication.java:
 			return OtaHotUpdate.getBundleJS();
 		}
 ```
+
+For jave it maybe can be like: `OtaHotUpdate.Companion.getBundleJS()` depend on kotlin / jdk version on your project, you can use android studio to get the correct format coding.
+
 Open `AndroidManifest.xml` :
 
 `<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />`
