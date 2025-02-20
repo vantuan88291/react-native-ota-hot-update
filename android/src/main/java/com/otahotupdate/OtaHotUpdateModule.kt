@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.otahotupdate.OtaHotUpdate.Companion.getPackageInfo
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
+import com.rnhotupdate.Common.CURRENT_VERSION_CODE
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
@@ -122,6 +123,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           }
           sharedPrefs.putString(PATH, fileUnzip)
           sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
+          sharedPrefs.putString(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode?.toString())
           promise.resolve(true)
         } else {
           file.delete()
@@ -176,6 +178,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(PATH, path)
     sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
+    sharedPrefs.putString(CURRENT_VERSION_CODE, reactApplicationContext?.getPackageInfo()?.versionCode?.toString())
     promise.resolve(true)
   }
 
