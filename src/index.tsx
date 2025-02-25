@@ -1,10 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
+import type { UpdateOption } from './type';
 import ReactNativeBlobUtil from 'rn-blob-util';
-import type {
-  DownloadBundleFileOption,
-  DownloadBundleUriOption,
-  UpdateOption,
-} from './type';
 
 const LINKING_ERROR =
   `The package 'react-native-update-ota' doesn't seem to be linked. Make sure: \n\n` +
@@ -30,27 +26,24 @@ const RNhotupdate = OtaHotUpdateModule
       }
     );
 
-const downloadBundleFile = async ({
-  downloadManager,
-  uri,
-  headers,
-  progress,
-}: DownloadBundleFileOption) => {
-  const res = await downloadManager
-    .config({
-      fileCache: Platform.OS === 'android',
-    })
+const downloadBundleFile = async (
+  uri: string,
+  headers?: object,
+  callback?: (received: string, total: string) => void
+) => {
+  const res = await ReactNativeBlobUtil.config({
+    fileCache: Platform.OS === 'android',
+  })
     .fetch('GET', uri, {
       ...headers,
     })
     .progress((received, total) => {
-      if (progress) {
-        progress(received, total);
+      if (callback) {
+        callback(received, total);
       }
     });
   return res.path();
 };
-
 function setupBundlePath(path: string, extension?: string): Promise<boolean> {
   return RNhotupdate.setupBundlePath(path, extension);
 }
@@ -62,6 +55,9 @@ function deleteBundlePath(): Promise<boolean> {
 }
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion(0);
+}
+function rollbackToPreviousBundle(): Promise<boolean> {
+  return RNhotupdate.rollbackToPreviousBundle(0);
 }
 async function getVersionAsNumber() {
   const rawVersion = await getCurrentVersion();
@@ -89,52 +85,50 @@ const installFail = (option?: UpdateOption, e?: any) => {
   option?.updateFail?.(JSON.stringify(e));
   console.error('Download bundle fail', JSON.stringify(e));
 };
-async function downloadBundleUri({
-  downloadManager = ReactNativeBlobUtil,
-  uri,
-  version,
-  option,
-}: DownloadBundleUriOption) {
+async function downloadBundleUri(
+  uri: string,
+  version: number,
+  option?: UpdateOption
+) {
   if (!uri) {
-    installFail(option, 'Please give a valid URL!');
-    return;
+    return installFail(option, 'Please give a valid URL!');
   }
   if (!version) {
-    installFail(option, 'Please give a valid version!');
-    return;
+    return installFail(option, 'Please give a valid version!');
   }
+
   const currentVersion = await getVersionAsNumber();
   if (version <= currentVersion) {
-    installFail(
+    return installFail(
       option,
       'Please give a bigger version than the current version, the current version now has setted by: ' +
         currentVersion
     );
-    return;
   }
+
   try {
-    const path = await downloadBundleFile({
-      downloadManager,
+    const path = await downloadBundleFile(
       uri,
-      headers: option?.headers,
-      progress: option?.progress,
-    });
-    if (path) {
-      setupBundlePath(path, option?.extensionBundle).then((success) => {
-        if (success) {
-          setCurrentVersion(version);
-          option?.updateSuccess?.();
-          if (option?.restartAfterInstall) {
-            setTimeout(() => {
-              resetApp();
-            }, 300);
-          }
-        } else {
-          installFail(option);
-        }
-      });
-    } else {
-      installFail(option);
+      option?.headers,
+      option?.progress
+    );
+
+    if (!path) {
+      return installFail(option);
+    }
+
+    const success = await setupBundlePath(path, option?.extensionBundle);
+    if (!success) {
+      return installFail(option);
+    }
+
+    setCurrentVersion(version);
+    option?.updateSuccess?.();
+
+    if (option?.restartAfterInstall) {
+      setTimeout(() => {
+        resetApp();
+      }, 300);
     }
   } catch (e) {
     installFail(option, e);
@@ -149,4 +143,5 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  rollbackToPreviousBundle,
 };

@@ -66,13 +66,14 @@ RCT_EXPORT_MODULE()
     return success;
 }
 
-- (BOOL)removeBundleIfNeeded {
+- (BOOL)removeBundleIfNeeded:(NSString *)pathKey {
+    NSString *keyToUse = pathKey ? pathKey : @"OLD_PATH";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *retrievedString = [defaults stringForKey:@"PATH"];
+    NSString *retrievedString = [defaults stringForKey:keyToUse];
     NSError *error = nil;
     if (retrievedString && [self isFilePathValid:retrievedString]) {
         BOOL isDeleted = [self deleteAllContentsOfParentDirectoryOfFile:retrievedString error:&error];
-        [defaults removeObjectForKey:@"PATH"];
+        [defaults removeObjectForKey:keyToUse];
         [defaults synchronize];
         return isDeleted;
     } else {
@@ -129,6 +130,34 @@ RCT_EXPORT_MODULE()
 
     return nil;
 }
+- (NSString *)renameExtractedFolderInDirectory:(NSString *)directoryPath {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error = nil;
+
+    // Get the contents of the extracted directory
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
+    if (error || contents.count != 1) {
+        NSLog(@"Error retrieving extracted folder or unexpected structure: %@", error.localizedDescription);
+        return nil;
+    }
+
+    // Get the original extracted folder name (assuming only one folder exists)
+    NSString *originalFolderName = contents.firstObject;
+    NSString *originalFolderPath = [directoryPath stringByAppendingPathComponent:originalFolderName];
+
+    // Generate new folder name with timestamp
+    NSString *timestamp = [NSString stringWithFormat:@"output_%ld", (long)[[NSDate date] timeIntervalSince1970]];
+    NSString *newFolderPath = [directoryPath stringByAppendingPathComponent:timestamp];
+
+    // Rename the extracted folder
+    if (![fileManager moveItemAtPath:originalFolderPath toPath:newFolderPath error:&error]) {
+        NSLog(@"Failed to rename folder: %@", error.localizedDescription);
+        return nil;
+    }
+
+    NSLog(@"Renamed extracted folder to: %@", newFolderPath);
+    return newFolderPath;
+}
 - (NSString *)unzipFileAtPath:(NSString *)zipFilePath extension:(NSString *)extension  {
     // Define the directory where the files will be extracted
     NSString *extractedFolderPath = [[zipFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"unzip"];
@@ -152,8 +181,14 @@ RCT_EXPORT_MODULE()
         NSLog(@"Failed to unzip file");
         return nil;
     }
+  // Try renaming the extracted folder
+      NSString *renamedFolderPath = [self renameExtractedFolderInDirectory:extractedFolderPath];
+
+      // If renaming fails, use the original extracted folder path
+      NSString *finalFolderPath = renamedFolderPath ? renamedFolderPath : extractedFolderPath;
+
     // Find .jsbundle files in the extracted directory
-    NSString *jsbundleFilePath = [self searchForJsBundleInDirectory:extractedFolderPath extension:extension];
+    NSString *jsbundleFilePath = [self searchForJsBundleInDirectory:finalFolderPath extension:extension];
 
         // Delete the zip file after extraction
         NSError *removeError = nil;
@@ -161,8 +196,6 @@ RCT_EXPORT_MODULE()
         if (removeError) {
             NSLog(@"Failed to delete zip file: %@", removeError.localizedDescription);
         }
-        NSLog(@"File path----: %@", jsbundleFilePath);
-        // Return the .jsbundle file path or nil if not found
         return jsbundleFilePath;
 }
 
@@ -171,12 +204,15 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if ([self isFilePathValid:path]) {
-        [self removeBundleIfNeeded];
+        [self removeBundleIfNeeded:nil];
         //Unzip file
         NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
         if (extractedFilePath) {
-            NSLog(@"file extraction----- %@", extractedFilePath);
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *oldPath = [defaults stringForKey:@"PATH"];
+            if (oldPath) {
+              [defaults setObject:oldPath forKey:@"OLD_PATH"];
+            }
             [defaults setObject:extractedFilePath forKey:@"PATH"];
             [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
             [defaults synchronize];
@@ -188,12 +224,36 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
         resolve(@(NO));
     }
 }
-// Expose deleteBundle method to JavaScript
 RCT_EXPORT_METHOD(deleteBundle:(double)i
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    BOOL isDeleted = [self removeBundleIfNeeded];
-    resolve(@(isDeleted));
+    BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
+    BOOL isDeletedOld = [self removeBundleIfNeeded:nil];
+    if (isDeleted && isDeletedOld) {
+          resolve(@(YES));
+      } else {
+          resolve(@(NO));
+      }
+}
+// Expose deleteBundle method to JavaScript
+RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *oldPath = [defaults stringForKey:@"OLD_PATH"];
+    if (oldPath && [self isFilePathValid:oldPath]) {
+      BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
+      if (isDeleted) {
+        [defaults setObject:oldPath forKey:@"PATH"];
+        [defaults removeObjectForKey:@"OLD_PATH"];
+        [defaults synchronize];
+        resolve(@(YES));
+      } else {
+          resolve(@(NO));
+        }
+      } else {
+          resolve(@(NO));
+      }
 }
 
 RCT_EXPORT_METHOD(getCurrentVersion:(double)a
@@ -238,7 +298,7 @@ RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
 
 - (void)loadBundle
 {
-    RCTTriggerReloadCommandListeners(@"react-native-update-ota: Restart");
+    RCTTriggerReloadCommandListeners(@"react-native-ota-hot-update: Restart");
 }
 RCT_EXPORT_METHOD(restart) {
     if ([NSThread isMainThread]) {
