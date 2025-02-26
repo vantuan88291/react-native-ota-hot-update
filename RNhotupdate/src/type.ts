@@ -5,6 +5,7 @@ export interface UpdateOption {
   updateFail?(message?: string): void;
   restartAfterInstall?: boolean;
   extensionBundle?: string;
+  metadata?: any;
 }
 
 /**

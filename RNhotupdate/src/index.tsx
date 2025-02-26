@@ -46,6 +46,12 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion();
 }
+function getUpdateMetadata(): Promise<string> {
+  return RNhotupdate.getUpdateMetadata()
+    .then((metadataString: string | null) => {
+      return metadataString ? JSON.parse(metadataString) : null;
+    });
+}
 function rollbackToPreviousBundle(): Promise<boolean> {
   return RNhotupdate.rollbackToPreviousBundle();
 }
@@ -55,6 +61,10 @@ async function getVersionAsNumber() {
 }
 function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
+}
+function setUpdateMetadata(metadata: any): Promise<boolean> {
+  const metadataString = JSON.stringify(metadata);
+  return RNhotupdate.setUpdateMetadata(metadataString);
 }
 async function resetApp() {
   RNhotupdate.restart();
@@ -95,6 +105,7 @@ async function downloadBundleUri(downloadManager: DownloadManager, uri: string, 
       setupBundlePath(path, option?.extensionBundle).then(success => {
         if (success) {
           setCurrentVersion(version);
+          setUpdateMetadata(option?.metadata);
           option?.updateSuccess?.();
           if (option?.restartAfterInstall) {
             setTimeout(() => {
@@ -171,6 +182,8 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  getUpdateMetadata,
+  setUpdateMetadata,
   rollbackToPreviousBundle,
   git: {
     checkForGitUpdate,

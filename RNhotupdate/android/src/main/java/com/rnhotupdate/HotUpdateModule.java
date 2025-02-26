@@ -219,6 +219,24 @@ public class HotUpdateModule extends ReactContextBaseJavaModule {
         promise.resolve(true);
     }
 
+    @ReactMethod
+    public void getUpdateMetadata(Promise promise) {
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        String metadata = sharedPrefs.getString(Common.INSTANCE.getMETADATA());
+        if (!metadata.equals("")) {
+            promise.resolve(metadata);
+        } else {
+            promise.resolve(null);
+        }
+    }
+
+    @ReactMethod
+    public void setUpdateMetadata(String metadataString, Promise promise) {
+        SharedPrefs sharedPrefs = new SharedPrefs(getReactApplicationContext());
+        sharedPrefs.putString(Common.INSTANCE.getMETADATA(), metadataString);
+        promise.resolve(true);
+    }
+
     @NonNull
     @Override
     public String getName() {
