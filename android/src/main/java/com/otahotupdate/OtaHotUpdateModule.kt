@@ -178,24 +178,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     sharedPrefs.putString(CURRENT_VERSION_NAME, reactApplicationContext?.getPackageInfo()?.versionName)
     promise.resolve(true)
   }
-
-  @ReactMethod
-  override fun rollbackToPreviousBundle(a: Double, promise: Promise) {
-    val sharedPrefs = SharedPrefs(reactApplicationContext)
-    val oldPath = sharedPrefs.getString(PREVIOUS_PATH)
-    if (oldPath != "") {
-      val isDeleted = deleteOldBundleIfneeded(PATH)
-      if (isDeleted) {
-        sharedPrefs.putString(PATH, oldPath)
-        sharedPrefs.putString(PREVIOUS_PATH, "")
-        promise.resolve(true)
-      } else {
-        promise.resolve(false)
-      }
-    } else {
-      promise.resolve(false)
-    }
-  }
+  
   companion object {
     const val NAME = "OtaHotUpdate"
   }

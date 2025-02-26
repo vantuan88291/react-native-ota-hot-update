@@ -235,26 +235,6 @@ RCT_EXPORT_METHOD(deleteBundle:(double)i
           resolve(@(NO));
       }
 }
-// Expose deleteBundle method to JavaScript
-RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSString *oldPath = [defaults stringForKey:@"OLD_PATH"];
-    if (oldPath && [self isFilePathValid:oldPath]) {
-      BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
-      if (isDeleted) {
-        [defaults setObject:oldPath forKey:@"PATH"];
-        [defaults removeObjectForKey:@"OLD_PATH"];
-        [defaults synchronize];
-        resolve(@(YES));
-      } else {
-          resolve(@(NO));
-        }
-      } else {
-          resolve(@(NO));
-      }
-}
 
 RCT_EXPORT_METHOD(getCurrentVersion:(double)a
                   resolve:(RCTPromiseResolveBlock)resolve
