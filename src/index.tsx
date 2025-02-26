@@ -94,13 +94,15 @@ async function downloadBundleUri(
     return installFail(option, 'Please give a valid version!');
   }
 
-  const currentVersion = await getVersionAsNumber();
-  if (version <= currentVersion) {
-    return installFail(
-      option,
-      'Please give a bigger version than the current version, the current version now has setted by: ' +
-        currentVersion
-    );
+  if (!option?.noCheckVersion) {
+    const currentVersion = await getVersionAsNumber();
+    if (version <= currentVersion) {
+      return installFail(
+        option,
+        'Please give a bigger version than the current version, the current version now has setted by: ' +
+          currentVersion
+      );
+    }
   }
 
   try {

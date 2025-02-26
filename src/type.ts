@@ -36,6 +36,11 @@ export interface UpdateOption {
    * For example: '.jsbundle'.
    */
   extensionBundle?: string;
+
+  /**
+   * Optional when all process failed, use for set loading false.
+   */
+  noCheckVersion?: boolean;
 }
 
 /**
