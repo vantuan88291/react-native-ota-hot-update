@@ -49,7 +49,12 @@ function getCurrentVersion(): Promise<string> {
 function getUpdateMetadata(): Promise<string> {
   return RNhotupdate.getUpdateMetadata()
     .then((metadataString: string | null) => {
-      return metadataString ? JSON.parse(metadataString) : null;
+      try {
+        return metadataString ? JSON.parse(metadataString) : null;
+      } catch (error) {
+        console.error('Error parsing metadata:', error);
+        return null;
+      }
     });
 }
 function rollbackToPreviousBundle(): Promise<boolean> {
@@ -63,8 +68,12 @@ function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
 }
 function setUpdateMetadata(metadata: any): Promise<boolean> {
-  const metadataString = JSON.stringify(metadata);
-  return RNhotupdate.setUpdateMetadata(metadataString);
+  try {
+    const metadataString = JSON.stringify(metadata);
+    return RNhotupdate.setUpdateMetadata(metadataString);
+  } catch (error) {
+    console.error('Error stringifying metadata:', error);
+  }
 }
 async function resetApp() {
   RNhotupdate.restart();
@@ -105,7 +114,10 @@ async function downloadBundleUri(downloadManager: DownloadManager, uri: string, 
       setupBundlePath(path, option?.extensionBundle).then(success => {
         if (success) {
           setCurrentVersion(version);
-          setUpdateMetadata(option?.metadata);
+
+          if (option?.metadata) {
+            setUpdateMetadata(option.metadata);
+          }
           option?.updateSuccess?.();
           if (option?.restartAfterInstall) {
             setTimeout(() => {
