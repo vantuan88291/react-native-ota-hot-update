@@ -12,6 +12,7 @@ import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
 import java.io.File
 import java.util.Date
