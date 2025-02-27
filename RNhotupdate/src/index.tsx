@@ -46,6 +46,17 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion();
 }
+function getUpdateMetadata(): Promise<object | null> {
+  return RNhotupdate.getUpdateMetadata()
+    .then((metadataString: string | null) => {
+      try {
+        return metadataString ? JSON.parse(metadataString) : null;
+      } catch (error) {
+        console.error('Error parsing metadata:', error);
+        return null;
+      }
+    });
+}
 function rollbackToPreviousBundle(): Promise<boolean> {
   return RNhotupdate.rollbackToPreviousBundle();
 }
@@ -55,6 +66,14 @@ async function getVersionAsNumber() {
 }
 function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
+}
+function setUpdateMetadata(metadata: any): Promise<boolean> {
+  try {
+    const metadataString = JSON.stringify(metadata);
+    return RNhotupdate.setUpdateMetadata(metadataString);
+  } catch (error) {
+    console.error('Error stringifying metadata:', error);
+  }
 }
 async function resetApp() {
   RNhotupdate.restart();
@@ -95,6 +114,10 @@ async function downloadBundleUri(downloadManager: DownloadManager, uri: string, 
       setupBundlePath(path, option?.extensionBundle).then(success => {
         if (success) {
           setCurrentVersion(version);
+
+          if (option?.metadata) {
+            setUpdateMetadata(option.metadata);
+          }
           option?.updateSuccess?.();
           if (option?.restartAfterInstall) {
             setTimeout(() => {
@@ -171,6 +194,8 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  getUpdateMetadata,
+  setUpdateMetadata,
   rollbackToPreviousBundle,
   git: {
     checkForGitUpdate,

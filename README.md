@@ -160,6 +160,8 @@ Contact me via email if you want to implement hot update via CMS (need service f
 | resetApp       | void   | Restart the app to apply the changing                                                                            | empty                                                                                       |
 | getCurrentVersion       | number | Get the current version that let you use to compare and control the logic updating                               | empty                                                                                       |
 | setCurrentVersion       | boolean       | Set the current version that let you use to compare and control the logic updating                               | version: number                                                                             |
+| getUpdateMetadata       | object/null   | Get the metadata stored for the update                                                           | empty |
+| setUpdateMetadata       | boolean       | Set the metadata for the update                                                                  | empty |
 
 
 ## UpdateOption
