@@ -46,7 +46,7 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion();
 }
-function getUpdateMetadata(): Promise<string> {
+function getUpdateMetadata(): Promise<object | null> {
   return RNhotupdate.getUpdateMetadata()
     .then((metadataString: string | null) => {
       try {
