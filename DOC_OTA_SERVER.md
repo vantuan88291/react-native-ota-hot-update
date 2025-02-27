@@ -110,6 +110,8 @@ Other CMS options include CraftCMS and PayloadCMS.
 | `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                                  | None                                                                                          |
 | `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                                       | `version: number`                                                                             |
 | `rollbackToPreviousBundle`      | `boolean`   | Rollback to previous bundle, by default app will store 2 versions of bundle from the second updating. | None                                                                             |
+| `getUpdateMetadata`      | `object/null`   | Get the metadata stored for the update                                                           | None |
+| `setUpdateMetadata`      | `boolean`       | Set the metadata for the update                                                                  | None |
 
 ---
 

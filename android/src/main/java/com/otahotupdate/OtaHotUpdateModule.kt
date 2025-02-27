@@ -172,6 +172,25 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
+  override fun getUpdateMetadata(promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    val metadata = sharedPrefs.getString(METADATA)
+    if (metadata != "") {
+        promise.resolve(metadata);
+    } else {
+        promise.resolve(null);
+    }
+  }
+
+  @ReactMethod
+  override fun setUpdateMetadata(metadata: String?, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    sharedPrefs.putString(METADATA, version)
+    promise.resolve(true)
+  }
+
+
+  @ReactMethod
   override fun setExactBundlePath(path: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     sharedPrefs.putString(PATH, path)
