@@ -34,6 +34,12 @@ export interface UpdateOption {
    * For example: '.jsbundle'.
    */
   extensionBundle?: string;
+
+  /**
+   * Metadata for the update.
+   * Can contain information such as version details, description, etc.
+   */
+  metadata?: any
 }
 
 /**
