@@ -59,6 +59,16 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion(0);
 }
+function getUpdateMetadata(): Promise<object | null> {
+  return RNhotupdate.getUpdateMetadata(0)
+    .then((metadataString: string | null) => {
+      try {
+        return metadataString ? JSON.parse(metadataString) : null;
+      } catch (error) {
+        return Promise.reject(new Error('Error parsing metadata'));
+      }
+    });
+}
 function rollbackToPreviousBundle(): Promise<boolean> {
   return RNhotupdate.rollbackToPreviousBundle(0);
 }
@@ -68,6 +78,14 @@ async function getVersionAsNumber() {
 }
 function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
+}
+function setUpdateMetadata(metadata: any): Promise<boolean> {
+  try {
+    const metadataString = JSON.stringify(metadata);
+    return RNhotupdate.setUpdateMetadata(metadataString);
+  } catch (error) {
+    return Promise.reject(new Error('Failed to stringify metadata'));
+  }
 }
 async function resetApp() {
   RNhotupdate.restart();
@@ -128,6 +146,9 @@ async function downloadBundleUri(
     }
 
     setCurrentVersion(version);
+    if (option?.metadata) {
+      setUpdateMetadata(option.metadata);
+    }
     option?.updateSuccess?.();
 
     if (option?.restartAfterInstall) {
@@ -198,6 +219,8 @@ export default {
   resetApp,
   getCurrentVersion: getVersionAsNumber,
   setCurrentVersion,
+  getUpdateMetadata,
+  setUpdateMetadata,
   rollbackToPreviousBundle,
   git: {
     checkForGitUpdate,

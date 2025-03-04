@@ -14,4 +14,6 @@ abstract class OtaHotUpdateSpec internal constructor(context: ReactApplicationCo
   abstract fun setCurrentVersion(version: String?, promise: Promise)
   abstract fun setExactBundlePath(path: String?, promise: Promise)
   abstract fun rollbackToPreviousBundle(a: Double, promise: Promise)
+  abstract fun getUpdateMetadata(a: Double, promise: Promise)
+  abstract fun setUpdateMetadata(metadata: String?, promise: Promise)
 }

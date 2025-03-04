@@ -12,6 +12,7 @@ import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
 import java.io.File
 import java.util.Date
@@ -170,6 +171,25 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     sharedPrefs.putString(VERSION, version)
     promise.resolve(true)
   }
+
+  @ReactMethod
+  override fun getUpdateMetadata(a: Double, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    val metadata = sharedPrefs.getString(METADATA)
+    if (metadata != "") {
+        promise.resolve(metadata);
+    } else {
+        promise.resolve(null);
+    }
+  }
+
+  @ReactMethod
+  override fun setUpdateMetadata(metadata: String?, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    sharedPrefs.putString(METADATA, metadata)
+    promise.resolve(true)
+  }
+
 
   @ReactMethod
   override fun setExactBundlePath(path: String?, promise: Promise) {

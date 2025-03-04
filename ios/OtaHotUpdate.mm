@@ -282,6 +282,33 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
     }
 }
 
+RCT_EXPORT_METHOD(setUpdateMetadata:(NSString *)metadataString
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (metadataString) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:metadataString forKey:@"METADATA"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
+RCT_EXPORT_METHOD(getUpdateMetadata:(double)a
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *metadata = [defaults stringForKey:@"METADATA"];
+
+    if (metadata) {
+        resolve(metadata);
+    } else {
+        resolve(nil);
+    }
+}
+
 RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {

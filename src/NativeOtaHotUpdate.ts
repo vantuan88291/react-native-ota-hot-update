@@ -7,7 +7,9 @@ export interface Spec extends TurboModule {
   deleteBundle(i: number): Promise<boolean>;
   restart(): void;
   getCurrentVersion(a: number): Promise<string>;
+  getUpdateMetadata(a: number): Promise<string>;
   setCurrentVersion(version: string): Promise<boolean>;
+  setUpdateMetadata(metadata: string): Promise<boolean>;
   rollbackToPreviousBundle(a: number): Promise<boolean>;
 }
 
