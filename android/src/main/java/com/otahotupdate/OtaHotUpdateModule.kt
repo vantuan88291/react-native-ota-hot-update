@@ -186,7 +186,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   @ReactMethod
   override fun setUpdateMetadata(metadata: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(METADATA, version)
+    sharedPrefs.putString(METADATA, metadata)
     promise.resolve(true)
   }
 
