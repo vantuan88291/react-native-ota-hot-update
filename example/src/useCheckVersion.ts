@@ -153,6 +153,12 @@ export const useCheckVersion = () => {
   const removeGitUpdate = () => {
     hotUpdate.git.removeGitUpdate();
   };
+  const setMeta = (data: any) => {
+    hotUpdate.setUpdateMetadata(data);
+  };
+  const getMeta = async () => {
+    return hotUpdate.getUpdateMetadata();
+  };
   React.useEffect(() => {
     hotUpdate.getCurrentVersion().then((data) => {
       setVersion(`${data}`);
@@ -160,6 +166,8 @@ export const useCheckVersion = () => {
   }, []);
   return {
     version: {
+      getMeta,
+      setMeta,
       onCheckVersion,
       onCheckGitVersion,
       removeGitUpdate,

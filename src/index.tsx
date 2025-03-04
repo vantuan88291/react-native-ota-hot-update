@@ -60,7 +60,7 @@ function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion(0);
 }
 function getUpdateMetadata(): Promise<object | null> {
-  return RNhotupdate.getUpdateMetadata()
+  return RNhotupdate.getUpdateMetadata(0)
     .then((metadataString: string | null) => {
       try {
         return metadataString ? JSON.parse(metadataString) : null;

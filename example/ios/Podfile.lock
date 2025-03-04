@@ -1231,7 +1231,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-ota-hot-update (2.1.15):
+  - react-native-ota-hot-update (2.1.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1805,7 +1805,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 73dd1210c4ecf0dfb4e2d4e06f2a13f824a801a9
   React-microtasksnativemodule: d03753688e2abf135edcd4160ab3ce7526da8b0d
   react-native-blob-util: b8c223821e79de52b258dbdc93e9eaabc73d5fff
-  react-native-ota-hot-update: 50cdff234c88a8a399cc4777a58355093b8dc58b
+  react-native-ota-hot-update: bca5f7f763ccf0d430fb5dde9e4dd70b96bb0ab6
   React-nativeconfig: cb207ebba7cafce30657c7ad9f1587a8f32e4564
   React-NativeModulesApple: 8411d548b1ad9d2b3e597beb9348e715c8020e0c
   React-perflogger: c4c3b7c18f8a50cdbe2bcdd2f15705ba029a5a02
