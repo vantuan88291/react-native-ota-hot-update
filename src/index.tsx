@@ -154,7 +154,7 @@ async function downloadBundleUri(
     if (option?.restartAfterInstall) {
       setTimeout(() => {
         resetApp();
-      }, 300);
+      }, option?.restartDelay ?? 300);
     }
   } catch (e) {
     installFail(option, e);
