@@ -147,6 +147,7 @@ const onCheckGitVersion = () => {
 | Key                   | Required | Type       | Description                                                                                   |
 | --------------------- | -------- | ---------- | --------------------------------------------------------------------------------------------- |
 | `restartAfterInstall` | No       | `boolean`  | Default is `false`. If `true`, the app will restart automatically after applying the changes. |
+| `restartDelay`        | No       | `number`   | Time in milliseconds to wait before restarting the app after an update. Defaults: `300ms`.   |
 | `branch`              | Yes      | `string`   | The Git branch to pull updates from (e.g., `iOS` or `android`).                               |
 | `bundlePath`          | Yes      | `string`   | The relative path to the bundle file within the repository.                                   |
 | `url`                 | Yes      | `string`   | The URL of the Git repository hosting the bundle files.                                       |

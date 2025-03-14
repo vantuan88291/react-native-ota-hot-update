@@ -123,6 +123,7 @@ Other CMS options include CraftCMS and PayloadCMS.
 | `updateSuccess`         | No       | `Callback` | Triggered when the update is installed successfully.                                             |
 | `updateFail`            | No       | `Callback` | Triggered when the update fails. Passes a `message` parameter.                                   |
 | `restartAfterInstall`   | No       | `boolean`  | Defaults to `false`. If `true`, restarts the app after a successful installation.                |
+| `restartDelay`          | No       | `number`   | Time in milliseconds to wait before restarting the app after an update. Defaults: `300ms`.      |
 | `progress`              | No       | `Callback` | Reports download progress.                                                                      |
 | `extensionBundle`       | No       | `string`   | Extension of the bundle file. Defaults: `.bundle` (Android), `.jsbundle` (iOS).                 |
 

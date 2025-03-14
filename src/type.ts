@@ -30,6 +30,12 @@ export interface UpdateOption {
   restartAfterInstall?: boolean;
 
   /**
+   * Delay in milliseconds before restarting the app after installing the update.
+   * Default: 300ms.
+   */
+  restartDelay?: number;
+
+  /**
    * Custom extension for the bundle file, if applicable.
    * For example: '.jsbundle'.
    */
