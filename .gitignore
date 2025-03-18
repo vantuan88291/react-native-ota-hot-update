@@ -83,3 +83,4 @@ android/build
 example/android/app/build/
 example/android/build/
 example/ios/build/
+example/.kotlin/
