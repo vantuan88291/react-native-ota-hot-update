@@ -6,9 +6,11 @@ export interface Spec extends TurboModule {
   setExactBundlePath(path: string): Promise<boolean>;
   deleteBundle(i: number): Promise<boolean>;
   restart(): void;
-  getCurrentVersion(a: number): Promise<string>;
+  getCurrentVersionCode(): Promise<string>;
+  setCurrentVersionCode(versionCode: string): Promise<boolean>;
+  getCurrentVersionName(): Promise<string>;
+  setCurrentVersionName(versionName: string): Promise<boolean>;
   getUpdateMetadata(a: number): Promise<string>;
-  setCurrentVersion(version: string): Promise<boolean>;
   setUpdateMetadata(metadata: string): Promise<boolean>;
   rollbackToPreviousBundle(a: number): Promise<boolean>;
 }

@@ -1,5 +1,6 @@
 {
-  "version": 1,
-  "downloadAndroidUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/index.android.bundle.zip?alt=media",
+  "versionCode": 2,
+  "versionName":"1.2.3",
+  "downloadAndroidUrl": "https://firebasestorage.googleapis.com/v0/b/as-otademo.firebasestorage.app/o/index.android.bundle.zip?alt=media",
   "downloadIosUrl": "https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/main.jsbundle.zip?alt=media"
 }

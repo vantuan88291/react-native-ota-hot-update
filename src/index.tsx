@@ -19,13 +19,13 @@ const OtaHotUpdateModule = isTurboModuleEnabled
 const RNhotupdate = OtaHotUpdateModule
   ? OtaHotUpdateModule
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
 const downloadBundleFile = async (
   downloadManager: DownloadManager,
@@ -56,8 +56,11 @@ function setupExactBundlePath(path: string): Promise<boolean> {
 function deleteBundlePath(): Promise<boolean> {
   return RNhotupdate.deleteBundle(1);
 }
-function getCurrentVersion(): Promise<string> {
-  return RNhotupdate.getCurrentVersion(0);
+function getCurrentVersionName(): Promise<string> {
+  return RNhotupdate.getCurrentVersionName();
+}
+function getCurrentVersionCode(): Promise<string> {
+  return RNhotupdate.getCurrentVersionCode();
 }
 function getUpdateMetadata(): Promise<object | null> {
   return RNhotupdate.getUpdateMetadata(0)
@@ -72,12 +75,15 @@ function getUpdateMetadata(): Promise<object | null> {
 function rollbackToPreviousBundle(): Promise<boolean> {
   return RNhotupdate.rollbackToPreviousBundle(0);
 }
-async function getVersionAsNumber() {
-  const rawVersion = await getCurrentVersion();
+async function getVersionCodeAsNumber() {
+  const rawVersion = await getCurrentVersionCode();
   return +rawVersion;
 }
-function setCurrentVersion(version: number): Promise<boolean> {
-  return RNhotupdate.setCurrentVersion(version + '');
+function setCurrentVersionCode(versionCode: number): Promise<boolean> {
+  return RNhotupdate.setCurrentVersionCode(versionCode + '');
+}
+function setCurrentVersionName(versionName: string): Promise<boolean> {
+  return RNhotupdate.setCurrentVersionName(versionName);
 }
 function setUpdateMetadata(metadata: any): Promise<boolean> {
   try {
@@ -97,7 +103,7 @@ function removeBundle(restartAfterRemoved?: boolean) {
         resetApp();
       }, 300);
       if (data) {
-        setCurrentVersion(0);
+        setCurrentVersionCode(0);
       }
     }
   });
@@ -109,22 +115,24 @@ const installFail = (option?: UpdateOption, e?: any) => {
 async function downloadBundleUri(
   downloadManager: DownloadManager,
   uri: string,
-  version: number,
+  versionCode: number,
+  versionName: string,
   option?: UpdateOption
 ) {
   if (!uri) {
     return installFail(option, 'Please give a valid URL!');
   }
-  if (!version) {
+  if (!versionCode) {
     return installFail(option, 'Please give a valid version!');
   }
 
-  const currentVersion = await getVersionAsNumber();
-  if (version <= currentVersion) {
+  const currentVersionCode = await getVersionCodeAsNumber();
+
+  if (versionCode <= currentVersionCode) {
     return installFail(
       option,
       'Please give a bigger version than the current version, the current version now has setted by: ' +
-        currentVersion
+      currentVersionCode
     );
   }
 
@@ -141,14 +149,18 @@ async function downloadBundleUri(
     }
 
     const success = await setupBundlePath(path, option?.extensionBundle);
+
     if (!success) {
       return installFail(option);
     }
 
-    setCurrentVersion(version);
+    setCurrentVersionCode(versionCode);
+    setCurrentVersionName(versionName);
+
     if (option?.metadata) {
       setUpdateMetadata(option.metadata);
     }
+    
     option?.updateSuccess?.();
 
     if (option?.restartAfterInstall) {
@@ -217,8 +229,10 @@ export default {
   removeUpdate: removeBundle,
   downloadBundleUri,
   resetApp,
-  getCurrentVersion: getVersionAsNumber,
-  setCurrentVersion,
+  getCurrentVersionCode: getVersionCodeAsNumber,
+  setCurrentVersionCode,
+  getCurrentVersionName,
+  setCurrentVersionName,
   getUpdateMetadata,
   setUpdateMetadata,
   rollbackToPreviousBundle,

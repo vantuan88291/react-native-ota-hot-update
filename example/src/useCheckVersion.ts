@@ -8,13 +8,16 @@ if (Platform.OS === 'android') {
   }
 }
 const apiVersion =
-  'https://firebasestorage.googleapis.com/v0/b/ota-demo-68f38.appspot.com/o/update.json?alt=media';
+  'https://firebasestorage.googleapis.com/v0/b/as-otademo.firebasestorage.app/o/update.json?alt=media';
 export const useCheckVersion = () => {
+  
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const [version, setVersion] = React.useState('0');
-  const startUpdate = async (url: string, version: number) => {
-    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
+  const [versionCode, setVersionCode] = React.useState('0');
+  const [versionName, setVersionName] = React.useState('0.0.0');
+
+  const startUpdate = async (url: string, versionCode: number, versionName: string ) => {
+    hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, versionCode, versionName, {
       updateSuccess: () => {
         console.log('update success!');
       },
@@ -38,8 +41,8 @@ export const useCheckVersion = () => {
   const onCheckVersion = () => {
     fetch(apiVersion).then(async (data) => {
       const result = await data.json();
-      const currentVersion = await hotUpdate.getCurrentVersion();
-      if (result?.version > currentVersion) {
+      const currentVersionCode = await hotUpdate.getCurrentVersionCode();
+      if (result?.versionCode > currentVersionCode) {
         Alert.alert(
           'New version is comming!',
           'New version has release, please update',
@@ -56,7 +59,8 @@ export const useCheckVersion = () => {
                   Platform.OS === 'ios'
                     ? result?.downloadIosUrl
                     : result?.downloadAndroidUrl,
-                  result.version
+                  result.versionCode,
+                  result.versionName
                 ),
             },
           ]
@@ -160,8 +164,11 @@ export const useCheckVersion = () => {
     return hotUpdate.getUpdateMetadata();
   };
   React.useEffect(() => {
-    hotUpdate.getCurrentVersion().then((data) => {
-      setVersion(`${data}`);
+    hotUpdate.getCurrentVersionCode().then((data) => {
+      setVersionCode(`${data}`);
+    });
+    hotUpdate.getCurrentVersionName().then((data) => {
+      setVersionName(`${data}`);
     });
   }, []);
   return {
@@ -175,7 +182,8 @@ export const useCheckVersion = () => {
       state: {
         progress,
         loading,
-        version,
+        versionCode,
+        versionName
       },
     },
   };

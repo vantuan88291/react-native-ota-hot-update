@@ -11,7 +11,8 @@ import com.otahotupdate.OtaHotUpdate.Companion.getPackageInfo
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
-import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.VERSION_NAME
+import com.rnhotupdate.Common.VERSION_CODE
 import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
 import java.io.File
@@ -106,7 +107,6 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     }
   }
 
-
   @ReactMethod
   override fun setupBundlePath(path: String?, extension: String?, promise: Promise) {
     if (path != null) {
@@ -144,7 +144,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val isDeleted = deleteOldBundleIfneeded(PATH)
     val isDeletedOldPath = deleteOldBundleIfneeded(PREVIOUS_PATH)
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(VERSION, "0")
+    sharedPrefs.putString(VERSION_CODE, "0")
     promise.resolve(isDeleted && isDeletedOldPath)
   }
 
@@ -155,20 +155,38 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun getCurrentVersion(a: Double, promise: Promise) {
+  override fun getCurrentVersionCode(promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    val version = sharedPrefs.getString(VERSION)
-    if (version != "") {
-      promise.resolve(version)
+    val versionCode = sharedPrefs.getString(VERSION_CODE)
+    if (versionCode != "") {
+      promise.resolve(versionCode)
     } else {
       promise.resolve("0")
     }
   }
 
   @ReactMethod
-  override fun setCurrentVersion(version: String?, promise: Promise) {
+  override fun setCurrentVersionCode(versionCode: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(VERSION, version)
+    sharedPrefs.putString(VERSION_CODE, versionCode)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  override fun getCurrentVersionName(promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    val versionName = sharedPrefs.getString(VERSION_NAME)
+    if (versionName != "") {
+      promise.resolve(versionName)
+    } else {
+      promise.resolve("0.0.0")
+    }
+  }
+
+  @ReactMethod
+  override fun setCurrentVersionName(versionName: String?, promise: Promise) {
+    val sharedPrefs = SharedPrefs(reactApplicationContext)
+    sharedPrefs.putString(VERSION_NAME, versionName)
     promise.resolve(true)
   }
 

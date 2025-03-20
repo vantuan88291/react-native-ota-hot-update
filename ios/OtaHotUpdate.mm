@@ -89,7 +89,7 @@ RCT_EXPORT_MODULE()
 + (NSURL *)getBundle {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *retrievedString = [defaults stringForKey:@"PATH"];
-    NSString *currentVersionName = [defaults stringForKey:@"VERSION_NAME"];
+    NSString *currentVersionName = [defaults stringForKey:@"CURRENT_VERSION_NAME"];
     NSString *versionName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 
   if (retrievedString && [self isFilePathExist:retrievedString] && [currentVersionName isEqualToString:versionName]) {
@@ -214,7 +214,7 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
               [defaults setObject:oldPath forKey:@"OLD_PATH"];
             }
             [defaults setObject:extractedFilePath forKey:@"PATH"];
-            [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
+            [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"CURRENT_VERSION_NAME"];
             [defaults synchronize];
             resolve(@(YES));
         } else {
@@ -256,25 +256,49 @@ RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
       }
 }
 
-RCT_EXPORT_METHOD(getCurrentVersion:(double)a
-                  resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(getCurrentVersionName:(RCTPromiseResolveBlock)RCTPromiseResolveBlock
                   reject:(RCTPromiseRejectBlock)reject)
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSString *version = [defaults stringForKey:@"VERSION"];
-     if (version) {
-         resolve(version);
+  NSString *versionName = [defaults stringForKey:@"VERSION_NAME"];
+     if (versionName) {
+         resolve(versionName);
+     } else {
+         resolve(@"0.0.0");
+     }
+}
+
+RCT_EXPORT_METHOD(setCurrentVersionName:(NSString *)versionName
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (versionName) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:versionName forKey:@"VERSION_NAME"];
+        [defaults synchronize];
+        resolve(@(YES));
+    } else {
+        resolve(@(NO));
+    }
+}
+
+RCT_EXPORT_METHOD(getCurrentVersionCode:(RCTPromiseResolveBlock)RCTPromiseResolveBlock
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *versionCode = [defaults stringForKey:@"VERSION_CODE"];
+     if (versionCode != nil && versionCode.length) {
+         resolve(versionCode);
      } else {
          resolve(@"0");
      }
 }
 
-RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
+RCT_EXPORT_METHOD(setCurrentVersionCode:(NSString *)versionCode
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    if (version) {
+    if (versionCode != nil && versionCode.length) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:version forKey:@"VERSION"];
+        [defaults setObject:versionCode forKey:@"VERSION_CODE"];
         [defaults synchronize];
         resolve(@(YES));
     } else {
@@ -315,7 +339,7 @@ RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
     if (path) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:path forKey:@"PATH"];
-        [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
+        [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"CURRENT_VERSION_NAME"];
         [defaults synchronize];
         resolve(@(YES));
     } else {

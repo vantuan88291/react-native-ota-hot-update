@@ -7,7 +7,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Image source={require('./video-editing.png')} style={styles.img} />
-      <Text>{`Version: ${version.state.version}`}</Text>
+      <Text>{`Version Code: ${version.state.versionCode}`}</Text>
+      <Text>{`Version Name: ${version.state.versionName}`}</Text>
       <Button title={'check update OTA'} onPress={version.onCheckVersion} />
       <Button title={'rollback OTA'} onPress={version.rollBack} />
       <Button title={'check update Git'} onPress={version.onCheckGitVersion} />
