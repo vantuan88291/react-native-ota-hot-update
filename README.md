@@ -35,6 +35,17 @@ Auto linking already, need pod install for ios:
 cd ios && pod install
 ```
 
+### Expo
+
+Modify `app.json`:
+
+```angular2html
+"plugins": [
+      "react-native-ota-hot-update",
+      ...
+    ]
+```
+
 ### IOS
 Open `AppDelegate.m` and add this:
 

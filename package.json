@@ -1,22 +1,11 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./lib/typescript/module/src/index.d.ts",
-        "default": "./lib/module/index.js"
-      },
-      "require": {
-        "types": "./lib/typescript/commonjs/src/index.d.ts",
-        "default": "./lib/commonjs/index.js"
-      }
-    }
-  },
+  "types": "./lib/typescript/module/src/index.d.ts",
   "files": [
     "src",
     "lib",
