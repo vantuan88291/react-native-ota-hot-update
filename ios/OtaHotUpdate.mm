@@ -256,7 +256,7 @@ RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
       }
 }
 
-RCT_EXPORT_METHOD(getCurrentVersionName:(RCTPromiseResolveBlock)RCTPromiseResolveBlock
+RCT_EXPORT_METHOD(getCurrentVersionName:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -281,7 +281,7 @@ RCT_EXPORT_METHOD(setCurrentVersionName:(NSString *)versionName
     }
 }
 
-RCT_EXPORT_METHOD(getCurrentVersionCode:(RCTPromiseResolveBlock)RCTPromiseResolveBlock
+RCT_EXPORT_METHOD(getCurrentVersionCode:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

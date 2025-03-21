@@ -44,8 +44,8 @@ export const useCheckVersion = () => {
       const currentVersionCode = await hotUpdate.getCurrentVersionCode();
       if (result?.versionCode > currentVersionCode) {
         Alert.alert(
-          'New version is comming!',
-          'New version has release, please update',
+          'New version is available!',
+          `New version ${result.versionName} (${result.versionCode}) has been released, please update`,
           [
             {
               text: 'Cancel',
