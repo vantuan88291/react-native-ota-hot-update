@@ -55,7 +55,7 @@ After setting up your version management, fetch the `update.json` file to get th
 import hotUpdate from 'react-native-ota-hot-update';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
-hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
+hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, versionCode, versionName {
   updateSuccess: () => {
     console.log('Update successful!');
   },
@@ -72,7 +72,7 @@ hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
 });
 ```
 
-> **Important:** Always pass the `version` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` is **0**.
+> **Important:** Always pass the `versionCode` parameter in `downloadBundleUri`. This library caches the versionCode and uses it to check for updates in the future. The default `versionCode` is **0**.
 
 > **Note:** You can use either `react-native-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
 
@@ -107,8 +107,10 @@ Other CMS options include CraftCMS and PayloadCMS.
 | `setupExactBundlePath`   | `boolean`   | Installs the bundle from an extracted file path.                                                      | `path: string` - Path of the extracted bundle file.                                           |
 | `removeUpdate`           | `void`      | Removes the update and reverts to the previous version.                                               | `restartAfterRemoved?: boolean` - Restarts the app to apply changes.                         |
 | `resetApp`               | `void`      | Restarts the app to apply changes.                                                                    | None                                                                                          |
-| `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                                  | None                                                                                          |
-| `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                                       | `version: number`                                                                             |
+| `getCurrentVersionCode`      | `number`    | Retrieves the current version code for update comparison.                                                  | None                                                                                          |
+| `setCurrentVersionCode`      | `boolean`   | Sets the current version code for update comparison.                                                       | `versionName: number`                                                                             |
+| `getCurrentVersionName`      | `string`   | Retrieves the current version name to display users.                                                       | None                                                                             |
+| `setCurrentVersionName`      | `boolean`   | Sets the current version name to display users.                                                       | `versionName: string`                                                                             |
 | `rollbackToPreviousBundle`      | `boolean`   | Rollback to previous bundle, by default app will store 2 versions of bundle from the second updating. | None                                                                             |
 | `getUpdateMetadata`      | `object/null`   | Get the metadata stored for the update                                                           | None |
 | `setUpdateMetadata`      | `boolean`       | Set the metadata for the update                                                                  | None |

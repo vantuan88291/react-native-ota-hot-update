@@ -12,9 +12,8 @@ import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.DEFAULT_BUNDLE
 import com.rnhotupdate.Common.PATH
-import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.VERSION_CODE
 import com.rnhotupdate.SharedPrefs
-
 
 class OtaHotUpdate(context: Context?) : TurboReactPackage() {
   init {
@@ -61,12 +60,12 @@ class OtaHotUpdate(context: Context?) : TurboReactPackage() {
         }
         val sharedPrefs = SharedPrefs(mContext!!)
         val pathBundle = sharedPrefs.getString(PATH)
-        val version = sharedPrefs.getString(VERSION)
+        val versionCode = sharedPrefs.getString(VERSION_CODE)
         val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_NAME)
         if (pathBundle == "" || (currentVersionName != mContext?.getPackageInfo()?.versionName)) {
-          if (version != "") {
+          if (versionCode != "") {
             // reset version number because bundle is wrong version, need download from new version
-            sharedPrefs.putString(VERSION, "")
+            sharedPrefs.putString(VERSION_CODE, "")
           }
           return DEFAULT_BUNDLE
         }

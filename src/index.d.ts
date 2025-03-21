@@ -59,9 +59,14 @@ export interface OtaHotUpdate {
   resetApp(): Promise<void>;
 
   /**
-   * Get the current version of the app.
+   * Get the current version code of the app.
    */
-  getCurrentVersion(): Promise<number>;
+  getCurrentVersionCode(): Promise<number>;
+
+    /**
+   * Get the current version name of the app.
+   */
+    getCurrentVersionName(): Promise<string>;
 
   /**
    * Set the current version of the app.
