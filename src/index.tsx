@@ -109,23 +109,21 @@ const installFail = (option?: UpdateOption, e?: any) => {
 async function downloadBundleUri(
   downloadManager: DownloadManager,
   uri: string,
-  version: number,
+  version?: number,
   option?: UpdateOption
 ) {
   if (!uri) {
     return installFail(option, 'Please give a valid URL!');
   }
-  if (!version) {
-    return installFail(option, 'Please give a valid version!');
-  }
-
-  const currentVersion = await getVersionAsNumber();
-  if (version <= currentVersion) {
-    return installFail(
-      option,
-      'Please give a bigger version than the current version, the current version now has setted by: ' +
+  if (version) {
+    const currentVersion = await getVersionAsNumber();
+    if (version <= currentVersion) {
+      return installFail(
+        option,
+        'Please give a bigger version than the current version, the current version now has setted by: ' +
         currentVersion
-    );
+      );
+    }
   }
 
   try {
@@ -144,8 +142,9 @@ async function downloadBundleUri(
     if (!success) {
       return installFail(option);
     }
-
-    setCurrentVersion(version);
+    if (version) {
+      setCurrentVersion(version);
+    }
     if (option?.metadata) {
       setUpdateMetadata(option.metadata);
     }
