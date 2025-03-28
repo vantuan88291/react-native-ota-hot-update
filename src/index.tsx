@@ -36,6 +36,7 @@ const downloadBundleFile = async (
   const res = await downloadManager
     .config({
       fileCache: Platform.OS === 'android',
+      path: !!downloadManager?.fs?.dirs?.LibraryDir && Platform.OS === 'ios' ? `${downloadManager.fs.dirs.LibraryDir}/${new Date().valueOf()}_hotupdate.zip` : undefined
     })
     .fetch('GET', uri, {
       ...headers,
@@ -133,7 +134,6 @@ async function downloadBundleUri(
       option?.headers,
       option?.progress
     );
-
     if (!path) {
       return installFail(option);
     }
