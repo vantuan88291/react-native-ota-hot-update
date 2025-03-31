@@ -6,7 +6,7 @@ const withAndroidAction = (config) => {
         config.modResults.contents = config.modResults.contents.replace(/override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED/g, `
           override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
 
-          override fun getJSBundleFile(): String = OtaHotUpdate.bundleJS`);
+          override fun getJSBundleFile(): String = OtaHotUpdate.bundleJS(this@MainApplication)`);
         config.modResults.contents = config.modResults.contents.replace(/import expo.modules.ReactNativeHostWrapper/g, `
 import expo.modules.ReactNativeHostWrapper
 import com.otahotupdate.OtaHotUpdate`);
