@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import com.facebook.react.TurboReactPackage
+import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
@@ -16,10 +16,7 @@ import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
 
 
-class OtaHotUpdate(context: Context?) : TurboReactPackage() {
-  init {
-    mContext = context
-  }
+class OtaHotUpdate : BaseReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return if (name == OtaHotUpdateModule.NAME) {
       OtaHotUpdateModule(reactContext)
@@ -37,7 +34,6 @@ class OtaHotUpdate(context: Context?) : TurboReactPackage() {
         OtaHotUpdateModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
-        true,  // hasConstants
         false,  // isCxxModule
         isTurboModule // isTurboModule
       )
@@ -53,24 +49,19 @@ class OtaHotUpdate(context: Context?) : TurboReactPackage() {
         packageManager.getPackageInfo(packageName, 0)
       }
     }
-    private var mContext: Context? = null
-    val bundleJS: String
-      get() {
-        if (mContext == null) {
-          return DEFAULT_BUNDLE
+    fun bundleJS(context: Context): String {
+      val sharedPrefs = SharedPrefs(context)
+      val pathBundle = sharedPrefs.getString(PATH)
+      val version = sharedPrefs.getString(VERSION)
+      val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_NAME)
+      if (pathBundle == "" || (currentVersionName != context.getPackageInfo().versionName)) {
+        if (version != "") {
+          // reset version number because bundle is wrong version, need download from new version
+          sharedPrefs.putString(VERSION, "")
         }
-        val sharedPrefs = SharedPrefs(mContext!!)
-        val pathBundle = sharedPrefs.getString(PATH)
-        val version = sharedPrefs.getString(VERSION)
-        val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_NAME)
-        if (pathBundle == "" || (currentVersionName != mContext?.getPackageInfo()?.versionName)) {
-          if (version != "") {
-            // reset version number because bundle is wrong version, need download from new version
-            sharedPrefs.putString(VERSION, "")
-          }
-          return DEFAULT_BUNDLE
-        }
-        return pathBundle!!
+        return DEFAULT_BUNDLE
       }
+      return pathBundle!!
+    }
   }
 }
