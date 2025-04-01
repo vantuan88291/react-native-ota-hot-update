@@ -23,6 +23,10 @@ import java.util.zip.ZipFile
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
 
+  override fun getName(): String {
+     return NAME
+   }
+
   private fun deleteDirectory(directory: File): Boolean {
     if (directory.isDirectory) {
       // List all files and directories in the current directory
