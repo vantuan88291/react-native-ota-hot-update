@@ -171,7 +171,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val sharedPrefs = SharedPrefs(reactApplicationContext)
 
     val currentVersion = sharedPrefs.getString(VERSION)
-    if (currentVersion != "") {
+    if (currentVersion != "" && currentVersion != version) {
         sharedPrefs.putString(PREVIOUS_VERSION, currentVersion)
     }
 
