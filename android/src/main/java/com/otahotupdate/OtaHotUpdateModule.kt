@@ -12,6 +12,7 @@ import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.PREVIOUS_VERSION
 import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
 import java.io.File
@@ -21,10 +22,6 @@ import java.util.zip.ZipFile
 
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
-
-  override fun getName(): String {
-    return NAME
-  }
 
   private fun deleteDirectory(directory: File): Boolean {
     if (directory.isDirectory) {
@@ -144,7 +141,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val isDeleted = deleteOldBundleIfneeded(PATH)
     val isDeletedOldPath = deleteOldBundleIfneeded(PREVIOUS_PATH)
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(VERSION, "0")
+    sharedPrefs.putString(VERSION, DEFAULT_VERSION)
     promise.resolve(isDeleted && isDeletedOldPath)
   }
 
@@ -161,13 +158,19 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     if (version != "") {
       promise.resolve(version)
     } else {
-      promise.resolve("0")
+      promise.resolve(DEFAULT_VERSION)
     }
   }
 
   @ReactMethod
   override fun setCurrentVersion(version: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
+
+    val currentVersion = sharedPrefs.getString(VERSION)
+    if (currentVersion != "") {
+        sharedPrefs.putString(PREVIOUS_VERSION, currentVersion)
+    }
+
     sharedPrefs.putString(VERSION, version)
     promise.resolve(true)
   }
@@ -203,11 +206,21 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   override fun rollbackToPreviousBundle(a: Double, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val oldPath = sharedPrefs.getString(PREVIOUS_PATH)
+    val previousVersion = sharedPrefs.getString(PREVIOUS_VERSION)
+
     if (oldPath != "") {
       val isDeleted = deleteOldBundleIfneeded(PATH)
       if (isDeleted) {
         sharedPrefs.putString(PATH, oldPath)
         sharedPrefs.putString(PREVIOUS_PATH, "")
+
+        if (previousVersion != "") {
+            sharedPrefs.putString(VERSION, previousVersion)
+            sharedPrefs.putString(PREVIOUS_VERSION, "")
+        } else {
+            sharedPrefs.putString(VERSION, DEFAULT_VERSION)
+        }
+
         promise.resolve(true)
       } else {
         promise.resolve(false)
@@ -218,5 +231,6 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
   companion object {
     const val NAME = "OtaHotUpdate"
+    const val DEFAULT_VERSION = "0"
   }
 }
