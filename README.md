@@ -156,6 +156,10 @@ MainApplication.java:
 			return OtaHotUpdate.getBundleJS(this);
 		}
 ```
+#### Crash handler
+If want to prevent crash app when use wrong bundle version, add flag like bellow:
+
+`OtaHotUpdate.bundleJS(this@MainApplication, true)`
 
 For java it maybe can be like: `OtaHotUpdate.Companion.getBundleJS(this)` depend on kotlin / jdk version on your project, you can use android studio to get the correct format coding.
 

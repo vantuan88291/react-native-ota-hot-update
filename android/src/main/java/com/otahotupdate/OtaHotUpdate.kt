@@ -49,8 +49,10 @@ class OtaHotUpdate : BaseReactPackage() {
         packageManager.getPackageInfo(packageName, 0)
       }
     }
-    fun bundleJS(context: Context): String {
-      Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context))
+    fun bundleJS(context: Context, crashHandler: Boolean = false): String {
+      if (crashHandler) {
+        Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context))
+      }
       val sharedPrefs = SharedPrefs(context)
       val pathBundle = sharedPrefs.getString(PATH)
       val version = sharedPrefs.getString(VERSION)
