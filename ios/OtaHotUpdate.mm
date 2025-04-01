@@ -1,7 +1,46 @@
 #import "OtaHotUpdate.h"
 #import <SSZipArchive/SSZipArchive.h>
+static NSUncaughtExceptionHandler *previousHandler = NULL;
+static BOOL isBeginning = YES;
 @implementation OtaHotUpdate
 RCT_EXPORT_MODULE()
+
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        previousHandler = NSGetUncaughtExceptionHandler();
+        NSSetUncaughtExceptionHandler(&OTAExceptionHandler);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            isBeginning = NO;
+        });
+    }
+    return self;
+}
+
+void OTAExceptionHandler(NSException *exception) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (isBeginning) {
+      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+      NSString *oldPath = [defaults stringForKey:@"OLD_PATH"];
+        if (oldPath) {
+//          BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
+          BOOL isDeleted = YES;
+          if (isDeleted) {
+            [defaults setObject:oldPath forKey:@"PATH"];
+            [defaults removeObjectForKey:@"OLD_PATH"];
+          } else {
+            [defaults removeObjectForKey:@"OLD_PATH"];
+            [defaults removeObjectForKey:@"PATH"];
+          }
+        } else {
+          [defaults removeObjectForKey:@"PATH"];
+        }
+      [defaults synchronize];
+    } else if (previousHandler) {
+        previousHandler(exception);
+    }
+}
 
 // Check if a file path is valid
 - (BOOL)isFilePathValid:(NSString *)path {
@@ -216,6 +255,7 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
             [defaults setObject:extractedFilePath forKey:@"PATH"];
             [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];
             [defaults synchronize];
+            isBeginning = YES;
             resolve(@(YES));
         } else {
             resolve(@(NO));
