@@ -145,7 +145,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val isDeleted = deleteOldBundleIfneeded(PATH)
     val isDeletedOldPath = deleteOldBundleIfneeded(PREVIOUS_PATH)
     val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(VERSION, DEFAULT_VERSION)
+    sharedPrefs.putString(VERSION, "0")
     promise.resolve(isDeleted && isDeletedOldPath)
   }
 
@@ -162,7 +162,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     if (version != "") {
       promise.resolve(version)
     } else {
-      promise.resolve(DEFAULT_VERSION)
+      promise.resolve("0")
     }
   }
 
@@ -222,7 +222,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
             sharedPrefs.putString(VERSION, previousVersion)
             sharedPrefs.putString(PREVIOUS_VERSION, "")
         } else {
-            sharedPrefs.putString(VERSION, DEFAULT_VERSION)
+            sharedPrefs.putString(VERSION, "")
         }
 
         promise.resolve(true)
@@ -235,6 +235,5 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   }
   companion object {
     const val NAME = "OtaHotUpdate"
-    const val DEFAULT_VERSION = "0"
   }
 }
