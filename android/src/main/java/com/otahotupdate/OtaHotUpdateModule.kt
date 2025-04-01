@@ -12,6 +12,7 @@ import com.rnhotupdate.Common.CURRENT_VERSION_NAME
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
 import com.rnhotupdate.Common.VERSION
+import com.rnhotupdate.Common.PREVIOUS_VERSION
 import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
 import java.io.File
@@ -168,6 +169,12 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   @ReactMethod
   override fun setCurrentVersion(version: String?, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
+
+    val currentVersion = sharedPrefs.getString(VERSION)
+    if (currentVersion != "") {
+        sharedPrefs.putString(PREVIOUS_VERSION, currentVersion)
+    }
+
     sharedPrefs.putString(VERSION, version)
     promise.resolve(true)
   }
@@ -203,11 +210,21 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   override fun rollbackToPreviousBundle(a: Double, promise: Promise) {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val oldPath = sharedPrefs.getString(PREVIOUS_PATH)
+    val previousVersion = sharedPrefs.getString(PREVIOUS_VERSION)
+
     if (oldPath != "") {
       val isDeleted = deleteOldBundleIfneeded(PATH)
       if (isDeleted) {
         sharedPrefs.putString(PATH, oldPath)
         sharedPrefs.putString(PREVIOUS_PATH, "")
+
+        if (previousVersion != "") {
+            sharedPrefs.putString(VERSION, previousVersion)
+            sharedPrefs.putString(PREVIOUS_VERSION, "")
+        } else {
+            sharedPrefs.putString(VERSION, "")
+        }
+
         promise.resolve(true)
       } else {
         promise.resolve(false)
