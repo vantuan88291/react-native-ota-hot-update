@@ -282,11 +282,12 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
                   reject:(RCTPromiseRejectBlock)reject) {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *currentVersion = [defaults stringForKey:@"VERSION"];
-    if (currentVersion && currentVersion != version) {
-        [defaults setObject:currentVersion forKey:@"PREVIOUS_VERSION"];
-    }
 
     if (version) {
+        if (currentVersion && currentVersion != version) {
+            [defaults setObject:currentVersion forKey:@"PREVIOUS_VERSION"];
+        }
+
         [defaults setObject:version forKey:@"VERSION"];
         [defaults synchronize];
         resolve(@(YES));
