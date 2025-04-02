@@ -27,7 +27,7 @@ class MainApplication : Application(), ReactApplication {
         override fun getJSMainModuleName(): String = "index"
 
         override fun getJSBundleFile(): String? {
-          return OtaHotUpdate.bundleJS(this@MainApplication, true)
+          return OtaHotUpdate.bundleJS(this@MainApplication)
         }
         override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 

@@ -21,11 +21,9 @@ RCT_EXPORT_MODULE()
 void OTAExceptionHandler(NSException *exception) {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (isBeginning) {
-      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
       NSString *oldPath = [defaults stringForKey:@"OLD_PATH"];
         if (oldPath) {
-//          BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
-          BOOL isDeleted = YES;
+          BOOL isDeleted = [OtaHotUpdate removeBundleIfNeeded:@"PATH"];
           if (isDeleted) {
             [defaults setObject:oldPath forKey:@"PATH"];
             [defaults removeObjectForKey:@"OLD_PATH"];
@@ -36,6 +34,7 @@ void OTAExceptionHandler(NSException *exception) {
         } else {
           [defaults removeObjectForKey:@"PATH"];
         }
+      [defaults removeObjectForKey:@"VERSION"];
       [defaults synchronize];
     } else if (previousHandler) {
         previousHandler(exception);
@@ -43,7 +42,7 @@ void OTAExceptionHandler(NSException *exception) {
 }
 
 // Check if a file path is valid
-- (BOOL)isFilePathValid:(NSString *)path {
++ (BOOL)isFilePathValid:(NSString *)path {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     return [fileManager fileExistsAtPath:path];
 }
@@ -58,7 +57,7 @@ void OTAExceptionHandler(NSException *exception) {
     }
     return success;
 }
-- (BOOL)deleteAllContentsOfParentDirectoryOfFile:(NSString *)filePath error:(NSError **)error {
++ (BOOL)deleteAllContentsOfParentDirectoryOfFile:(NSString *)filePath error:(NSError **)error {
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     // Get the parent directory of the file
@@ -105,12 +104,12 @@ void OTAExceptionHandler(NSException *exception) {
     return success;
 }
 
-- (BOOL)removeBundleIfNeeded:(NSString *)pathKey {
++ (BOOL)removeBundleIfNeeded:(NSString *)pathKey {
     NSString *keyToUse = pathKey ? pathKey : @"OLD_PATH";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *retrievedString = [defaults stringForKey:keyToUse];
     NSError *error = nil;
-    if (retrievedString && [self isFilePathValid:retrievedString]) {
+  if (retrievedString && [self isFilePathValid:retrievedString]) {
         BOOL isDeleted = [self deleteAllContentsOfParentDirectoryOfFile:retrievedString error:&error];
         [defaults removeObjectForKey:keyToUse];
         [defaults synchronize];
@@ -242,8 +241,8 @@ void OTAExceptionHandler(NSException *exception) {
 RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extension
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    if ([self isFilePathValid:path]) {
-        [self removeBundleIfNeeded:nil];
+    if ([OtaHotUpdate isFilePathValid:path]) {
+        [OtaHotUpdate removeBundleIfNeeded:nil];
         //Unzip file
         NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
         if (extractedFilePath) {
@@ -267,8 +266,8 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
 RCT_EXPORT_METHOD(deleteBundle:(double)i
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
-    BOOL isDeletedOld = [self removeBundleIfNeeded:nil];
+    BOOL isDeleted = [OtaHotUpdate removeBundleIfNeeded:@"PATH"];
+    BOOL isDeletedOld = [OtaHotUpdate removeBundleIfNeeded:nil];
     if (isDeleted && isDeletedOld) {
           resolve(@(YES));
       } else {
@@ -281,8 +280,8 @@ RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
                   reject:(RCTPromiseRejectBlock)reject) {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *oldPath = [defaults stringForKey:@"OLD_PATH"];
-    if (oldPath && [self isFilePathValid:oldPath]) {
-      BOOL isDeleted = [self removeBundleIfNeeded:@"PATH"];
+    if (oldPath && [OtaHotUpdate isFilePathValid:oldPath]) {
+      BOOL isDeleted = [OtaHotUpdate removeBundleIfNeeded:@"PATH"];
       if (isDeleted) {
         [defaults setObject:oldPath forKey:@"PATH"];
         [defaults removeObjectForKey:@"OLD_PATH"];
