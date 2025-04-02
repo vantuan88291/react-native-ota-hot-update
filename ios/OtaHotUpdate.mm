@@ -34,7 +34,6 @@ void OTAExceptionHandler(NSException *exception) {
         } else {
           [defaults removeObjectForKey:@"PATH"];
         }
-      [defaults removeObjectForKey:@"VERSION"];
       [defaults synchronize];
     } else if (previousHandler) {
         previousHandler(exception);

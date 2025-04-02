@@ -41,7 +41,6 @@ class CrashHandler(private val context: Context) : Thread.UncaughtExceptionHandl
       } else {
         sharedPrefs.putString(PATH, "")
       }
-      sharedPrefs.putString(VERSION, "0")
       Toast.makeText(context, "Failed to load the update. Please try again.", Toast.LENGTH_LONG).show()
       GlobalScope.launch(Dispatchers.IO) {
         delay(1500)
