@@ -284,7 +284,6 @@ RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
     NSString *currentVersion = [defaults stringForKey:@"VERSION"];
     if (currentVersion && currentVersion != version) {
         [defaults setObject:currentVersion forKey:@"PREVIOUS_VERSION"];
-        [defaults synchronize];
     }
 
     if (version) {
