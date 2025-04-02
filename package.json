@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
