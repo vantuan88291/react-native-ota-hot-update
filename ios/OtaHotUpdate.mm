@@ -284,7 +284,7 @@ RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
       if (isDeleted) {
         NSString *previousVersion = [defaults stringForKey:@"PREVIOUS_VERSION"];
         if (previousVersion) {
-          [defaults setObject:currentVersion forKey:@"VERSION"];
+          [defaults setObject:previousVersion forKey:@"VERSION"];
           [defaults removeObjectForKey:@"PREVIOUS_VERSION"];
         } else {
           [defaults removeObjectForKey:@"VERSION"];
