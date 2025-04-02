@@ -282,6 +282,14 @@ RCT_EXPORT_METHOD(rollbackToPreviousBundle:(double)i
     if (oldPath && [OtaHotUpdate isFilePathValid:oldPath]) {
       BOOL isDeleted = [OtaHotUpdate removeBundleIfNeeded:@"PATH"];
       if (isDeleted) {
+        NSString *previousVersion = [defaults stringForKey:@"PREVIOUS_VERSION"];
+        if (previousVersion) {
+          [defaults setObject:currentVersion forKey:@"VERSION"];
+          [defaults removeObjectForKey:@"PREVIOUS_VERSION"];
+        } else {
+          [defaults removeObjectForKey:@"VERSION"];
+        }
+
         [defaults setObject:oldPath forKey:@"PATH"];
         [defaults removeObjectForKey:@"OLD_PATH"];
         [defaults synchronize];
@@ -310,8 +318,14 @@ RCT_EXPORT_METHOD(getCurrentVersion:(double)a
 RCT_EXPORT_METHOD(setCurrentVersion:(NSString *)version
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *currentVersion = [defaults stringForKey:@"VERSION"];
+
     if (version) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if (currentVersion && currentVersion != version) {
+            [defaults setObject:currentVersion forKey:@"PREVIOUS_VERSION"];
+        }
+
         [defaults setObject:version forKey:@"VERSION"];
         [defaults synchronize];
         resolve(@(YES));
