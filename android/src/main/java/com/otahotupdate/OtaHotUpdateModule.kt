@@ -46,12 +46,17 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val path = sharedPrefs.getString(pathName)
     val file = File(path)
+    if (path.isNullOrEmpty()) {
+      //Check trường hợp không có path thì vẫn phải trả kết quả là true
+      return true
+    }
     if (file.exists() && file.isFile) {
       val isDeleted = deleteDirectory(file.parentFile)
       sharedPrefs.putString(pathName, "")
       return isDeleted
     } else {
-      return false
+      //Check trường hợp không có path thì vẫn phải trả kết quả là true
+      return true
     }
   }
   private fun extractZipFile(
