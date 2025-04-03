@@ -133,6 +133,9 @@ void OTAExceptionHandler(NSException *exception) {
        NSURL *fileURL = [NSURL fileURLWithPath:retrievedString];
        return fileURL;
     } else {
+         // reset version number because bundle is wrong version, need download from new version
+        [defaults removeObjectForKey:@"VERSION"];
+        [defaults synchronize];
         return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     }
 }
