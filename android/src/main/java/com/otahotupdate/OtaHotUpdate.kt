@@ -1,7 +1,6 @@
 package com.otahotupdate
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import com.facebook.react.BaseReactPackage
@@ -9,7 +8,7 @@ import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
-import com.rnhotupdate.Common.CURRENT_VERSION_NAME
+import com.rnhotupdate.Common.CURRENT_VERSION_CODE
 import com.rnhotupdate.Common.DEFAULT_BUNDLE
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.VERSION
@@ -41,12 +40,22 @@ class OtaHotUpdate : BaseReactPackage() {
     }
   }
   companion object {
-    @Suppress("DEPRECATION")
-    fun Context.getPackageInfo(): PackageInfo {
-      return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-      } else {
-        packageManager.getPackageInfo(packageName, 0)
+    fun Context.getVersionCode(): String {
+      return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+          packageManager.getPackageInfo(
+            packageName,
+            PackageManager.PackageInfoFlags.of(0)
+          ).longVersionCode.toString()
+        }
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
+          @Suppress("DEPRECATION")
+          packageManager.getPackageInfo(packageName, 0).longVersionCode.toString()
+        }
+        else -> {
+          @Suppress("DEPRECATION")
+          packageManager.getPackageInfo(packageName, 0).versionCode.toString()
+        }
       }
     }
     fun bundleJS(context: Context): String {
@@ -54,8 +63,8 @@ class OtaHotUpdate : BaseReactPackage() {
       val sharedPrefs = SharedPrefs(context)
       val pathBundle = sharedPrefs.getString(PATH)
       val version = sharedPrefs.getString(VERSION)
-      val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_NAME)
-      if (pathBundle == "" || (currentVersionName != context.getPackageInfo().versionName)) {
+      val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_CODE)
+      if (pathBundle == "" || (currentVersionName != context.getVersionCode())) {
         if (version != "") {
           // reset version number because bundle is wrong version, need download from new version
           sharedPrefs.putString(VERSION, "")
