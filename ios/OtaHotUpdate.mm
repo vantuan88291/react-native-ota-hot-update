@@ -1,7 +1,7 @@
 #import "OtaHotUpdate.h"
 #import <SSZipArchive/SSZipArchive.h>
 static NSUncaughtExceptionHandler *previousHandler = NULL;
-static BOOL isBeginning = YES;
+static BOOL isBeginning = NO;
 @implementation OtaHotUpdate
 RCT_EXPORT_MODULE()
 
