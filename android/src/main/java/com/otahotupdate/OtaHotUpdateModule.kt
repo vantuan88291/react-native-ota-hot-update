@@ -45,9 +45,6 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           promise.resolve(true)
         } else {
           file.delete()
-          utils.deleteDirectory(file.parentFile)
-          val sharedPrefs = SharedPrefs(reactApplicationContext)
-          sharedPrefs.putString(PATH, "")
           promise.resolve(false)
         }
       } else {
