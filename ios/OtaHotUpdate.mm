@@ -56,52 +56,6 @@ void OTAExceptionHandler(NSException *exception) {
     }
     return success;
 }
-+ (BOOL)deleteAllContentsOfParentDirectoryOfFile:(NSString *)filePath error:(NSError **)error {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    // Get the parent directory of the file
-    NSString *parentDirectory = [filePath stringByDeletingLastPathComponent];
-
-    // Ensure the parent directory exists
-    BOOL isDirectory;
-    if (![fileManager fileExistsAtPath:parentDirectory isDirectory:&isDirectory] || !isDirectory) {
-        if (error) {
-            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:@{NSLocalizedDescriptionKey: @"Parent directory does not exist or is not a directory."}];
-        }
-        return NO;
-    }
-
-    // Get the contents of the parent directory
-    NSArray *contents = [fileManager contentsOfDirectoryAtPath:parentDirectory error:error];
-    if (error && *error) {
-        return NO;
-    }
-
-    BOOL success = YES;
-    for (NSString *fileName in contents) {
-        NSString *filePathInDirectory = [parentDirectory stringByAppendingPathComponent:fileName];
-
-        BOOL isDirectory;
-        if ([fileManager fileExistsAtPath:filePathInDirectory isDirectory:&isDirectory]) {
-            NSError *removeError = nil;
-            if (isDirectory) {
-                // Recursively delete directory contents
-                if (![fileManager removeItemAtPath:filePathInDirectory error:&removeError]) {
-                    NSLog(@"Failed to delete directory at path: %@", filePathInDirectory);
-                    success = NO;
-                }
-            } else {
-                // Delete file
-                if (![fileManager removeItemAtPath:filePathInDirectory error:&removeError]) {
-                    NSLog(@"Failed to delete file at path: %@", filePathInDirectory);
-                    success = NO;
-                }
-            }
-        }
-    }
-
-    return success;
-}
 
 + (BOOL)removeBundleIfNeeded:(NSString *)pathKey {
     NSString *keyToUse = pathKey ? pathKey : @"OLD_PATH";
@@ -109,7 +63,7 @@ void OTAExceptionHandler(NSException *exception) {
     NSString *retrievedString = [defaults stringForKey:keyToUse];
     NSError *error = nil;
   if (retrievedString && [self isFilePathValid:retrievedString]) {
-        BOOL isDeleted = [self deleteAllContentsOfParentDirectoryOfFile:retrievedString error:&error];
+        BOOL isDeleted = [self deleteFileAtPath:retrievedString];
         [defaults removeObjectForKey:keyToUse];
         [defaults synchronize];
         return isDeleted;
