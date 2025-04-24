@@ -30,6 +30,19 @@ This guide demonstrates how to manage the JavaScript bundle yourself. In this ex
 ```
 > **Note:** For Expo projects, verify the path of `--entry-file node_modules/expo/AppEntry.js` in your `package.json`.
 
+
+
+#### For Hermes compiler bundle to bytecode .hbc:
+
+Use this will make start up at runtime more faster than bundlejs, need enable engine Hermes
+```json
+"scripts": {
+"export-bytecode-android": "mkdir -p dist/android && npx expo export:embed --platform android --minify=true --entry-file index.tsx --bundle-output dist/android/index.android.bundle --dev false  --assets-dest dist/android && ./node_modules/react-native/sdks/hermesc/linux64-bin/hermesc -emit-binary -out dist/android/index.android.hbc.bundle dist/android/index.android.bundle -output-source-map -w && rm -f dist/android/index.android.bundle dist/android/index.android.hbc.bundle.map && cd dist && find android -type f | zip hermes.android.hbc.zip -@ && cd .. && rm -rf dist/android",
+"export-bytecode-ios": "mkdir -p dist/ios && npx expo export:embed --platform ios --minify=true --entry-file index.tsx --bundle-output dist/ios/main.jsbundle --dev false --assets-dest dist/ios && ./node_modules/react-native/sdks/hermesc/linux64-bin/hermesc -emit-binary -out dist/ios/main.ios.hbc.jsbundle dist/ios/main.jsbundle -output-source-map -w && rm -f dist/ios/main.jsbundle dist/ios/main.ios.hbc.jsbundle.map && cd dist && find ios -type f | zip hermes.ios.hbc.zip -@ && cd .. && rm -rf dist/ios"
+}
+```
+> **Note:** This Hermes compiler for expo bare project, for CLI change expo export:embed to react-native bundle. For Hermes runner, need check version of os and change the folder `node_modules/react-native/sdks/hermesc/linux64-bin/hermesc`, change linux64-bin to os/win to make it suitable for your OS
+
 These scripts export the bundle and source map files, then compress them into a zip file (one for Android and one for iOS). You can customize these scripts to automate uploading to your server. Source map files can be ignored or used for debugging in release mode.
 
 ### 2. Create an `update.json` File
