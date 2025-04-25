@@ -45,13 +45,13 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           promise.resolve(true)
         } else {
           file.delete()
-          promise.resolve(false)
+          promise.reject("E_UNZIP_FAIL", "File unzip failed or path is invalid file: $file")
         }
       } else {
-        promise.resolve(false)
+        promise.reject("E_INVALID_PATH", "File not exist: $file")
       }
     } else {
-      promise.resolve(false)
+      promise.reject("E_INVALID_PATH", "File not exist: $path")
     }
   }
 

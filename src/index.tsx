@@ -135,7 +135,7 @@ async function downloadBundleUri(
       option?.progress
     );
     if (!path) {
-      return installFail(option);
+      return installFail(option, `Cannot download bundle file: ${path}`);
     }
 
     const success = await setupBundlePath(path, option?.extensionBundle);

@@ -259,10 +259,10 @@ RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extensi
             isBeginning = YES;
             resolve(@(YES));
         } else {
-            resolve(@(NO));
+            reject(@"E_UNZIP_FAIL", @"Unzipping failed, zip file invalid", nil);
         }
     } else {
-        resolve(@(NO));
+        reject(@"E_INVALID_PATH", @"Invalid or missing file path", nil);
     }
 }
 RCT_EXPORT_METHOD(deleteBundle:(double)i
