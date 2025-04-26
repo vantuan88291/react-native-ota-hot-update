@@ -31,14 +31,15 @@ class Utils internal constructor(private val context: Context) {
     val pathName = if (pathKey != null) pathKey else PREVIOUS_PATH
     val sharedPrefs = SharedPrefs(context)
     val path = sharedPrefs.getString(pathName)
-    val file = File(path)
-    if (file.exists() && file.isFile) {
-      val isDeleted = deleteDirectory(file.parentFile)
-      sharedPrefs.putString(pathName, "")
-      return isDeleted
-    } else {
-      return false
+    if (!path.isNullOrEmpty()) {
+      val file = File(path)
+      if (file.exists() && file.isFile) {
+        val isDeleted = deleteDirectory(file.parentFile)
+        sharedPrefs.putString(pathName, "")
+        return isDeleted
+      }
     }
+    return false
   }
 
   fun extractZipFile(

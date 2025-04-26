@@ -13,28 +13,39 @@ import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.Common.PREVIOUS_VERSION
 import com.rnhotupdate.Common.METADATA
 import com.rnhotupdate.SharedPrefs
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
   private val utils: Utils = Utils(context)
+  private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
   override fun getName(): String {
     return NAME
   }
 
+  override fun invalidate() {
+    super.invalidate()
+    scope.cancel()
+  }
 
-  @ReactMethod
-  override fun setupBundlePath(path: String?, extension: String?, promise: Promise) {
+  private fun processBundleFile(path: String?, extension: String?): Boolean {
     if (path != null) {
       val file = File(path)
       if (file.exists() && file.isFile) {
-        utils.deleteOldBundleIfneeded(null)
         val fileUnzip = utils.extractZipFile(file, extension ?: ".bundle")
         if (fileUnzip != null) {
           file.delete()
+          utils.deleteOldBundleIfneeded(null)
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           val oldPath = sharedPrefs.getString(PATH)
-          if (!oldPath.equals("")) {
+          if (!oldPath.isNullOrEmpty()) {
             sharedPrefs.putString(PREVIOUS_PATH, oldPath)
           }
           sharedPrefs.putString(PATH, fileUnzip)
@@ -42,16 +53,31 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
             CURRENT_VERSION_CODE,
             reactApplicationContext.getVersionCode()
           )
-          promise.resolve(true)
+          return true
         } else {
           file.delete()
-          promise.reject("E_UNZIP_FAIL", "File unzip failed or path is invalid file: $file")
+          throw Exception("File unzip failed or path is invalid: $file")
         }
       } else {
-        promise.reject("E_INVALID_PATH", "File not exist: $file")
+        throw Exception("File not exist: $file")
       }
     } else {
-      promise.reject("E_INVALID_PATH", "File not exist: $path")
+      throw Exception("Invalid path: $path")
+    }
+  }
+  @ReactMethod
+  override fun setupBundlePath(path: String?, extension: String?, promise: Promise) {
+    scope.launch {
+      try {
+        val result = processBundleFile(path, extension)
+        withContext(Dispatchers.Main) {
+          promise.resolve(result)
+        }
+      } catch (e: Exception) {
+        withContext(Dispatchers.Main) {
+          promise.reject("SET_ERROR", e)
+        }
+      }
     }
   }
 
