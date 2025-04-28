@@ -36,7 +36,7 @@ class Utils internal constructor(private val context: Context) {
       val bundleFile = File(bundlePath)
       if (bundleFile.exists() && bundleFile.isFile) {
         val outputFolder = bundleFile.parentFile
-        if (outputFolder != null && outputFolder.exists() && outputFolder.isDirectory && outputFolder.name.contains("output", ignoreCase = true)) {
+        if (outputFolder != null && outputFolder.exists() && outputFolder.isDirectory) {
           val isDeleted = deleteDirectory(outputFolder)
           sharedPrefs.putString(pathName, "")
           return isDeleted
