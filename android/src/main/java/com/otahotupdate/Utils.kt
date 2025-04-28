@@ -28,15 +28,19 @@ class Utils internal constructor(private val context: Context) {
     return directory.delete()
   }
   fun deleteOldBundleIfneeded(pathKey: String?): Boolean {
-    val pathName = if (pathKey != null) pathKey else PREVIOUS_PATH
+    val pathName = pathKey ?: PREVIOUS_PATH
     val sharedPrefs = SharedPrefs(context)
-    val path = sharedPrefs.getString(pathName)
-    if (!path.isNullOrEmpty()) {
-      val file = File(path)
-      if (file.exists() && file.isFile) {
-        val isDeleted = deleteDirectory(file.parentFile)
-        sharedPrefs.putString(pathName, "")
-        return isDeleted
+    val bundlePath = sharedPrefs.getString(pathName)
+
+    if (!bundlePath.isNullOrEmpty()) {
+      val bundleFile = File(bundlePath)
+      if (bundleFile.exists() && bundleFile.isFile) {
+        val outputFolder = bundleFile.parentFile
+        if (outputFolder != null && outputFolder.exists() && outputFolder.isDirectory && outputFolder.name.contains("output", ignoreCase = true)) {
+          val isDeleted = deleteDirectory(outputFolder)
+          sharedPrefs.putString(pathName, "")
+          return isDeleted
+        }
       }
     }
     return false
