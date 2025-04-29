@@ -45,6 +45,25 @@ Use this will make start up at runtime more faster than bundlejs, need enable en
 
 These scripts export the bundle and source map files, then compress them into a zip file (one for Android and one for iOS). You can customize these scripts to automate uploading to your server. Source map files can be ignored or used for debugging in release mode.
 
+```json
+Make sure zip file structure will be like this, should inside a parent folder:
+
+bundle.zip
+└── folder_name
+    ├── index.android.bundle
+    └── assets
+        ├── xxx.png
+        ├── xxxx.jpg
+        ├── fonts
+        │   ├── xxx.ttf
+        │   └── xxx.ttf
+        └── images
+            ├── xxx
+            └── xxx
+
+```
+
+
 ### 2. Create an `update.json` File
 
 The `update.json` file should look like this:
