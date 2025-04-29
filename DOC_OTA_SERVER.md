@@ -43,6 +43,16 @@ Use this will make start up at runtime more faster than bundlejs, need enable en
 ```
 > **Note:** This Hermes compiler for expo bare project, for CLI change expo export:embed to react-native bundle. For Hermes runner, need check version of os and change the folder `node_modules/react-native/sdks/hermesc/linux64-bin/hermesc`, change linux64-bin to os/win to make it suitable for your OS
 
+
+#### For window script:
+
+```json
+"scripts": {
+"export-android": "mkdir android\\output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android\\output\\index.android.bundle --assets-dest android\\output --sourcemap-output android\\sourcemap.js && cd android && powershell -Command \"Compress-Archive -Path output -DestinationPath index.android.bundle.zip\" && powershell -Command \"Compress-Archive -Path ..\\android\\sourcemap.js -DestinationPath sourcemap.zip\" && cd .. && rmdir /s /q android\\output && del android\\sourcemap.js",
+"export-ios": "mkdir ios\\output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios\\output\\main.jsbundle --assets-dest ios\\output --sourcemap-output ios\\sourcemap.js && cd ios && powershell -Command \"Compress-Archive -Path output -DestinationPath main.jsbundle.zip\" && powershell -Command \"Compress-Archive -Path ..\\ios\\sourcemap.js -DestinationPath sourcemap.zip\" && cd .. && rmdir /s /q ios\\output && del ios\\sourcemap.js"
+}
+```
+
 These scripts export the bundle and source map files, then compress them into a zip file (one for Android and one for iOS). You can customize these scripts to automate uploading to your server. Source map files can be ignored or used for debugging in release mode.
 
 ```json
