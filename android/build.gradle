@@ -116,6 +116,8 @@ dependencies {
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'com.jakewharton:process-phoenix:3.0.0'
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 }
 
 if (isNewArchitectureEnabled()) {

@@ -3,7 +3,7 @@ package com.otahotupdate
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import com.facebook.react.BaseReactPackage
+import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
@@ -15,7 +15,7 @@ import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
 
 
-class OtaHotUpdate : BaseReactPackage() {
+class OtaHotUpdate : TurboReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return if (name == OtaHotUpdateModule.NAME) {
       OtaHotUpdateModule(reactContext)
@@ -33,6 +33,7 @@ class OtaHotUpdate : BaseReactPackage() {
         OtaHotUpdateModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
+        true,  // hasConstants
         false,  // isCxxModule
         isTurboModule // isTurboModule
       )
