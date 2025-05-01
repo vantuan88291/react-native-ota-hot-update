@@ -13,7 +13,11 @@ Pod::Spec.new do |s|
 
   s.platforms    = { :ios => min_ios_version_supported }
   s.source       = { :git => "https://github.com/vantuan88291/react-native-ota-hot-update.git", :tag => "#{s.version}" }
-
+  s.pod_target_xcconfig = {
+    'SWIFT_VERSION' => '5.0',
+    'DEFINES_MODULE' => 'YES'
+  }
+  s.public_header_files = "ios/OtaHotUpdate.h"
   s.source_files = "ios/**/*.{h,m,mm,cpp}"
   s.dependency 'SSZipArchive', '~> 2.4.3'
   if ENV['RCT_NEW_ARCH_ENABLED'] == '0'

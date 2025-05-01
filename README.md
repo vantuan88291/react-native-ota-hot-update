@@ -69,18 +69,13 @@ Open `AppDelegate.m` and add this:
 
 From react native 0.77, AppDelegate changed to swift file, so the configuration will be change a bit.
 
-1. Create a Bridging Header
-   - Right-click on your project in the Xcode navigator and select New File from template.
-   - Select Header File under the iOS section and click Next.
-   - Name it something like `YourProjectName-Bridging-Header.h` and save it in your project directory.
-   - In your project's Build Settings: Search for `Objective-C Bridging Header`.
-   Set its value to the relative path of your bridging header file, e.g., YourProjectName/YourProjectName-Bridging-Header.h, remember need to create header file inside folder `YourProjectName`
-2. Open `YourProjectName-Bridging-Header.h` and add this line:
-
-   `#import "OtaHotUpdate.h"`
-3. Open AppDelegate.swift:
+Open AppDelegate.swift:
 
 ```bash
+
+import react_native_ota_hot_update
+...
+
 override func bundleURL() -> URL? {
         #if DEBUG
             RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
