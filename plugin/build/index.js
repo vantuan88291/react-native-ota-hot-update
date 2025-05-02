@@ -19,11 +19,25 @@ import com.otahotupdate.OtaHotUpdate`);
 };
 const withIosAction = (config) => {
     return (0, config_plugins_1.withAppDelegate)(config, (config) => {
-        if (!config.modResults.contents.includes('#import "OtaHotUpdate.h')) {
-            config.modResults.contents = config.modResults.contents.replace(/#import "AppDelegate.h"/g, `#import "AppDelegate.h"
-#import "OtaHotUpdate.h"`);
+        const appDelegatePath = config.modRequest.projectRoot + '/ios/' + config_plugins_1.IOSConfig.Paths.getAppDelegateFilePath(config.modRequest.projectRoot);
+        const isSwift = appDelegatePath.endsWith('.swift');
+        if (isSwift) {
+            // Swift: AppDelegate.swift
+            if (!config.modResults.contents.includes('import react_native_ota_hot_update')) {
+                config.modResults.contents = `import react_native_ota_hot_update\n${config.modResults.contents}`;
+            }
+            if (!config.modResults.contents.includes('OtaHotUpdate.getBundle()')) {
+                config.modResults.contents = config.modResults.contents.replace(/return Bundle.main.url\(forResource: "main", withExtension: "jsbundle"\)/, `return OtaHotUpdate.getBundle()`);
+            }
         }
-        config.modResults.contents = config.modResults.contents.replace(/\[\[NSBundle mainBundle\] URLForResource:@\"main\" withExtension:@\"jsbundle\"\]/, `[OtaHotUpdate getBundle]`);
+        else {
+            // Objective-C: AppDelegate.mm
+            if (!config.modResults.contents.includes('#import "OtaHotUpdate.h')) {
+                config.modResults.contents = config.modResults.contents.replace(/#import "AppDelegate.h"/g, `#import "AppDelegate.h"
+#import "OtaHotUpdate.h"`);
+            }
+            config.modResults.contents = config.modResults.contents.replace(/\[\[NSBundle mainBundle\] URLForResource:@\"main\" withExtension:@\"jsbundle\"\]/, `[OtaHotUpdate getBundle]`);
+        }
         return config;
     });
 };

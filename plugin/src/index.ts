@@ -1,4 +1,9 @@
-import { withMainApplication, withAppDelegate } from '@expo/config-plugins';
+import {
+  withMainApplication,
+  withAppDelegate,
+  IOSConfig,
+} from '@expo/config-plugins';
+
 const withAndroidAction: any = (config: any) => {
   return withMainApplication(config, (config) => {
     if (!config.modResults.contents.includes('override fun getJSBundleFile(): String = OtaHotUpdate.bundleJS(this@MainApplication)')) {
@@ -25,18 +30,37 @@ import com.otahotupdate.OtaHotUpdate`
 
 const withIosAction: any = (config: any) => {
   return withAppDelegate(config, (config) => {
-    if (!config.modResults.contents.includes('#import "OtaHotUpdate.h')) {
-      config.modResults.contents = config.modResults.contents.replace(
-        /#import "AppDelegate.h"/g,
-        `#import "AppDelegate.h"
+    const appDelegatePath = config.modRequest.projectRoot + '/ios/' + IOSConfig.Paths.getAppDelegateFilePath(config.modRequest.projectRoot);
+    const isSwift = appDelegatePath.endsWith('.swift');
+
+    if (isSwift) {
+      // Swift: AppDelegate.swift
+      if (!config.modResults.contents.includes('import react_native_ota_hot_update')) {
+        config.modResults.contents = `import react_native_ota_hot_update\n${config.modResults.contents}`;
+      }
+
+      if (!config.modResults.contents.includes('OtaHotUpdate.getBundle()')) {
+        config.modResults.contents = config.modResults.contents.replace(
+          /return Bundle.main.url\(forResource: "main", withExtension: "jsbundle"\)/,
+          `return OtaHotUpdate.getBundle()`
+        );
+      }
+    } else {
+      // Objective-C: AppDelegate.mm
+      if (!config.modResults.contents.includes('#import "OtaHotUpdate.h')) {
+        config.modResults.contents = config.modResults.contents.replace(
+          /#import "AppDelegate.h"/g,
+          `#import "AppDelegate.h"
 #import "OtaHotUpdate.h"`
+        );
+      }
+
+      config.modResults.contents = config.modResults.contents.replace(
+        /\[\[NSBundle mainBundle\] URLForResource:@\"main\" withExtension:@\"jsbundle\"\]/,
+        `[OtaHotUpdate getBundle]`
       );
     }
 
-    config.modResults.contents = config.modResults.contents.replace(
-      /\[\[NSBundle mainBundle\] URLForResource:@\"main\" withExtension:@\"jsbundle\"\]/,
-      `[OtaHotUpdate getBundle]`
-    );
     return config;
   });
 };
@@ -46,4 +70,5 @@ const withAction: any = (config: any) => {
   config = withIosAction(config);
   return config;
 };
+
 module.exports = withAction;
