@@ -159,6 +159,13 @@ MainApplication.java:
 
 For java it maybe can be like: `OtaHotUpdate.Companion.getBundleJS(this)` depend on kotlin / jdk version on your project, you can use android studio to get the correct format coding.
 
+If want to remove bundle wrong handler, pass false param in getBundleJS like this:
+
+```aiignore
+return OtaHotUpdate.bundleJS(this@MainApplication, false)
+
+```
+
 Open `AndroidManifest.xml` :
 
 `<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />`

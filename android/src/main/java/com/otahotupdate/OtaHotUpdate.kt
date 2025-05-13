@@ -59,8 +59,10 @@ class OtaHotUpdate : TurboReactPackage() {
         }
       }
     }
-    fun bundleJS(context: Context): String {
-      Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context))
+    fun bundleJS(context: Context, isHandleCrash: Boolean = true): String {
+      if (isHandleCrash) {
+        Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context))
+      }
       val sharedPrefs = SharedPrefs(context)
       val pathBundle = sharedPrefs.getString(PATH)
       val version = sharedPrefs.getString(VERSION)

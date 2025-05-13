@@ -1,14 +1,10 @@
 package com.otahotupdate
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.PREVIOUS_PATH
-import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,7 +37,8 @@ class CrashHandler(private val context: Context) : Thread.UncaughtExceptionHandl
       } else {
         sharedPrefs.putString(PATH, "")
       }
-      Toast.makeText(context, "Failed to load the update. Please try again.", Toast.LENGTH_LONG).show()
+      val errorMessage = throwable.message ?: "Unknown error occurred"
+      Toast.makeText(context, "Update failed: $errorMessage", Toast.LENGTH_LONG).show()
       GlobalScope.launch(Dispatchers.IO) {
         delay(1500)
         ProcessPhoenix.triggerRebirth(context)
