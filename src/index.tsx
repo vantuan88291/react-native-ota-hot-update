@@ -60,7 +60,10 @@ function deleteBundlePath(): Promise<boolean> {
 function getCurrentVersion(): Promise<string> {
   return RNhotupdate.getCurrentVersion(0);
 }
-function getUpdateMetadata(): Promise<object | null> {
+
+type Metadata = object | number | string | boolean | null;
+
+function getUpdateMetadata<T extends Metadata = Metadata>(): Promise<T> {
   return RNhotupdate.getUpdateMetadata(0)
     .then((metadataString: string | null) => {
       try {
@@ -80,7 +83,7 @@ async function getVersionAsNumber() {
 function setCurrentVersion(version: number): Promise<boolean> {
   return RNhotupdate.setCurrentVersion(version + '');
 }
-function setUpdateMetadata(metadata: any): Promise<boolean> {
+function setUpdateMetadata<T extends Metadata = Metadata>(metadata: T): Promise<boolean> {
   try {
     const metadataString = JSON.stringify(metadata);
     return RNhotupdate.setUpdateMetadata(metadataString);
