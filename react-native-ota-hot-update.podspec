@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   }
   s.public_header_files = "ios/OtaHotUpdate.h"
   s.source_files = "ios/**/*.{h,m,mm,cpp}"
-  s.dependency 'SSZipArchive', '~> 2.4.3'
+  s.dependency 'SSZipArchive', '>= 2.5.5', '< 3.0'
   if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
     s.exclude_files = "ios/generated"
   end
