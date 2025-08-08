@@ -1,6 +1,6 @@
 {
   "name": "react-native-ota-hot-update",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Hot update for react native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
@@ -62,8 +62,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "buffer": "^6.0.3",
-    "isomorphic-git": "1.27.3"
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
@@ -94,6 +93,7 @@
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
+    "isomorphic-git": "*",
     "react": "*",
     "react-native": "*",
     "react-native-fs": "*"

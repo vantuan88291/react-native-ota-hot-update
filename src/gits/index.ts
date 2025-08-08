@@ -1,12 +1,21 @@
 import './helper/fileReader.js';
 
 // @ts-ignore
-import git, { PromiseFsClient } from 'isomorphic-git/index.umd.min.js';
-import http from 'isomorphic-git/http/web/index.js';
 import * as promises from './helper/fs';
 import type { CloneOption, PullOption } from '../type';
 
-const fs: PromiseFsClient = { promises };
+let git, http;
+
+try {
+  git = require('isomorphic-git/index.umd.min.js');
+  http = require('isomorphic-git/http/web/index.js');
+} catch (err) {
+  console.warn('isomorphic-git not found, running without Git support.', err);
+  git = {};
+  http = {};
+}
+
+const fs: any = { promises };
 const getFolder = (folderName?: string) => {
   try {
     const { DocumentDirectoryPath } = require('react-native-fs');
