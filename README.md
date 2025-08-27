@@ -118,22 +118,26 @@ var taskIdentifier: UIBackgroundTaskIdentifier = .invalid
 ...
 ```
 ```bash
-override func applicationWillResignActive(_ application: UIApplication) {
-          // End any existing background task
-          if taskIdentifier != .invalid {
-              application.endBackgroundTask(taskIdentifier)
-              taskIdentifier = .invalid
-          }
+  public override func applicationDidEnterBackground(_ application: UIApplication) {
+    if taskIdentifier != .invalid {
+      application.endBackgroundTask(taskIdentifier)
+      taskIdentifier = .invalid
+    }
 
-          // Start a new background task
-          taskIdentifier = application.beginBackgroundTask(withName: nil) { [weak self] in
-              if let strongSelf = self {
-                  application.endBackgroundTask(strongSelf.taskIdentifier)
-                  strongSelf.taskIdentifier = .invalid
-              }
-          }
+    taskIdentifier = application.beginBackgroundTask(withName: "OTAUpdate") { [weak self] in
+      if let strongSelf = self {
+        application.endBackgroundTask(strongSelf.taskIdentifier)
+        strongSelf.taskIdentifier = .invalid
       }
+    }
+  }
 
+  public override func applicationWillEnterForeground(_ application: UIApplication) {
+    if taskIdentifier != .invalid {
+      application.endBackgroundTask(taskIdentifier)
+      taskIdentifier = .invalid
+    }
+  }
 ```
 
 
