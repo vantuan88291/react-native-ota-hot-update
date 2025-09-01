@@ -162,6 +162,7 @@ void OTAExceptionHandler(NSException *exception) {
     } else {
          // reset version number because bundle is wrong version, need download from new version
         [defaults removeObjectForKey:@"VERSION"];
+        [defaults removeObjectForKey:@"PATH"];
         [defaults synchronize];
         return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     }
@@ -394,7 +395,7 @@ RCT_EXPORT_METHOD(getUpdateMetadata:(double)a
 RCT_EXPORT_METHOD(setExactBundlePath:(NSString *)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    if (path) {
+  if ([OtaHotUpdate isFilePathValid:path]) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:path forKey:@"PATH"];
         [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"VERSION_NAME"];

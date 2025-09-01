@@ -141,13 +141,18 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
 
   @ReactMethod
   override fun setExactBundlePath(path: String?, promise: Promise) {
-    val sharedPrefs = SharedPrefs(reactApplicationContext)
-    sharedPrefs.putString(PATH, path)
-    sharedPrefs.putString(
-      CURRENT_VERSION_CODE,
-      reactApplicationContext.getVersionCode()
-    )
-    promise.resolve(true)
+    val file = File(path)
+    if (file.exists() && file.isFile) {
+      val sharedPrefs = SharedPrefs(reactApplicationContext)
+      sharedPrefs.putString(PATH, path)
+      sharedPrefs.putString(
+        CURRENT_VERSION_CODE,
+        reactApplicationContext.getVersionCode()
+      )
+      promise.resolve(true)
+    } else {
+      promise.resolve(false)
+    }
   }
 
   @ReactMethod

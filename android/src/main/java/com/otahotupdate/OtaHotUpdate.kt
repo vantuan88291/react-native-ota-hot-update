@@ -3,7 +3,7 @@ package com.otahotupdate
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import com.facebook.react.TurboReactPackage
+import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
@@ -15,7 +15,7 @@ import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.SharedPrefs
 
 
-class OtaHotUpdate : TurboReactPackage() {
+class OtaHotUpdate : BaseReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return if (name == OtaHotUpdateModule.NAME) {
       OtaHotUpdateModule(reactContext)
@@ -33,7 +33,6 @@ class OtaHotUpdate : TurboReactPackage() {
         OtaHotUpdateModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
-        true,  // hasConstants
         false,  // isCxxModule
         isTurboModule // isTurboModule
       )
@@ -68,6 +67,9 @@ class OtaHotUpdate : TurboReactPackage() {
       val version = sharedPrefs.getString(VERSION)
       val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_CODE)
       if (pathBundle == "" || (currentVersionName != context.getVersionCode())) {
+        if (pathBundle != "") {
+          sharedPrefs.putString(PATH, "")
+        }
         if (version != "") {
           // reset version number because bundle is wrong version, need download from new version
           sharedPrefs.putString(VERSION, "")
