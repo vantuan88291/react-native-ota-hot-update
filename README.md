@@ -146,9 +146,14 @@ Open `MainApplication.kt` and add these codes bellow:
 ```bash
 import com.otahotupdate.OtaHotUpdate
 ...
-override fun getJSBundleFile(): String? {
-    return OtaHotUpdate.bundleJS(this@MainApplication)
-}
+override val reactNativeHost: ReactNativeHost =
+  object : DefaultReactNativeHost(this) {
+    ...
+    override fun getJSBundleFile(): String? {
+      return OtaHotUpdate.bundleJS(this@MainApplication)
+    }
+    ...
+  }
 
 ```
 
