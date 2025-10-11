@@ -166,6 +166,22 @@ MainApplication.java:
 		}
 ```
 
+### Android in react native 0.82 or above:
+
+```bash
+  override val reactHost: ReactHost by lazy {
+    getDefaultReactHost(
+      context = applicationContext,
+      packageList =
+        PackageList(this).packages.apply {
+          // Packages that cannot be autolinked yet can be added manually here, for example:
+          // add(MyReactNativePackage())
+        },
+      jsBundleFilePath = OtaHotUpdate.bundleJS(applicationContext)
+    )
+  }
+```
+
 For java it maybe can be like: `OtaHotUpdate.Companion.getBundleJS(this)` depend on kotlin / jdk version on your project, you can use android studio to get the correct format coding.
 
 If want to remove bundle wrong handler, pass false param in getBundleJS like this:
