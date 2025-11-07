@@ -3,17 +3,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const config_plugins_1 = require("@expo/config-plugins");
 const withAndroidAction = (config) => {
     return (0, config_plugins_1.withMainApplication)(config, (config) => {
-        if (!config.modResults.contents.includes('override fun getJSBundleFile(): String = OtaHotUpdate.bundleJS(this@MainApplication)')) {
-            config.modResults.contents = config.modResults.contents.replace(/override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED/g, `
-          override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+        let content = config.modResults.contents;
+        const isNewReactHost = content.includes('context = applicationContext');
+        if (!content.includes('import com.otahotupdate.OtaHotUpdate')) {
+            content = content.replace(/import android.app.Application/g, `
+import android.app.Application
+import com.otahotupdate.OtaHotUpdate`);
+        }
+        if (isNewReactHost) {
+            if (!content.includes('OtaHotUpdate.bundleJS')) {
+                content = content.replace(/context = applicationContext,/, `context = applicationContext,
+      jsBundleFilePath = OtaHotUpdate.bundleJS(applicationContext),
+      `);
+            }
+            config.modResults.contents = content;
+            return config;
+        }
+        if (!content.includes('OtaHotUpdate.bundleJS(this@MainApplication)')) {
+            content = content.replace(/DefaultReactNativeHost\s*\(this\)\s*\{/, `
+          DefaultReactNativeHost(this) {
 
           override fun getJSBundleFile(): String = OtaHotUpdate.bundleJS(this@MainApplication)`);
         }
-        if (!config.modResults.contents.includes('import com.otahotupdate.OtaHotUpdate')) {
-            config.modResults.contents = config.modResults.contents.replace(/import expo.modules.ReactNativeHostWrapper/g, `
-import expo.modules.ReactNativeHostWrapper
-import com.otahotupdate.OtaHotUpdate`);
-        }
+        config.modResults.contents = content;
         return config;
     });
 };
