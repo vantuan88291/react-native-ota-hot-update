@@ -45,7 +45,50 @@ export interface UpdateOption {
    * Metadata for the update.
    * Can contain information such as version details, description, etc.
    */
-  metadata?: any
+  metadata?: any;
+
+  /**
+   * Maximum number of bundle versions to keep in history.
+   * Default: 2 (backward compatible).
+   * If the number of bundles exceeds this value, older bundles will be automatically deleted.
+   */
+  maxBundleVersions?: number;
+}
+
+/**
+ * Information about a bundle version.
+ */
+export interface BundleInfo {
+  /**
+   * Bundle identifier (folder name).
+   * Example: "output_v5_2025_01_25_14_30"
+   */
+  id: string;
+
+  /**
+   * Version number of the bundle.
+   */
+  version: number;
+
+  /**
+   * Date when the bundle was created.
+   */
+  date: Date;
+
+  /**
+   * Full path to the bundle file.
+   */
+  path: string;
+
+  /**
+   * Whether this bundle is currently active.
+   */
+  isActive: boolean;
+
+  /**
+   * Optional metadata associated with the bundle.
+   */
+  metadata?: any;
 }
 
 /**

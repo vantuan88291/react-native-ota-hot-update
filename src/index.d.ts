@@ -1,5 +1,8 @@
 import type { DownloadManager } from './download';
-import type { UpdateGitOption, UpdateOption } from './type';
+import type { UpdateGitOption, UpdateOption, BundleInfo } from './type';
+
+// Re-export types for external use
+export type { BundleInfo, UpdateOption, UpdateGitOption } from './type';
 
 export interface GitModule {
   checkForGitUpdate(options: UpdateGitOption): Promise<void>;
@@ -69,6 +72,25 @@ export interface OtaHotUpdate {
    * @param version - The version to set.
    */
   setCurrentVersion(version: number): Promise<boolean>;
+
+  /**
+   * Get the list of all bundle versions.
+   * @returns Array of bundle information including id, version, date, path, isActive, and metadata.
+   */
+  getBundleList(): Promise<BundleInfo[]>;
+
+  /**
+   * Delete a bundle by its identifier (folder name).
+   * @param id - The bundle identifier (folder name).
+   * @returns True if the bundle was successfully deleted, false otherwise.
+   */
+  deleteBundleById(id: string): Promise<boolean>;
+
+  /**
+   * Clear all bundles from history.
+   * @returns True if all bundles were successfully cleared, false otherwise.
+   */
+  clearAllBundles(): Promise<boolean>;
 
   /**
    * Git-related operations.

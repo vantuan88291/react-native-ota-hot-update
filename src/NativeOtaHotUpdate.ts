@@ -2,7 +2,7 @@ import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 
 export interface Spec extends TurboModule {
-  setupBundlePath(path: string, extension: string, version?: number): Promise<boolean>;
+  setupBundlePath(path: string, extension: string, version?: number, maxVersions?: number, metadata?: string): Promise<boolean>;
   setExactBundlePath(path: string): Promise<boolean>;
   deleteBundle(i: number): Promise<boolean>;
   restart(): void;
@@ -11,6 +11,9 @@ export interface Spec extends TurboModule {
   setCurrentVersion(version: string): Promise<boolean>;
   setUpdateMetadata(metadata: string): Promise<boolean>;
   rollbackToPreviousBundle(a: number): Promise<boolean>;
+  getBundleList(a: number): Promise<string>;
+  deleteBundleById(id: string): Promise<boolean>;
+  clearAllBundles(a: number): Promise<boolean>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('OtaHotUpdate');
