@@ -47,11 +47,11 @@ class Utils internal constructor(private val context: Context) {
   }
 
   fun extractZipFile(
-    zipFile: File,extension: String
+    zipFile: File,extension: String, version: Int? = null
   ): String? {
     return try {
       val outputDir = zipFile.parentFile
-      val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+      val timestamp = SimpleDateFormat("yyyy_MM_dd_HH_mm", Locale.getDefault()).format(Date())
       var topLevelFolder: String? = null
       var bundlePath: String? = null
       ZipFile(zipFile).use { zip ->
@@ -83,7 +83,13 @@ class Utils internal constructor(private val context: Context) {
       // Rename the detected top-level folder
       if (topLevelFolder != null) {
         val extractedFolder = File(outputDir, topLevelFolder)
-        val renamedFolder = File(outputDir, "output_$timestamp")
+        // Include version in folder name if provided, otherwise use timestamp only
+        val folderName = if (version != null) {
+          "output_v${version}_$timestamp"
+        } else {
+          "output_$timestamp"
+        }
+        val renamedFolder = File(outputDir, folderName)
         if (extractedFolder.exists()) {
           extractedFolder.renameTo(renamedFolder)
           // Update bundlePath if the file was inside the renamed folder

@@ -198,7 +198,7 @@ void OTAExceptionHandler(NSException *exception) {
 
     return nil;
 }
-- (NSString *)renameExtractedFolderInDirectory:(NSString *)directoryPath {
+- (NSString *)renameExtractedFolderInDirectory:(NSString *)directoryPath version:(NSNumber *)version {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
 
@@ -213,9 +213,15 @@ void OTAExceptionHandler(NSException *exception) {
     NSString *originalFolderName = contents.firstObject;
     NSString *originalFolderPath = [directoryPath stringByAppendingPathComponent:originalFolderName];
 
-    // Generate new folder name with timestamp
-    NSString *timestamp = [NSString stringWithFormat:@"output_%ld", (long)[[NSDate date] timeIntervalSince1970]];
-    NSString *newFolderPath = [directoryPath stringByAppendingPathComponent:timestamp];
+    // Generate new folder name with version and timestamp
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy_MM_dd_HH_mm"];
+    [dateFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+    NSString *timestamp = [dateFormatter stringFromDate:[NSDate date]];
+    NSString *folderName = version != nil 
+        ? [NSString stringWithFormat:@"output_v%@_%@", version, timestamp]
+        : [NSString stringWithFormat:@"output_%@", timestamp];
+    NSString *newFolderPath = [directoryPath stringByAppendingPathComponent:folderName];
 
     // Rename the extracted folder
     if (![fileManager moveItemAtPath:originalFolderPath toPath:newFolderPath error:&error]) {
@@ -226,7 +232,7 @@ void OTAExceptionHandler(NSException *exception) {
     NSLog(@"Renamed extracted folder to: %@", newFolderPath);
     return newFolderPath;
 }
-- (NSString *)unzipFileAtPath:(NSString *)zipFilePath extension:(NSString *)extension  {
+- (NSString *)unzipFileAtPath:(NSString *)zipFilePath extension:(NSString *)extension version:(NSNumber *)version  {
     // Define the directory where the files will be extracted
     NSString *extractedFolderPath = [[zipFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"unzip"];
 
@@ -250,7 +256,7 @@ void OTAExceptionHandler(NSException *exception) {
         return nil;
     }
   // Try renaming the extracted folder
-      NSString *renamedFolderPath = [self renameExtractedFolderInDirectory:extractedFolderPath];
+      NSString *renamedFolderPath = [self renameExtractedFolderInDirectory:extractedFolderPath version:version];
 
       // If renaming fails, use the original extracted folder path
       NSString *finalFolderPath = renamedFolderPath ? renamedFolderPath : extractedFolderPath;
@@ -268,13 +274,13 @@ void OTAExceptionHandler(NSException *exception) {
 }
 
 // Expose setupBundlePath method to JavaScript
-RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extension
+RCT_EXPORT_METHOD(setupBundlePath:(NSString *)path extension:(NSString *)extension version:(NSNumber *)version
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if ([OtaHotUpdate isFilePathValid:path]) {
         [OtaHotUpdate removeBundleIfNeeded:nil];
         //Unzip file
-        NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle"];
+        NSString *extractedFilePath = [self unzipFileAtPath:path extension:(extension != nil) ? extension : @".jsbundle" version:version];
         if (extractedFilePath) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             NSString *oldPath = [defaults stringForKey:@"PATH"];

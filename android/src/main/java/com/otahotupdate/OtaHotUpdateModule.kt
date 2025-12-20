@@ -35,11 +35,11 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     scope.cancel()
   }
 
-  private fun processBundleFile(path: String?, extension: String?): Boolean {
+  private fun processBundleFile(path: String?, extension: String?, version: Int?): Boolean {
     if (path != null) {
       val file = File(path)
       if (file.exists() && file.isFile) {
-        val fileUnzip = utils.extractZipFile(file, extension ?: ".bundle")
+        val fileUnzip = utils.extractZipFile(file, extension ?: ".bundle", version)
         if (fileUnzip != null) {
           file.delete()
           utils.deleteOldBundleIfneeded(null)
@@ -66,10 +66,11 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
     }
   }
   @ReactMethod
-  override fun setupBundlePath(path: String?, extension: String?, promise: Promise) {
+  override fun setupBundlePath(path: String?, extension: String?, version: Double?, promise: Promise) {
     scope.launch {
       try {
-        val result = processBundleFile(path, extension)
+        val versionInt = version?.toInt()
+        val result = processBundleFile(path, extension, versionInt)
         withContext(Dispatchers.Main) {
           promise.resolve(result)
         }

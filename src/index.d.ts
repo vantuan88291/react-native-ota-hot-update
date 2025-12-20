@@ -24,8 +24,9 @@ export interface OtaHotUpdate {
    * Set up the path to the downloaded bundle file.
    * @param path - The path to the bundle file.
    * @param extension - Optional extension for the bundle file.
+   * @param version - Optional version number to include in folder name.
    */
-  setupBundlePath(path: string, extension?: string): Promise<boolean>;
+  setupBundlePath(path: string, extension?: string, version?: number): Promise<boolean>;
 
   /**
    * Set up an exact path to the bundle file for the update.

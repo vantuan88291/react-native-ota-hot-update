@@ -48,8 +48,8 @@ const downloadBundleFile = async (
     });
   return res.path();
 };
-function setupBundlePath(path: string, extension?: string): Promise<boolean> {
-  return RNhotupdate.setupBundlePath(path, extension);
+function setupBundlePath(path: string, extension?: string, version?: number): Promise<boolean> {
+  return RNhotupdate.setupBundlePath(path, extension, version);
 }
 function setupExactBundlePath(path: string): Promise<boolean> {
   return RNhotupdate.setExactBundlePath(path);
@@ -140,8 +140,7 @@ async function downloadBundleUri(
     if (!path) {
       return installFail(option, `Cannot download bundle file: ${path}`);
     }
-
-    const success = await setupBundlePath(path, option?.extensionBundle);
+    const success = await setupBundlePath(path, option?.extensionBundle, version);
     if (!success) {
       return installFail(option);
     }
