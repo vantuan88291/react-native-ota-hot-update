@@ -3,6 +3,7 @@ package com.otahotupdate
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import java.io.File
 import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
@@ -66,7 +67,11 @@ class OtaHotUpdate : BaseReactPackage() {
       val pathBundle = sharedPrefs.getString(PATH)
       val version = sharedPrefs.getString(VERSION)
       val currentVersionName = sharedPrefs.getString(CURRENT_VERSION_CODE)
-      if (pathBundle == "" || (currentVersionName != context.getVersionCode())) {
+      val hasBundlePath = !pathBundle.isNullOrBlank()
+      val isSameAppVersion = currentVersionName == context.getVersionCode()
+      val bundleFileExists = hasBundlePath && File(pathBundle!!).isFile
+
+      if (!hasBundlePath || !isSameAppVersion || !bundleFileExists) {
         if (pathBundle != "") {
           sharedPrefs.putString(PATH, "")
         }
