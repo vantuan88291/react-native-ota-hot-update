@@ -28,6 +28,22 @@ iOS GIF             | Android GIF
 
 New architecture backward compatibility supported from version 2, it also supported old architecture, for source code of version 1.x.x please refer to branch `oldArch`, you might need install version 1.x.x if you are using react native < 0.70
 
+### 🚀 Preview Release: Enhanced Bundle Management (v2.4.0-rc.1)
+
+We're excited to introduce a preview release with enhanced bundle management features! Version **2.4.0-rc.1** includes:
+
+- **Configurable bundle history**: Manage multiple bundle versions (configurable via `maxBundleVersions`)
+- **New APIs**: `getBundleList()`, `deleteBundleById()`, `clearAllBundles()`
+- **Bundle identification**: Descriptive folder names with version and timestamp
+- **Automatic cleanup**: Older bundles are automatically removed when exceeding the limit
+
+This is an experimental release for testing. Please try it out and share your feedback! All discussions and issues related to this feature can be found in [PR #132](https://github.com/vantuan88291/react-native-ota-hot-update/pull/132).
+
+To install the preview version:
+```bash
+yarn add react-native-ota-hot-update@2.4.0-rc.1
+```
+
 ## Installation
 
 if you don't want to manage the download progress, need to install blob util together:
