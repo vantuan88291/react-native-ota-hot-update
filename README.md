@@ -8,6 +8,7 @@ This React Native module allows you to manage hot updates (in-app update) with m
 - Host the bundle on your own server or in a Git repository.
 - Rollback function
 - Crash Handling: Handles crash exceptions when an incorrect bundle is updated and will automatically roll back to the previous bundle version.
+- bundle management features
 
 1. **Demo via server**
 
@@ -21,8 +22,13 @@ iOS GIF             | Android GIF
 :-------------------------:|:-------------------------:
 <img src="./iosgit.gif" title="iOS GIF" width="250"> | <img src="./androidgithotupdate.gif" title="Android GIF" width="250">
 
+3. **Demo bundle management**
+
+[<img src="https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/e4d4bd928dc096bbb4fc329ce89e80d288e44ff1/ioshotupdate-new.gif" title="iOS Bundle Management Demo" width="300">](https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/e4d4bd928dc096bbb4fc329ce89e80d288e44ff1/ioshotupdate-new.gif)
+
 [![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
 [![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
+
 
 ## New architecture supported
 
@@ -38,6 +44,7 @@ We're excited to introduce a preview release with enhanced bundle management fea
 - **Automatic cleanup**: Older bundles are automatically removed when exceeding the limit
 
 This is an experimental release for testing. Please try it out and share your feedback! All discussions and issues related to this feature can be found in [PR #132](https://github.com/vantuan88291/react-native-ota-hot-update/pull/132).
+- Branch: `task/manage_bundle`
 
 To install the preview version:
 ```bash
