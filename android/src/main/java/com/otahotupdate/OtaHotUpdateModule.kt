@@ -19,12 +19,18 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.util.Base64
+import com.facebook.react.bridge.UiThreadUtil
+import java.util.concurrent.Executors
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
   private val utils: Utils = Utils(context)
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+  private val fileWriterExecutor = Executors.newSingleThreadExecutor()
 
   override fun getName(): String {
     return NAME
@@ -33,6 +39,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   override fun invalidate() {
     super.invalidate()
     scope.cancel()
+    fileWriterExecutor.shutdown()
   }
 
   private fun processBundleFile(path: String?, extension: String?): Boolean {
@@ -182,6 +189,51 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
       promise.resolve(false)
     }
   }
+  /**
+   * Write file with base64 content on native thread
+   * This runs on a background thread, not blocking JS thread
+   */
+  @ReactMethod
+  override fun writeFile(path: String?, base64Content: String?, encoding: String?, promise: Promise) {
+    if (path == null || base64Content == null) {
+      promise.reject("INVALID_ARG", "Path and base64Content are required", null)
+      return
+    }
+    
+    fileWriterExecutor.execute {
+      try {
+        // Decode base64 to bytes
+        val bytes = Base64.decode(base64Content, Base64.DEFAULT)
+        
+        // Ensure parent directory exists
+        val file = File(path)
+        val parentDir = file.parentFile
+        if (parentDir != null && !parentDir.exists()) {
+          parentDir.mkdirs()
+        }
+        
+        // Write file on background thread
+        FileOutputStream(file).use { fos ->
+          fos.write(bytes)
+          fos.flush()
+        }
+        
+        // Resolve on UI thread (React Native requirement)
+        UiThreadUtil.runOnUiThread {
+          promise.resolve(true)
+        }
+      } catch (e: IOException) {
+        UiThreadUtil.runOnUiThread {
+          promise.reject("WRITE_ERROR", "Failed to write file: ${e.message}", e)
+        }
+      } catch (e: Exception) {
+        UiThreadUtil.runOnUiThread {
+          promise.reject("WRITE_ERROR", "Unexpected error: ${e.message}", e)
+        }
+      }
+    }
+  }
+
   companion object {
     const val NAME = "OtaHotUpdate"
   }

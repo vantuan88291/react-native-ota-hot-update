@@ -11,6 +11,7 @@ export interface Spec extends TurboModule {
   setCurrentVersion(version: string): Promise<boolean>;
   setUpdateMetadata(metadata: string): Promise<boolean>;
   rollbackToPreviousBundle(a: number): Promise<boolean>;
+  writeFile(path: string, base64Content: string, encoding: string): Promise<boolean>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('OtaHotUpdate');

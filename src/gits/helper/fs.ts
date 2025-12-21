@@ -12,6 +12,15 @@ try {
   RNFS = require('react-native-fs');
 } catch {}
 
+// Try to load native OtaHotUpdate module for better performance
+let OtaHotUpdateNative: any = null;
+try {
+  const { NativeModules } = require('react-native');
+  OtaHotUpdateNative = NativeModules.OtaHotUpdate;
+} catch (e) {
+  // Native module not available, will fallback to RNFS
+}
+
 function Err(name: string) {
   return class extends Error {
     public code = name;
@@ -91,13 +100,30 @@ export const writeFile = async (
   }
 
   if (typeof content === 'string') {
+    // Text file - use RNFS (fast enough for text)
     encoding = encoding || 'utf8';
+    await RNFS.writeFile(path, content, encoding);
   } else {
+    // Binary file - try native module first for better performance
     encoding = 'base64';
-    content = Buffer.from(content).toString('base64');
+    const base64Content = Buffer.from(content).toString('base64');
+    
+    if (OtaHotUpdateNative && OtaHotUpdateNative.writeFile) {
+      try {
+        // Use native write (runs on native thread, doesn't block JS thread)
+        console.log('OtaHotUpdateNative.writeFile----', path);
+        await OtaHotUpdateNative.writeFile(path, base64Content, encoding);
+        console.log('OtaHotUpdateNative.writeFile22222----', path);
+      } catch (e) {
+        // Fallback to RNFS if native fails
+        console.warn('OtaHotUpdate.writeFile failed, falling back to RNFS:', e);
+        await RNFS.writeFile(path, base64Content, encoding);
+      }
+    } else {
+      // No native module available - use RNFS
+      await RNFS.writeFile(path, base64Content, encoding);
+    }
   }
-
-  await RNFS.writeFile(path, content as string, encoding);
 };
 
 export const stat = async (path: string) => {
