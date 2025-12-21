@@ -7,6 +7,12 @@ iOS GIF             | Android GIF
 <img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
 
 
+## Bundle Management Examples
+
+**Demo: Bundle Management UI**
+
+<img src="./ioshotupdate-new.gif" title="iOS Bundle Management Demo" width="300">
+
 ## Guidelines for Managing the Bundle
 
 This guide demonstrates how to manage the JavaScript bundle yourself. In this example, Firebase Storage is used to host the bundle and a JSON file to announce new versions:
@@ -197,8 +203,6 @@ Information about a bundle version returned by `getBundleList()`:
 | `metadata`  | `any`     | Optional metadata associated with the bundle.                                                    |
 
 ---
-
-## Bundle Management Examples
 
 ### Get List of All Bundles
 
