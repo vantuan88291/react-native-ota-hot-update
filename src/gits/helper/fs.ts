@@ -107,13 +107,11 @@ export const writeFile = async (
     // Binary file - try native module first for better performance
     encoding = 'base64';
     const base64Content = Buffer.from(content).toString('base64');
-    
+
     if (OtaHotUpdateNative && OtaHotUpdateNative.writeFile) {
       try {
         // Use native write (runs on native thread, doesn't block JS thread)
-        console.log('OtaHotUpdateNative.writeFile----', path);
         await OtaHotUpdateNative.writeFile(path, base64Content, encoding);
-        console.log('OtaHotUpdateNative.writeFile22222----', path);
       } catch (e) {
         // Fallback to RNFS if native fails
         console.warn('OtaHotUpdate.writeFile failed, falling back to RNFS:', e);
