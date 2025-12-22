@@ -422,6 +422,46 @@ RCT_EXPORT_METHOD(restart) {
 }
 
 
+RCT_EXPORT_METHOD(writeFile:(NSString *)path
+                  base64Content:(NSString *)base64Content
+                  encoding:(NSString *)encoding
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  // Run on background queue to avoid blocking JS thread
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    @try {
+      // Decode base64 to NSData
+      NSData *data = [[NSData alloc] initWithBase64EncodedString:base64Content options:0];
+      if (!data) {
+        reject(@"DECODE_ERROR", @"Failed to decode base64 content", nil);
+        return;
+      }
+      
+      // Ensure parent directory exists
+      NSString *parentDir = [path stringByDeletingLastPathComponent];
+      NSFileManager *fileManager = [NSFileManager defaultManager];
+      if (![fileManager fileExistsAtPath:parentDir]) {
+        NSError *error;
+        if (![fileManager createDirectoryAtPath:parentDir withIntermediateDirectories:YES attributes:nil error:&error]) {
+          reject(@"CREATE_DIR_ERROR", [NSString stringWithFormat:@"Failed to create directory: %@", error.localizedDescription], error);
+          return;
+        }
+      }
+      
+      // Write file on background thread
+      NSError *error;
+      if (![data writeToFile:path options:NSDataWritingAtomic error:&error]) {
+        reject(@"WRITE_ERROR", [NSString stringWithFormat:@"Failed to write file: %@", error.localizedDescription], error);
+        return;
+      }
+      
+      resolve(@(YES));
+    } @catch (NSException *exception) {
+      reject(@"WRITE_ERROR", [NSString stringWithFormat:@"Unexpected error: %@", exception.reason], nil);
+    }
+  });
+}
+
 // Don't compile this code when we build for the old architecture.
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
