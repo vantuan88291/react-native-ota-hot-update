@@ -56,7 +56,7 @@ function setupBundlePath(
   metadata?: any
 ): Promise<boolean> {
   const metadataString = metadata ? JSON.stringify(metadata) : undefined;
-  return RNhotupdate.setupBundlePath(path, extension, version, maxVersions, metadataString);
+  return RNhotupdate.setupBundlePath(path, extension, version, maxVersions || 2, metadataString);
 }
 function setupExactBundlePath(path: string): Promise<boolean> {
   return RNhotupdate.setExactBundlePath(path);
