@@ -50,7 +50,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
   private fun loadBundleHistory(): List<BundleVersion> {
     val sharedPrefs = SharedPrefs(reactApplicationContext)
     val historyJson = sharedPrefs.getString(BUNDLE_HISTORY)
-    
+
     // If history exists, load it
     if (!historyJson.isNullOrEmpty()) {
       return try {
@@ -68,20 +68,20 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         emptyList()
       }
     }
-    
+
     // Migration: If history is empty but PATH exists, migrate from old system
     val currentPath = sharedPrefs.getString(PATH)
     val currentVersion = sharedPrefs.getString(VERSION)
     val previousPath = sharedPrefs.getString(PREVIOUS_PATH)
     val previousVersion = sharedPrefs.getString(PREVIOUS_VERSION)
-    
+
     if (currentPath.isNullOrEmpty()) {
       return emptyList()
     }
-    
+
     // Migrate current bundle
     val migratedHistory = mutableListOf<BundleVersion>()
-    
+
     // Add current bundle if has version
     if (!currentVersion.isNullOrEmpty()) {
       try {
@@ -101,7 +101,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         // Version is not a number, skip
       }
     }
-    
+
     // Add previous bundle if exists
     if (!previousPath.isNullOrEmpty() && !previousVersion.isNullOrEmpty()) {
       try {
@@ -121,12 +121,12 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
         // Version is not a number, skip
       }
     }
-    
+
     // Save migrated history if any
     if (migratedHistory.isNotEmpty()) {
       saveBundleHistory(migratedHistory.sortedByDescending { it.version })
     }
-    
+
     return migratedHistory.sortedByDescending { it.version }
   }
 
@@ -204,7 +204,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
           utils.deleteOldBundleIfneeded(null)
           val sharedPrefs = SharedPrefs(reactApplicationContext)
           val oldPath = sharedPrefs.getString(PATH)
-          
+
           // If version is provided, save to history system
           if (version != null) {
             val maxVersionsToKeep = maxVersions ?: Common.DEFAULT_MAX_BUNDLE_VERSIONS
@@ -213,7 +213,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
             // No version (e.g., Git update) - just set path, no history
             sharedPrefs.putString(PATH, fileUnzip)
           }
-          
+
           sharedPrefs.putString(
             CURRENT_VERSION_CODE,
             reactApplicationContext.getVersionCode()
@@ -254,21 +254,21 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
       try {
         val sharedPrefs = SharedPrefs(reactApplicationContext)
         val currentPath = sharedPrefs.getString(PATH)
-        
+
         // Delete current bundle from file system
         val isDeleted = utils.deleteOldBundleIfneeded(PATH)
-        
+
         // Remove current bundle from history if exists
         if (currentPath != null && currentPath.isNotEmpty()) {
           val history = loadBundleHistory()
           val updatedHistory = history.filter { it.path != currentPath }
           saveBundleHistory(updatedHistory)
         }
-        
+
         // Clear paths and version (no longer clear PREVIOUS_PATH, use history instead)
         sharedPrefs.putString(PATH, "")
         sharedPrefs.putString(VERSION, "0")
-        
+
         withContext(Dispatchers.Main) {
           promise.resolve(isDeleted)
         }
@@ -282,7 +282,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
 
   @ReactMethod
   override fun restart() {
-    val context: Context? = currentActivity
+    val context: Context? = reactApplicationContext.currentActivity
     ProcessPhoenix.triggerRebirth(context)
   }
 
@@ -364,7 +364,7 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
               if (isDeleted) {
                 sharedPrefs.putString(PATH, previousBundle.path)
                 sharedPrefs.putString(VERSION, previousBundle.version.toString())
-                
+
                 withContext(Dispatchers.Main) {
                   promise.resolve(true)
                 }
