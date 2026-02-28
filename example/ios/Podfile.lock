@@ -1259,7 +1259,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-ota-hot-update (2.3.2):
+  - react-native-ota-hot-update (2.3.6):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1279,7 +1279,7 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - SSZipArchive (< 3.0, >= 2.5.5)
+    - SSZipArchive (~> 2.4.3)
     - Yoga
   - React-NativeModulesApple (0.78.0):
     - glog
@@ -1571,7 +1571,7 @@ PODS:
   - RNFS (2.20.0):
     - React-Core
   - SocketRocket (0.7.1)
-  - SSZipArchive (2.6.0)
+  - SSZipArchive (2.4.3)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1832,7 +1832,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 0502faf46cab8fb89cfc7bf3e6c6109b6ef9b5de
   React-microtasksnativemodule: 663bc64e3a96c5fc91081923ae7481adc1359a78
   react-native-blob-util: 7113aed98ed23cd1fe63747ef440900e40417077
-  react-native-ota-hot-update: 5629cb939dbf53a999a33bc5dd92fe22b1191e82
+  react-native-ota-hot-update: 9810bb37feb6755b5ff4727a78d80bdaf4d1ec2c
   React-NativeModulesApple: 16fbd5b040ff6c492dacc361d49e63cba7a6a7a1
   React-perflogger: ab51b7592532a0ea45bf6eed7e6cae14a368b678
   React-performancetimeline: bc2e48198ec814d578ac8401f65d78a574358203
@@ -1863,7 +1863,7 @@ SPEC CHECKSUMS:
   ReactCommon: 3d39389f8e2a2157d5c999f8fba57bd1c8f226f0
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  SSZipArchive: 8a6ee5677c8e304bebc109e39cf0da91ccef22ea
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
 PODFILE CHECKSUM: c56d17ef32ef4cc0bfe2208647446118fe0bfb0b

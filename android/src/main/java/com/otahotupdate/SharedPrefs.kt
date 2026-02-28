@@ -19,6 +19,16 @@ class SharedPrefs internal constructor(context: Context) {
         editor.apply()
     }
 
+    fun getInt(key: String?, defaultValue: Int): Int {
+        return mSharedPreferences.getInt(key, defaultValue)
+    }
+
+    fun putInt(key: String?, value: Int) {
+        val editor = mSharedPreferences.edit()
+        editor.putInt(key, value)
+        editor.apply()
+    }
+
     fun clear() {
         mSharedPreferences.edit().clear().apply()
     }
@@ -32,4 +42,6 @@ object Common {
     val SHARED_PREFERENCE_NAME = "HOT-UPDATE-REACT_NATIVE"
     val DEFAULT_BUNDLE = "assets://index.android.bundle"
     val METADATA = "METADATA"
+    val BUNDLE_HISTORY = "BUNDLE_HISTORY"
+    const val DEFAULT_MAX_BUNDLE_VERSIONS = 2
 }

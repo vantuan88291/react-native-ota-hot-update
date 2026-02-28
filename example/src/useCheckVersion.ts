@@ -33,6 +33,7 @@ export const useCheckVersion = () => {
         setProgress(percent);
       },
       restartAfterInstall: true,
+      maxBundleVersions: 100
     });
   };
   const onCheckVersion = () => {

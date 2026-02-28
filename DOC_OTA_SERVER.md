@@ -7,6 +7,12 @@ iOS GIF             | Android GIF
 <img src="./ioshotupdate.gif" title="iOS GIF" width="250"> | <img src="./androidhotupdate.gif" title="Android GIF" width="250">
 
 
+## Bundle Management Examples
+
+**Demo: Bundle Management UI**
+
+<img src="./ioshotupdate-new.gif" title="iOS Bundle Management Demo" width="300">
+
 ## Guidelines for Managing the Bundle
 
 This guide demonstrates how to manage the JavaScript bundle yourself. In this example, Firebase Storage is used to host the bundle and a JSON file to announce new versions:
@@ -111,12 +117,19 @@ hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
     ]);
   },
   restartAfterInstall: true,
+  maxBundleVersions: 5, // Optional: Keep up to 5 versions (default: 2)
+  metadata: { // Optional: Store metadata with the bundle
+    description: 'New feature release',
+    releaseNotes: 'Added new UI components',
+  },
 });
 ```
 
 > **Important:** Always pass the `version` parameter in `downloadBundleUri`. This library caches the version and uses it to check for updates in the future. The default `version` is **0**.
 
 > **Note:** You can use either `react-native-blob-util` or `rn-fetch-blob` as the `DownloadManager`, but **do not install both libraries at the same time**. Installing both will cause a duplicate symbol error on iOS.
+
+> **Bundle Version Management:** By default, the library stores 2 bundle versions for rollback purposes. You can configure this using the `maxBundleVersions` option. When the number of stored bundles exceeds this limit, older bundles are automatically deleted. Each bundle is stored in a folder named with the format: `output_v{version}_{yyyy_MM_dd_HH_mm}`.
 
 ---
 
@@ -151,9 +164,12 @@ Other CMS options include CraftCMS and PayloadCMS.
 | `resetApp`               | `void`      | Restarts the app to apply changes.                                                                    | None                                                                                          |
 | `getCurrentVersion`      | `number`    | Retrieves the current version for update comparison.                                                  | None                                                                                          |
 | `setCurrentVersion`      | `boolean`   | Sets the current version for update comparison.                                                       | `version: number`                                                                             |
-| `rollbackToPreviousBundle`      | `boolean`   | Rollback to previous bundle, by default app will store 2 versions of bundle from the second updating. | None                                                                             |
+| `rollbackToPreviousBundle`      | `boolean`   | Rollback to previous bundle. The app stores multiple versions of bundles based on `maxBundleVersions` configuration (default: 2). | None                                                                             |
 | `getUpdateMetadata`      | `object/null`   | Get the metadata stored for the update                                                           | None |
-| `setUpdateMetadata`      | `boolean`       | Set the metadata for the update                                                                  | None |
+| `setUpdateMetadata`      | `boolean`       | Set the metadata for the update                                                                  | `metadata: any` |
+| `getBundleList`          | `Promise<BundleInfo[]>` | Retrieves a list of all stored bundle versions with their information.                            | None |
+| `deleteBundleById`       | `Promise<boolean>` | Deletes a specific bundle by its ID. If the bundle is active, the app will restart after deletion. | `id: string` - Bundle identifier (folder name) |
+| `clearAllBundles`        | `Promise<boolean>` | Removes all stored bundles and clears the bundle history.                                          | None |
 
 ---
 
@@ -168,6 +184,113 @@ Other CMS options include CraftCMS and PayloadCMS.
 | `restartDelay`          | No       | `number`   | Time in milliseconds to wait before restarting the app after an update. Defaults: `300ms`.      |
 | `progress`              | No       | `Callback` | Reports download progress.                                                                      |
 | `extensionBundle`       | No       | `string`   | Extension of the bundle file. Defaults: `.bundle` (Android), `.jsbundle` (iOS).                 |
+| `metadata`              | No       | `any`      | Metadata for the update. Can contain information such as version details, description, etc.      |
+| `maxBundleVersions`     | No       | `number`   | Maximum number of bundle versions to keep in history. Defaults to `2`. If the number of bundles exceeds this value, older bundles will be automatically deleted. |
+
+---
+
+## `BundleInfo`
+
+Information about a bundle version returned by `getBundleList()`:
+
+| Property    | Type      | Description                                                                                      |
+|-------------|-----------|--------------------------------------------------------------------------------------------------|
+| `id`        | `string`  | Bundle identifier (folder name). Example: `"output_v5_2025_01_25_14_30"`                        |
+| `version`   | `number`  | Version number of the bundle.                                                                   |
+| `date`      | `Date`    | Date when the bundle was created.                                                               |
+| `path`      | `string`  | Full path to the bundle file.                                                                  |
+| `isActive`  | `boolean` | Whether this bundle is currently active.                                                        |
+| `metadata`  | `any`     | Optional metadata associated with the bundle.                                                    |
+
+---
+
+### Get List of All Bundles
+
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+
+const bundles = await hotUpdate.getBundleList();
+console.log(`Found ${bundles.length} bundles:`);
+bundles.forEach(bundle => {
+  console.log(`- Version ${bundle.version} (${bundle.id}) - ${bundle.isActive ? 'ACTIVE' : 'inactive'}`);
+});
+```
+
+### Delete a Specific Bundle
+
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+
+// Get the bundle list first
+const bundles = await hotUpdate.getBundleList();
+
+// Delete a specific bundle by ID
+const bundleToDelete = bundles.find(b => b.version === 5);
+if (bundleToDelete) {
+  const success = await hotUpdate.deleteBundleById(bundleToDelete.id);
+  if (success) {
+    console.log('Bundle deleted successfully');
+    // If the deleted bundle was active, the app will restart automatically
+  }
+}
+```
+
+### Activate a Specific Bundle
+
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+
+// Get the bundle list
+const bundles = await hotUpdate.getBundleList();
+
+// Find and activate a specific bundle
+const bundleToActivate = bundles.find(b => b.version === 3);
+if (bundleToActivate && !bundleToActivate.isActive) {
+  const success = await hotUpdate.setupExactBundlePath(bundleToActivate.path);
+  if (success) {
+    setTimeout(() => {
+      hotUpdate.resetApp();
+    }, 300);
+  }
+}
+```
+
+### Clear All Bundles
+
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+
+const success = await hotUpdate.clearAllBundles();
+if (success) {
+  console.log('All bundles cleared');
+  // The app will restart to use the default bundle
+  hotUpdate.resetApp();
+}
+```
+
+### Download with Custom Max Versions
+
+```javascript
+import hotUpdate from 'react-native-ota-hot-update';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+
+hotUpdate.downloadBundleUri(
+  ReactNativeBlobUtil,
+  'https://example.com/bundle.zip',
+  5,
+  {
+    maxBundleVersions: 5, // Keep up to 5 versions
+    metadata: {
+      description: 'New feature release',
+      releaseNotes: 'Added new UI components',
+    },
+    updateSuccess: () => {
+      console.log('Update successful!');
+    },
+    restartAfterInstall: true,
+  }
+);
+```
 
 ---
 
