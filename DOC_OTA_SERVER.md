@@ -36,6 +36,17 @@ This guide demonstrates how to manage the JavaScript bundle yourself. In this ex
 ```
 > **Note:** For Expo projects, verify the path of `--entry-file node_modules/expo/AppEntry.js` in your `package.json`.
 
+#### For RN 0.85+ (Expo/Expo Bare Projects) — full copy-paste script:
+
+RN 0.85+ no longer ships prebuilt hermesc under `react-native/sdks/hermesc`, so use the `hermes-compiler` package path below.
+```json
+"scripts": {
+"export-bytecode-android": "mkdir -p dist/android && npx expo export:embed --platform android --minify=true --entry-file index.tsx --bundle-output dist/android/index.android.bundle --dev false --assets-dest dist/android && ./node_modules/hermes-compiler/hermesc/linux64-bin/hermesc -emit-binary -out dist/android/index.android.hbc.bundle dist/android/index.android.bundle -output-source-map -w && rm -f dist/android/index.android.bundle dist/android/index.android.hbc.bundle.map && cd dist && find android -type f | zip hermes.android.hbc.zip -@ && cd .. && rm -rf dist/android",
+"export-bytecode-ios": "mkdir -p dist/ios && npx expo export:embed --platform ios --minify=true --entry-file index.tsx --bundle-output dist/ios/main.jsbundle --dev false --assets-dest dist/ios && ./node_modules/hermes-compiler/hermesc/linux64-bin/hermesc -emit-binary -out dist/ios/main.ios.hbc.jsbundle dist/ios/main.jsbundle -output-source-map -w && rm -f dist/ios/main.jsbundle dist/ios/main.ios.hbc.jsbundle.map && cd dist && find ios -type f | zip hermes.ios.hbc.zip -@ && cd .. && rm -rf dist/ios"
+}
+```
+> **Note:** For CLI projects change `expo export:embed` to `react-native bundle`. Swap `linux64-bin` for your OS's hermesc folder (e.g. `osx-bin`, `win64-bin`).
+
 
 
 #### For Hermes compiler bundle to bytecode .hbc:
