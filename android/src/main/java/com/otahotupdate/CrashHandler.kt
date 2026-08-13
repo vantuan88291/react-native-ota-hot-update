@@ -2,7 +2,7 @@ package com.otahotupdate
 
 import android.content.Context
 import android.widget.Toast
-import com.jakewharton.processphoenix.ProcessPhoenix
+import com.facebook.react.bridge.UiThreadUtil
 import com.rnhotupdate.Common.PATH
 import com.rnhotupdate.Common.VERSION
 import com.rnhotupdate.Common.BUNDLE_HISTORY
@@ -66,10 +66,23 @@ class CrashHandler(private val context: Context) : Thread.UncaughtExceptionHandl
       }
 
       val errorMessage = throwable.message ?: "Unknown error occurred"
-      Toast.makeText(context, "Update failed: $errorMessage", Toast.LENGTH_LONG).show()
+      // uncaughtException can run on any thread, and Toast needs a Looper.
+      try {
+        UiThreadUtil.runOnUiThread {
+          try {
+            Toast.makeText(context, "Update failed: $errorMessage", Toast.LENGTH_LONG).show()
+          } catch (e: Throwable) {
+            // ignore, restarting matters more than the toast
+          }
+        }
+      } catch (e: Throwable) {
+        // ignore
+      }
+      // Stay off the main looper here: when the crash happened on the main thread
+      // its loop is already unwinding and a posted restart would never run.
       GlobalScope.launch(Dispatchers.IO) {
         delay(1500)
-        ProcessPhoenix.triggerRebirth(context)
+        AppRestarter.restart(context)
       }
     } else {
       defaultHandler?.uncaughtException(thread, throwable)

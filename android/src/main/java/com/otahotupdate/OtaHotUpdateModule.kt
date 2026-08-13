@@ -4,7 +4,6 @@ import android.content.Context
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
-import com.jakewharton.processphoenix.ProcessPhoenix
 import com.otahotupdate.OtaHotUpdate.Companion.getVersionCode
 import com.rnhotupdate.Common
 import com.rnhotupdate.Common.CURRENT_VERSION_CODE
@@ -40,6 +39,7 @@ data class BundleVersion(
 class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) :
   OtaHotUpdateSpec(context) {
   private val utils: Utils = Utils(context)
+  private val appContext: Context = context.applicationContext ?: context
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
   private val fileWriterExecutor = Executors.newSingleThreadExecutor()
 
@@ -306,10 +306,16 @@ class OtaHotUpdateModule internal constructor(context: ReactApplicationContext) 
 
   @ReactMethod
   override fun restart() {
-    val activity = reactApplicationContext.currentActivity
-    val context: Context = activity ?: reactApplicationContext
     UiThreadUtil.runOnUiThread {
-      ProcessPhoenix.triggerRebirth(context)
+      // currentActivity is null whenever the app is backgrounded / the activity was
+      // destroyed, and reactApplicationContext throws once the host is torn down,
+      // so always keep the application context as a last resort.
+      val context: Context = try {
+        reactApplicationContext.currentActivity ?: reactApplicationContext
+      } catch (e: Throwable) {
+        appContext
+      }
+      AppRestarter.restart(context)
     }
   }
 
