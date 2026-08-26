@@ -113,9 +113,44 @@ function removeBundle(restartAfterRemoved?: boolean) {
     }
   });
 }
+/**
+ * Turn anything thrown into a readable message.
+ * JSON.stringify(new Error(...)) returns "{}" because message/stack are not
+ * enumerable, which used to hide the real reason of every failure.
+ */
+const serializeError = (e?: any): string => {
+  if (e == null) {
+    return 'Unknown error';
+  }
+  if (typeof e === 'string') {
+    return e;
+  }
+  if (e instanceof Error) {
+    const message = e.message || e.name || 'Unknown error';
+    return typeof __DEV__ !== 'undefined' && __DEV__ && e.stack
+      ? `${message}\n${e.stack}`
+      : message;
+  }
+  if (typeof e === 'object') {
+    if (typeof e.message === 'string' && e.message) {
+      return e.message;
+    }
+    try {
+      const json = JSON.stringify(e);
+      if (json && json !== '{}') {
+        return json;
+      }
+    } catch (_) {
+      // circular or non-serializable, fall through
+    }
+    return String(e);
+  }
+  return String(e);
+};
 const installFail = (option?: UpdateOption, e?: any) => {
-  option?.updateFail?.(JSON.stringify(e));
-  console.error('Download bundle fail', JSON.stringify(e));
+  const message = serializeError(e);
+  option?.updateFail?.(message);
+  console.error('Download bundle fail', message);
 };
 async function downloadBundleUri(
   downloadManager: DownloadManager,
@@ -127,6 +162,13 @@ async function downloadBundleUri(
     return installFail(option, 'Please give a valid URL!');
   }
   if (version) {
+    if (typeof version !== 'number' || !Number.isFinite(version)) {
+      return installFail(
+        option,
+        `Version must be a number, received: ${JSON.stringify(version)} (${typeof version}). ` +
+        'Use a numeric build number instead of a semver string, e.g. 1, 2, 3.'
+      );
+    }
     const currentVersion = await getVersionAsNumber();
     if (version <= currentVersion) {
       return installFail(
@@ -149,7 +191,10 @@ async function downloadBundleUri(
     }
     const success = await setupBundlePath(path, option?.extensionBundle, version, option?.maxBundleVersions, option?.metadata);
     if (!success) {
-      return installFail(option);
+      return installFail(
+        option,
+        `Cannot setup bundle path: ${path}. The downloaded file may be corrupted or is not a valid bundle.`
+      );
     }
     if (version) {
       setCurrentVersion(version);
