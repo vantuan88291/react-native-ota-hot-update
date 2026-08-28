@@ -264,6 +264,23 @@ const checkForGitUpdate = async (options: UpdateGitOption) => {
     options?.onFinishProgress?.();
   }
 };
+/**
+ * Metadata is stored as a JSON string, and each platform decodes it differently:
+ * Android (JSONObject) only restores plain objects, iOS (NSJSONSerialization)
+ * restores objects and arrays. Anything else comes back as the raw JSON string,
+ * so decode it here to keep the value identical to what was passed in.
+ */
+const parseBundleMetadata = (metadata: any): any => {
+  if (typeof metadata !== 'string') {
+    return metadata;
+  }
+  try {
+    return JSON.parse(metadata);
+  } catch (e) {
+    // Not JSON (e.g. written by an older version) - keep the raw value.
+    return metadata;
+  }
+};
 function getBundleList(): Promise<BundleInfo[]> {
   return RNhotupdate.getBundleList(0).then((jsonString: string) => {
     try {
@@ -271,6 +288,7 @@ function getBundleList(): Promise<BundleInfo[]> {
       return data.map((item: any) => ({
         ...item,
         date: new Date(item.date),
+        metadata: parseBundleMetadata(item.metadata),
       }));
     } catch (error) {
       return Promise.reject(new Error('Error parsing bundle list'));

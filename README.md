@@ -244,6 +244,46 @@ For detailed instructions on how to implement this, refer to [**DOC_OTA_GIT.md**
 Using Strapi, you can build a tailored admin panel to manage React Native hot updates effectively. This approach allows you to centralize the control of versioning and OTA updates while providing a user-friendly interface for managing content. To get started, refer to the detailed steps and code examples in this guide. For additional details, see [**OTA_CMS.md**](OTA_CMS.md).
 
 
+## Bundle metadata
+
+You can attach any JSON-serializable value to an update, then read it back later - useful for release notes, changelog, the CMS entry id, or anything you want to show the user after an update.
+
+Set it when downloading:
+
+```javascript
+hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, 5, {
+  metadata: {
+    releaseNote: 'Fixed the crash on the payment screen',
+    releasedAt: '2025-01-25',
+  },
+  restartAfterInstall: true,
+});
+```
+
+The value is stored in two independent places, so pick the one that matches what you need:
+
+| API | Returns | Lifetime |
+|-----|---------|----------|
+| `getUpdateMetadata()` | metadata of the **latest** update only | overwritten by the next update |
+| `getBundleList()` | `metadata` of **every** bundle still in history | dropped when the bundle falls outside `maxBundleVersions` |
+
+```javascript
+// Metadata of the update currently running
+const current = await hotUpdate.getUpdateMetadata();
+console.log(current?.releaseNote);
+
+// Metadata of every stored bundle
+const bundles = await hotUpdate.getBundleList();
+bundles.forEach(b => console.log(b.version, b.metadata?.releaseNote));
+```
+
+> **Note:** metadata is serialized with `JSON.stringify` before being stored, so objects, arrays, strings and numbers come back exactly as you passed them. Two things to keep in mind:
+> - Falsy values (`false`, `0`, `''`, `null`) are treated as "no metadata" and are not stored at all. Wrap them in an object instead: `metadata: { enabled: false }`.
+> - Values that `JSON.stringify` cannot represent (functions, `undefined`, circular references) are lost, and a `Date` becomes an ISO string - store dates as strings yourself if you need them back.
+
+For the full option and `BundleInfo` reference, see [**DOC_OTA_SERVER.md**](DOC_OTA_SERVER.md).
+
+
 ## License
 
 [MIT](LICENSE)
