@@ -19,6 +19,12 @@ Pod::Spec.new do |s|
   }
   s.public_header_files = "ios/OtaHotUpdate.h"
   s.source_files = "ios/**/*.{h,m,mm,cpp}"
+  # Apple Required Reason APIs used by this SDK: NSFileModificationDate
+  # (FileTimestamp) and NSUserDefaults (UserDefaults). Bundled so the manifest
+  # ships inside the built app.
+  s.resource_bundles = {
+    'RNOtaHotUpdatePrivacyInfo' => ['ios/PrivacyInfo.xcprivacy'],
+  }
   s.dependency 'SSZipArchive', '~> 2.4.3'
   if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
     s.exclude_files = "ios/generated"
