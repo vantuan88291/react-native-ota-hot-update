@@ -38,6 +38,13 @@ iOS GIF             | Android GIF
 >
 > 👉 **[Read the AI implementation prompt → PROMPT_IMPLEMENT_HOTUPDATE.md](PROMPT_IMPLEMENT_HOTUPDATE.md)**
 
+**Example prompt** — copy and paste it into your AI agent:
+
+```text
+Please implement the OTA hot update feature (with Strapi v4) in this project by following this document:
+https://raw.githubusercontent.com/vantuan88291/react-native-ota-hot-update/main/PROMPT_IMPLEMENT_HOTUPDATE.md
+```
+
 
 ## New architecture supported
 
