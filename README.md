@@ -31,6 +31,13 @@ iOS GIF             | Android GIF
 [![npm downloads](https://img.shields.io/npm/dw/react-native-ota-hot-update)](https://img.shields.io/npm/dw/react-native-ota-hot-update)
 [![npm package](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)](https://img.shields.io/npm/v/react-native-ota-hot-update?color=red)
 
+## 🤖 Implement Hot Update with AI + Strapi v4
+
+> [!TIP]
+> **Let an AI agent implement OTA hot update for you!** Just give [**PROMPT_IMPLEMENT_HOTUPDATE.md**](PROMPT_IMPLEMENT_HOTUPDATE.md) to your AI coding assistant (Claude Code, Cursor, Copilot, ...) and it will build the full hot update flow — UI, update logic, API integration with **Strapi v4 CMS**, and CI upload scripts — right inside your React Native project.
+>
+> 👉 **[Read the AI implementation prompt → PROMPT_IMPLEMENT_HOTUPDATE.md](PROMPT_IMPLEMENT_HOTUPDATE.md)**
+
 
 ## New architecture supported
 
@@ -244,6 +251,8 @@ For detailed instructions on how to implement this, refer to [**DOC_OTA_GIT.md**
 
 ### Build a Custom Admin Panel with CMS
 Using Strapi, you can build a tailored admin panel to manage React Native hot updates effectively. This approach allows you to centralize the control of versioning and OTA updates while providing a user-friendly interface for managing content. To get started, refer to the detailed steps and code examples in this guide. For additional details, see [**OTA_CMS.md**](OTA_CMS.md).
+
+> 🤖 Want AI to do it for you? Use [**PROMPT_IMPLEMENT_HOTUPDATE.md**](PROMPT_IMPLEMENT_HOTUPDATE.md) to implement hot update with AI + Strapi v4.
 
 
 ## Bundle metadata
