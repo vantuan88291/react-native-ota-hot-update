@@ -2,10 +2,20 @@ import { StyleSheet, View, Text, Button, Image, TouchableOpacity } from 'react-n
 import { useState } from 'react';
 import { useCheckVersion } from './useCheckVersion';
 import BundleManagerScreen from './BundleManagerScreen';
+import ErrorBoundary, { CrashTrigger } from './ErrorBoundary';
 
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const { version } = useCheckVersion();
   const [showBundleManager, setShowBundleManager] = useState(false);
+  const [crash, setCrash] = useState(false);
 
   if (showBundleManager) {
     return (
@@ -23,6 +33,8 @@ export default function App() {
       <Button title={'rollback OTA'} onPress={version.rollBack} />
       <Button title={'check update Git'} onPress={version.onCheckGitVersion} />
       <Button title={'remove update Git'} onPress={version.removeGitUpdate} />
+      <Button title={'Crash JS (test ErrorBoundary)'} onPress={() => setCrash(true)} />
+      {crash && <CrashTrigger />}
 
       <TouchableOpacity
         style={styles.bundleManagerButton}

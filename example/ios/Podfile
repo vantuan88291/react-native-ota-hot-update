@@ -41,5 +41,18 @@ target 'OtaHotUpdateExample' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Fix fmt 11.0.2 build errors with Xcode 26+ (newer clang rejects fmt's consteval usage).
+    # Force-disable consteval in fmt so it compiles under C++20.
+    fmt_base = File.join(installer.sandbox.root, 'fmt', 'include', 'fmt', 'base.h')
+    if File.exist?(fmt_base)
+      content = File.read(fmt_base)
+      patched = content.gsub('#  define FMT_USE_CONSTEVAL 1', '#  define FMT_USE_CONSTEVAL 0')
+      if patched != content
+        File.chmod(0644, fmt_base)
+        File.write(fmt_base, patched)
+        Pod::UI.puts 'Patched fmt/base.h: FMT_USE_CONSTEVAL = 0'.green
+      end
+    end
   end
 end

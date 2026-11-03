@@ -1259,7 +1259,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-ota-hot-update (2.4.0):
+  - react-native-ota-hot-update (2.4.71):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1832,7 +1832,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 3c11cee7737609275c7b66bd0b1de475f094cedf
   React-microtasksnativemodule: 843f352b32aacbe13a9c750190d34df44c3e6c2c
   react-native-blob-util: b8c223821e79de52b258dbdc93e9eaabc73d5fff
-  react-native-ota-hot-update: 90bd93bcd8c3517a877bc32ea92779162e272b67
+  react-native-ota-hot-update: 52311341b2904d5ca7596d162c15baaec8342e05
   React-NativeModulesApple: 88433b6946778bea9c153e27b671de15411bf225
   React-perflogger: 9e8d3c0dc0194eb932162812a168aa5dc662f418
   React-performancetimeline: 5a2d6efef52bdcefac079c7baa30934978acd023
@@ -1866,6 +1866,6 @@ SPEC CHECKSUMS:
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
-PODFILE CHECKSUM: c56d17ef32ef4cc0bfe2208647446118fe0bfb0b
+PODFILE CHECKSUM: 8a15f6773ec37851a332763459b3cf14f294ce6f
 
 COCOAPODS: 1.16.2
